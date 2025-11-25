@@ -11,23 +11,23 @@
 
 typedef enum e_token_type
 {
-	WORD,
-	PIPE,
-	REDIR_IN,
-	REDIR_OUT,
-	REDIR_APPEND,
-	HEREDOC,
+	WORD
+	PIPE
+	REDIR_IN      // '<'
+	REDIR_OUT     // '>'
+	REDIR_APPEND  // '>>'
+	HEREDOC       // '<<'
 	END_OF_INPUT
 }	t_token_type;
 
-typedef struct s_env
+typedef struct s_env//lista enlazada
 {
 	char			*key;
 	char			*value;
 	struct s_env	*next;
 } t_env;
 
-typedef struct s_token
+typedef struct s_token//
 {
 	t_token_type		type;
 	char			*value;
