@@ -11,12 +11,12 @@
 
 typedef enum e_token_type
 {
-	WORD
-	PIPE
-	REDIR_IN      // '<'
-	REDIR_OUT     // '>'
-	REDIR_APPEND  // '>>'
-	HEREDOC       // '<<'
+	WORD,
+	PIPE,
+	REDIR_IN,      // '<'
+	REDIR_OUT,     // '>'
+	REDIR_APPEND,  // '>>'
+	HEREDOC,       // '<<'
 	END_OF_INPUT
 }	t_token_type;
 
