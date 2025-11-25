@@ -1,13 +1,23 @@
 #include <minishell.h>
 
-void    tokenization(char *input)
+int ispecial(char c)
+{
+    if ()
+}
+
+void    tokenize_imput(char *input, t_env *env)
 {
     t_token *list;
     int     i;
 
+    while (input[i])
+    {
+        while (input[i] && (input[i] == ' ' || input[i] == '\t'))
+            i++;
+        if (!input[i])
+            break ;
+        if (ispecial(input[i]))
+        
+    }
     
-    while (imput[i] && (imput[i] == ' ' || imput[i] == '|t'))
-        i++;
-    if (!imput)
-        break ;
 }
