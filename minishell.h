@@ -20,14 +20,14 @@ typedef enum e_token_type
 	END_OF_INPUT
 }	t_token_type;
 
-typedef struct s_env//lista enlazada
+typedef struct s_env
 {
 	char			*key;
 	char			*value;
 	struct s_env	*next;
 } t_env;
 
-typedef struct s_token//
+typedef struct s_token//list
 {
 	t_token_type		type;
 	char			*value;
