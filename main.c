@@ -1,6 +1,8 @@
 #include <minishell.h>
 
-int	main(int argc, char **argv)
+int	g_signal_status = 0;
+
+int	main(int argc, char **argv, char **envp)
 {
 	if (argc > 1)
 	{
