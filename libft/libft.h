@@ -103,4 +103,7 @@ int		ft_bases(const char *format, va_list args, t_opt opt);
 t_opt	ft_flags(char const **format);
 
 int		ft_atoi_base(char *str, char *base);
+
+char	*ft_strndup(const char *string, size_t n);
+
 #endif

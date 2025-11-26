@@ -1,75 +1,37 @@
 #include <minishell.h>
 
-t_token *new_token(t_token_type type, char *value)
+char	parse_word(char *input, int *i, t_token *list)
 {
-	t_token *new;
+	int	start;
 
-	new = malloc(sizeof(t_token));
-	if (!new)
-		return (NULL);
-	new->type = type;
-	new->value = value;
-	new->prev = NULL;
-	new->next = NULL;
-	return (new);
-}
-
-void add_token(t_token **list, t_token *new)
-{
-	t_token *temp;
-
-	if (new == NULL)
-		return ;
-	if (!*list == NULL)
-	{
-		*list = new;
-		return ;
-	}
-	temp = *list;
-	while (temp->next != NULL)
-		temp = temp->next;
-	temp->next = new;
-	new->prev = temp;
-}
-
-t_token_type get_type(char *s)
-{
-	if (!ft_strncmp(s, "<<", 2))
-		return (HEREDOC);
-	if (!ft_sttrncmp(s, ">>", 2))
-		return (REDIR_APPEND);
-	if (!ft_strncmp(s, "<", 1))
-		return (REDIR_IN);
-	if (!ft_strncmp(s, ">", 1))
-		return (REDIR_OUT);
-	if (!ft_strncmp(s, "|", 1))
-		return (PIPE);
-	return (WORD);
-}
-
-int ispecial(char *c)
-{
-	if (!ft_strncmp(c, ">>", 2) || !strncmp(c, "<<", 2))
-		return (2);
-	if (c == "|" || c == "<" || c == ">")
-		return (1);
+	start = *i;
+	while (input[*i] && input[*i] != ' ' && input[*i] != '\t' && !ispecial(&input[*i]))
+		(*i)++;
+	add_token(&list, new_token(WORD, ft_strndup(&input[start], *i - start)));
 	return (0);
 }
 
-void    tokenize_input(char *input, t_env *env)
+void	tokenize_input(char *input, t_env *env)
 {
-	t_token *list;
-	int     i;
+	t_token	*list;
+	int		i;
 
+	list = NULL;
+	i = 0;
 	while (input[i])
 	{
 		while (input[i] && (input[i] == ' ' || input[i] == '\t'))
 			i++;
 		if (!input[i])
 			break ;
-		if (ispecial(input[i]))
+		if (ispecial(&input[i]))
 		{
-			add_token(&list, new_token(get_type(input[i]), input[i]));
+			add_token(&list, new_token(get_type(&input[i]), ft_strndup(&input[i], ispecial(&input[i]))));
+			i += ispecial(&input[i]);
+		}
+		else
+		{
+			add_token(&list, new_token(WORD, ft_strndup(&input[i], 1)));
 		}
 	}
 	

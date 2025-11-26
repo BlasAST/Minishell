@@ -1,0 +1,57 @@
+#include <minishell.h>
+
+t_token	*new_token(t_token_type type, char *value)
+{
+	t_token	*new;
+
+	new = malloc(sizeof(t_token));
+	if (!new)
+		return (NULL);
+	new->type = type;
+	new->value = value;
+	new->prev = NULL;
+	new->next = NULL;
+	return (new);
+}
+
+void	add_token(t_token **list, t_token *new)
+{
+	t_token	*temp;
+
+	if (new == NULL)
+		return ;
+	if (!list || *list == NULL)
+	{
+		*list = new;
+		return ;
+	}
+	temp = *list;
+	while (temp->next != NULL)
+		temp = temp->next;
+	temp->next = new;
+	new->prev = temp;
+}
+
+t_token_type	get_type(char *s)
+{
+	if (!ft_strncmp(s, "<<", 2))
+		return (HEREDOC);
+	if (!ft_strncmp(s, ">>", 2))
+		return (REDIR_APPEND);
+	if (!ft_strncmp(s, "<", 1))
+		return (REDIR_IN);
+	if (!ft_strncmp(s, ">", 1))
+		return (REDIR_OUT);
+	if (!ft_strncmp(s, "|", 1))
+		return (PIPE);
+	return (WORD);
+}
+
+int	ispecial(char *c)
+{
+	if (!ft_strncmp(c, ">>", 2) || !strncmp(c, "<<", 2))
+		return (2);
+	if (*c == '|' || *c == '<' || *c == '>')
+		return (1);
+	return (0);
+}

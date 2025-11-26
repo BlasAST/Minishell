@@ -28,20 +28,20 @@ typedef struct s_env
 	char			*key;
 	char			*value;
 	struct s_env	*next;
-} t_env;
+}	t_env;
 
 typedef struct s_token//list
 {
-	t_token_type		type;
+	t_token_type	type;
 	char			*value;
 	struct s_token	*next;
 	struct s_token	*prev;
-} t_token;
+}	t_token;
 
 typedef struct s_cmd
 {
 	char			**args;
-	char 			*cmd_path;
+	char			*cmd_path;
 	char			*redir_target;
 	int				fd_in;
 	int				fd_out;
@@ -52,12 +52,20 @@ typedef struct s_cmd
 
 typedef struct s_mini
 {
-	t_env	*env_list;
-	t_token	*token_list;
-	t_cmd	*cmd_list;
-	char 	**env_arr;
-	int		exit_code;
-	int		stdin_backup;
-	int		stdout_backup;
-} t_mini;
+	t_env		*env_list;
+	t_token		*token_list;
+	t_cmd		*cmd_list;
+	char		**env_arr;
+	int			exit_code;
+	int			stdin_backup;
+	int			stdout_backup;
+}	t_mini;
+
+void			tokenize_input(char *input, t_env *env);
+
+void			add_token(t_token **list, t_token *new);
+t_token			*new_token(t_token_type type, char *value);
+t_token_type	get_type(char *s);
+int				ispecial(char *c);
+
 #endif
