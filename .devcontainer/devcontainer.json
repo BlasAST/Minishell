@@ -1,0 +1,13 @@
+{
+    "name": "C++ Dev Container",
+    "dockerComposeFile": "compose.yaml",
+    "service": "gcc",
+    "workspaceFolder": "/c",
+    "extensions": [
+        "ms-vscode.cpptools"
+    ],
+    "settings": {
+        "C_Cpp.default.compilerPath": "/usr/bin/gcc"
+    },
+    "remoteUser": "root"
+}
