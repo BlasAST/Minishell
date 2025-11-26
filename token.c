@@ -1,4 +1,4 @@
-#include <minishell.h>
+#include "minishell.h"
 
 char	parse_word(char *input, int *i, t_token *list)
 {

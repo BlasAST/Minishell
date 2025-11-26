@@ -68,4 +68,11 @@ t_token			*new_token(t_token_type type, char *value);
 t_token_type	get_type(char *s);
 int				ispecial(char *c);
 
+
+// Funciones de inicialización
+void	init_mini(t_mini *mini, char **envp);
+
+// Funciones entorno
+t_env	*new_env_node(char *str);
+
 #endif

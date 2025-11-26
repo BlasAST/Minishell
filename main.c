@@ -1,9 +1,16 @@
-#include <minishell.h>
+#include "minishell.h"
 
+// global variable to intercept the signal
 int	g_signal_status = 0;
 
 int	main(int argc, char **argv, char **envp)
 {
+	t_mini	mini;
+	// char	*input; <- Variable for reading readline
+
+	(void)argc;
+	(void)argv;
+	init_mini(&mini, envp);
 	if (argc > 1)
 	{
 		tokenize_input(argv[1], NULL);

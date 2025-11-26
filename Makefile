@@ -1,7 +1,11 @@
 NAME = minishell
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -I. -g
-SRCS = main.c token.c
+SRCS = main.c \
+	token.c \
+	inits.c \
+	env.c \
+	signal.c
 DIR_LIBFT = libft
 LIBFT = $(DIR_LIBFT)libft.a
 DIR_OBJS = objs
