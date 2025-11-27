@@ -1,8 +1,5 @@
 #include "minishell.h"
 
-// global variable to intercept the signal
-int	g_signal_status = 0;
-
 int	main(int argc, char **argv, char **envp)
 {
 	t_mini	mini;

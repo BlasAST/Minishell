@@ -1,12 +1,16 @@
 #include "minishell.h"
+#include <signal.h>
 
 // ** File for initialization of the entire mini structure
 
 void	init_signals(void)
 {
-	// struct sigaction	sa;
-
-
+	struct sigaction	sa;
+	sa.sa_handler = &handle_sigint;
+	sa.sa_flags = SA_RESTART;
+	sigemptyset(&sa.sa_mask);
+	sigaction(SIGINT, &sa, NULL);
+	signal(SIGQUIT, SIG_IGN);
 }
 
 void	init_env(t_mini *mini, char **envp)

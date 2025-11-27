@@ -9,7 +9,8 @@
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <signal.h>
-
+# include <readline/readline.h>
+# include <readline/history.h>
 # include "libft/libft.h"
 
 typedef enum e_token_type
@@ -61,6 +62,9 @@ typedef struct s_mini
 	int			stdout_backup;
 }	t_mini;
 
+// global variable to intercept the signal
+int	g_signal_status = 0;
+
 void			tokenize_input(char *input, t_env *env);
 
 void			add_token(t_token **list, t_token *new);
@@ -75,4 +79,7 @@ void	init_mini(t_mini *mini, char **envp);
 // Funciones entorno
 t_env	*new_env_node(char *str);
 
+
+//Funciones de señal
+void	handle_sigint(int sig);
 #endif

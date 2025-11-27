@@ -1,13 +1,14 @@
 NAME = minishell
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -I. -g
+READLINE_FLAGS = -lreadline
 SRCS = main.c \
 	token.c \
 	inits.c \
 	env.c \
 	signal.c
 DIR_LIBFT = libft
-LIBFT = $(DIR_LIBFT)libft.a
+LIBFT = $(DIR_LIBFT)/libft.a
 DIR_OBJS = objs
 OBJS = $(addprefix $(DIR_OBJS)/, $(SRCS:.c=.o))
 
@@ -22,7 +23,7 @@ $(DIR_OBJS)/%.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(NAME): $(OBJS) 
-		$(CC) $(CFLAGS) $(OBJS) $(DIR_LIBFT) -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(READLINE_FLAGS) -o $(NAME)
 		@echo "Minishell compiled"
 
 clean:
