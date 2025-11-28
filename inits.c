@@ -1,5 +1,4 @@
 #include "minishell.h"
-#include <signal.h>
 
 // ** File for initialization of the entire mini structure
 

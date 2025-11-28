@@ -1,6 +1,8 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# define _XOPEN_SOURCE 700
+# define _GNU_SOURCE
 # include <unistd.h>
 # include <stdlib.h>
 # include <stdio.h>
@@ -63,7 +65,7 @@ typedef struct s_mini
 }	t_mini;
 
 // global variable to intercept the signal
-int	g_signal_status = 0;
+extern int	g_signal_status;
 
 void			tokenize_input(char *input, t_env *env);
 
