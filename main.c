@@ -5,14 +5,24 @@ int	g_signal_status = 0;
 int	main(int argc, char **argv, char **envp)
 {
 	t_mini	mini;
-	// char	*input; <- Variable for reading readline
-
+	char	*input;
 	(void)argc;
 	(void)argv;
 	init_mini(&mini, envp);
-	if (argc > 1)
+	while (1)
 	{
-		tokenize_input(argv[1], NULL);
+		input = readline("minishell$ ");
+		if (input == NULL)
+		{
+			ft_putstr_fd("exit\n", 1);
+			break ;
+		}
+		if (input[0] != '\0')
+		{
+			add_history(input);
+			// tokenize_input(input, mini.env_list);
+		}
+		free(input);
 	}
 	return (0);
 }

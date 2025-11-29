@@ -13,6 +13,7 @@
 # include <signal.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+# include <termios.h>
 # include "libft/libft.h"
 
 typedef enum e_token_type

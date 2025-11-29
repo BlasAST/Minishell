@@ -51,10 +51,20 @@ static void	init_fds(t_mini *mini)
 	}
 }
 
+void	init_termios(void)
+{
+	struct termios	term_attrs;
+
+	tcgetattr(STDIN_FILENO, &term_attrs);
+	term_attrs.c_lflag &= ~(ECHOCTL);
+	tcsetattr(STDIN_FILENO, TCSANOW, &term_attrs);
+}
+
 void	init_mini(t_mini *mini, char **envp)
 {
 	ft_bzero(mini, sizeof(t_mini));
 	init_env(mini, envp);
 	init_fds(mini);
+	init_termios();
 	init_signals();
 }

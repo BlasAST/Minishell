@@ -1,9 +1,10 @@
 NAME = minishell
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -I. -g
+# CFLAGS = -Wall -Wextra -Werror -I. -g
 READLINE_FLAGS = -lreadline
 SRCS = main.c \
 	token.c \
+	token_utils.c \
 	inits.c \
 	env.c \
 	signal.c
