@@ -85,4 +85,7 @@ t_env	*new_env_node(char *str);
 
 //Funciones de señal
 void	handle_sigint(int sig);
+
+// Funciones limpieza
+void	free_env_list(t_env *env_list);
 #endif

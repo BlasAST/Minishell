@@ -24,5 +24,7 @@ int	main(int argc, char **argv, char **envp)
 		}
 		free(input);
 	}
+	rl_clear_history();
+	free_env_list(mini.env_list);
 	return (0);
 }

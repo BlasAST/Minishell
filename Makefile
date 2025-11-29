@@ -7,7 +7,8 @@ SRCS = main.c \
 	token_utils.c \
 	inits.c \
 	env.c \
-	signal.c
+	signal.c \
+	frees.c
 DIR_LIBFT = libft
 LIBFT = $(DIR_LIBFT)/libft.a
 DIR_OBJS = objs
