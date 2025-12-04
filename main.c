@@ -20,7 +20,7 @@ int	main(int argc, char **argv, char **envp)
 		if (input[0] != '\0')
 		{
 			add_history(input);
-			// tokenize_input(input, mini.env_list);
+			mini.token_list = tokenize_input(input, mini.env_list);
 		}
 		free(input);
 	}
