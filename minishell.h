@@ -16,6 +16,15 @@
 # include <termios.h>
 # include "libft/libft.h"
 
+typedef struct s_parse_token
+{
+	t_cmd	*cmd_list;
+	t_token	*tok;
+	t_cmd	*cmd;
+	int		arg_count;
+	int		i;
+}	t_parse_token;
+
 typedef struct s_cmd
 {
 	char			**args;
@@ -26,7 +35,7 @@ typedef struct s_cmd
 	pid_t			pid;
 	t_token_type	redir_type;
 	struct s_cmd	*next;
-} t_cmd;
+}	t_cmd;
 
 typedef struct s_parse_word
 {
@@ -88,16 +97,16 @@ int				ispecial(char *c);
 
 
 // Funciones de inicialización
-void	init_mini(t_mini *mini, char **envp);
+void			init_mini(t_mini *mini, char **envp);
 
 // Funciones entorno
-t_env	*new_env_node(char *str);
+t_env			*new_env_node(char *str);
 
 
 //Funciones de señal
-void	handle_sigint(int sig);
+void			handle_sigint(int sig);
 
 // Funciones limpieza
-void	free_env_list(t_env *env_list);
+void			free_env_list(t_env *env_list);
 
 #endif
