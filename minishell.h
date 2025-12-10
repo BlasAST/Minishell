@@ -110,9 +110,9 @@ void			handle_sigint(int sig);
 void			free_env_list(t_env *env_list);
 
 // Funciones expander
-char	*remove_quotes(char *str);
-void	expand_token(t_mini *mini, t_token *token);
-void	expander(t_mini *mini);
+char			*remove_quotes(char *str);
+void			expand_token(t_mini *mini, t_token *token);
+void			expander(t_mini *mini);
 
 t_cmd			*parser_tokens(t_token *tokens);
 
