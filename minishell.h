@@ -21,6 +21,7 @@ typedef struct s_parse_token
 	t_cmd	*cmd_list;
 	t_token	*tok;
 	t_cmd	*cmd;
+	t_cmd	*tmp;
 	int		arg_count;
 	int		i;
 }	t_parse_token;
@@ -58,7 +59,6 @@ typedef enum e_token_type
 	END_OF_INPUT
 }	t_token_type;
 
-
 typedef struct s_token//list
 {
 	t_token_type	type;
@@ -86,7 +86,7 @@ typedef struct s_mini
 }	t_mini;
 
 // global variable to intercept the signal
-extern int	g_signal_status;
+extern int		g_signal_status;
 
 t_token			*tokenize_input(char *input, t_env *env);
 
@@ -109,9 +109,13 @@ void			handle_sigint(int sig);
 // Funciones limpieza
 void			free_env_list(t_env *env_list);
 
+<<<<<<< HEAD
 // Funciones expander
 char	*remove_quotes(char *str);
 void	expand_token(t_mini *mini, t_token *token);
 void	expander(t_mini *mini);
+=======
+t_cmd			*parser_tokens(t_token *tokens);
+>>>>>>> refs/remotes/origin/blas
 
 #endif
