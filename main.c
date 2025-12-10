@@ -21,6 +21,7 @@ int	main(int argc, char **argv, char **envp)
 		{
 			add_history(input);
 			mini.token_list = tokenize_input(input, mini.env_list);
+			expander(&mini);
 		}
 		free(input);
 	}
