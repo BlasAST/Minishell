@@ -23,30 +23,61 @@ static t_cmd	*new_cmd(void)
 		return (NULL);
 	cmd->args = NULL;
 	cmd->cmd_path = NULL;
-	cmd->redir_target = NULL;
+	cmd->redir_list = NULL;
 	cmd->fd_in = 0;
 	cmd->fd_out = 1;
 	cmd->pid = -1;
-	cmd->redir_type = END_OF_INPUT;
+	cmd->cond_type = END_OF_INPUT;
 	cmd->next = NULL;
 	return (cmd);
 }
 
-void	parser_tokens2(t_parser_tokens *pt)
+void	add_redic(t_cmd *cmd, t_token_type redir_type, char *target)
 {
-	while (pt.tok && pt.tok->type != PIPE && pt.tok->type != END_OF_INPUT)
+	t_redir	*new_r;
+	t_redir	*temp;
+
+	new_r = malloc(sizeof(t_redir));
+	if (!new_r)
+		return ;
+	new_r->redir_type = redir_type;
+	new_r->target = ft_strdup(target);
+	new_r->next = NULL;
+	if (!cmd->redir_list)
+		cmd->redir_list = new_r;
+	else
+	{
+		temp = cmd->redir_list;
+		while (temp->next)
+			temp = temp->next;
+		temp->next = new_r;
+	}
+}
+
+void	parser_tokens2(t_parse_token *pt)
+{
+	pt->cmd = new_cmd();
+		pt->arg_count = count_args(pt->tok);
+		pt->cmd->args = malloc(sizeof(char *) * (pt->arg_count + 1));
+		if (!pt->cmd->args)
+			return (NULL);
+		pt->i = 0;
+	while (pt->tok && pt->tok->type != PIPE && pt->tok->type != END_OF_INPUT
+			&& pt->tok->type != AND && pt->tok->type != OR)
+	{
+		if (pt->tok->type == WORD)
+			pt->cmd->args[pt->i++] = ft_strdup(pt->tok->value);
+		else if (pt->tok->type == REDIR_IN || pt->tok->type == REDIR_OUT
+				|| pt->tok->type == REDIR_APPEND || pt->tok->type == HEREDOC)
 		{
-			if (pt.tok->type == WORD)
-				pt.cmd->args[pt.i++] = ft_strdup(pt.token->value);
-			else if (pt.tok->type == REDIR_IN || pt.tok->type == REDIR_OUT || pt.tok->type == REDIR_APPEND || pt.tok->type == HEREDOC)
-			{
-				pt.cmd->redir_type = pt.tok->type;
-				pt.tok = pt.tok->next;
-				if (pt.tok && pt.tok->type == WORD)
-					pt.cmd->redir_target = ft_strdup(pt.tok->value);
-			}
-			pt.tok = pt.tok->next;
+			pt->cmd->redir_type = pt->tok->type;
+			pt->tok = pt->tok->next;
+			if (pt->tok && pt->tok->type == WORD)
+				add_redir(pt->cmd, pt->cmd->redir_type, pt->tok->value);
 		}
+		pt->tok = pt->tok->next;
+	}
+	pt->cmd->args[pt->i] = NULL;
 }
 
 t_cmd	*parser_tokens(t_token *tokens)
@@ -57,14 +88,12 @@ t_cmd	*parser_tokens(t_token *tokens)
 	pt.tok = tokens;
 	while (pt.tok && pt.tok->type != END_OF_INPUT)
 	{
-		pt.cmd = new_cmd();
-		pt.arg_count = count_args(pt.tok);
-		pt.cmd->args = malloc(sizeof(char *) * (pt.arg_count + 1));
-		if (!pt.cmd->args)
-			return (NULL);
-		pt.i = 0;
 		parser_tokens2(&pt);
-		pt.cmd->args[pt.i] = NULL;
+		if (pt.tok && (pt.tok->type == AND || pt.tok->type == OR))
+		{
+			pt.cmd->cond_type = pt.tok->type;
+			pt.tok = pt.tok->next;
+		}
 		if (!pt.cmd_list)
 			pt.cmd_list = pt.cmd;
 		else
@@ -74,6 +103,8 @@ t_cmd	*parser_tokens(t_token *tokens)
 				pt.tmp = pt.tmp->next;
 			pt.tmp->next = pt.cmd;
 		}
+		if (pt.tok && pt.tok->type == PIPE)
+			pt.tok = pt.tok->next;
 	}
 	return (pt.cmd_list);
 }

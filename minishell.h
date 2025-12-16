@@ -26,15 +26,22 @@ typedef struct s_parse_token
 	int		i;
 }	t_parse_token;
 
+typedef struct s_redir
+{
+	t_token_type	redir_type;
+	char			*target;
+	struct s_redir	*next;
+}	t_redir;
+
 typedef struct s_cmd
 {
 	char			**args;
 	char			*cmd_path;
-	char			*redir_target;
+	t_redir			*redir_list;
 	int				fd_in;
 	int				fd_out;
 	pid_t			pid;
-	t_token_type	redir_type;
+	t_token_type	cond_type;
 	struct s_cmd	*next;
 }	t_cmd;
 
@@ -56,6 +63,8 @@ typedef enum e_token_type
 	REDIR_OUT,     // '>'
 	REDIR_APPEND,  // '>>'
 	HEREDOC,       // '<<'
+	AND,		   // '&&'
+	OR,			   // '||'
 	END_OF_INPUT
 }	t_token_type;
 
@@ -115,5 +124,7 @@ void			expand_token(t_mini *mini, t_token *token);
 void			expander(t_mini *mini);
 
 t_cmd			*parser_tokens(t_token *tokens);
+
+void			executor(t_cmd *cmd_list, t_mini *mini);
 
 #endif

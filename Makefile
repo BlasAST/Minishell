@@ -9,7 +9,9 @@ SRCS = main.c \
 	env.c \
 	signal.c \
 	frees.c \
-	parse_tokens.c
+	parse_tokens.c \
+	executor.c \
+	executor_utils.c \
 DIR_LIBFT = libft
 LIBFT = $(DIR_LIBFT)/libft.a
 DIR_OBJS = objs
