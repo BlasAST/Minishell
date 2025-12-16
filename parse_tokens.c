@@ -32,7 +32,7 @@ static t_cmd	*new_cmd(void)
 	return (cmd);
 }
 
-void	add_redic(t_cmd *cmd, t_token_type redir_type, char *target)
+void	add_redir(t_cmd *cmd, t_token_type redir_type, char *target)
 {
 	t_redir	*new_r;
 	t_redir	*temp;
@@ -60,7 +60,7 @@ void	parser_tokens2(t_parse_token *pt)
 		pt->arg_count = count_args(pt->tok);
 		pt->cmd->args = malloc(sizeof(char *) * (pt->arg_count + 1));
 		if (!pt->cmd->args)
-			return (NULL);
+			return ;
 		pt->i = 0;
 	while (pt->tok && pt->tok->type != PIPE && pt->tok->type != END_OF_INPUT
 			&& pt->tok->type != AND && pt->tok->type != OR)
@@ -70,10 +70,10 @@ void	parser_tokens2(t_parse_token *pt)
 		else if (pt->tok->type == REDIR_IN || pt->tok->type == REDIR_OUT
 				|| pt->tok->type == REDIR_APPEND || pt->tok->type == HEREDOC)
 		{
-			pt->cmd->redir_type = pt->tok->type;
+			pt->cmd->cond_type = pt->tok->type;
 			pt->tok = pt->tok->next;
 			if (pt->tok && pt->tok->type == WORD)
-				add_redir(pt->cmd, pt->cmd->redir_type, pt->tok->value);
+				add_redir(pt->cmd, pt->cmd->cond_type, pt->tok->value);
 		}
 		pt->tok = pt->tok->next;
 	}

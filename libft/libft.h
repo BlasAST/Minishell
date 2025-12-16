@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: andtruji <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: bsiguenc <bsiguenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 13:58:04 by andtruji          #+#    #+#             */
-/*   Updated: 2025/04/14 13:58:10 by andtruji         ###   ########.fr       */
+/*   Updated: 2025/12/16 16:02:54 by bsiguenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,8 @@ t_opt	ft_flags(char const **format);
 
 int		ft_atoi_base(char *str, char *base);
 
-char	*ft_strndup(const char *string, size_t n);
-int		ft_strcmp(const char *s1, const char *s2);
-
+char	*ft_strndup(const char *strin, size_t n);
+char *ft_strcpy(char *dest, const char *src);
+char	*ft_strcat(char *dest, const char *src);
+int ft_strcmp(const char *s1, const char *s2);
 #endif

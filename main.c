@@ -23,7 +23,6 @@ int	main(int argc, char **argv, char **envp)
 			mini.token_list = tokenize_input(input, mini.env_list);
 			expander(&mini);
 			mini.cmd_list = parser_tokens(mini.token_list);
-			
 		}
 		free(input);
 	}

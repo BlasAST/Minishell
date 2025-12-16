@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-char	*expand_variable(char *input, int *i, t_env *env)
+static char	*expand_variable(char *input, int *i, t_env *env)
 {
 	int		start;
 	char	*key;
@@ -9,7 +9,7 @@ char	*expand_variable(char *input, int *i, t_env *env)
 	start = ++(*i);
 	while (input[*i] && (ft_isalnum(input[*i] || input[*i] == '_')))
 		(*i)++;
-	key = ft_strndup(input[*i], *i - start);
+	key = ft_strndup(&input[*i], *i - start);
 	tmp = env;
 	while (tmp && ft_strcmp(tmp->key, key))
 		tmp = tmp->next;
@@ -22,16 +22,16 @@ char	*expand_variable(char *input, int *i, t_env *env)
 void	parse_word3(char *input, int *i, t_env *env, t_parse_word *pw)
 {
 	pw->start = *i;
-	while (input[*i] && !is_special(&input[*i]) && input[*i] != ' '	
+	while (input[*i] && !ispecial(&input[*i]) && input[*i] != ' '	
 			&& input[*i] != '\t' && input[*i] != '\'' && input[*i] != '"' && input[*i] != '$')
 		(*i)++;
 	pw->segment = ft_strndup(&input[pw->start], *i - pw->start);
 	pw->tmp = pw->buf;
 	pw->buf = malloc(ft_strlen(pw->tmp) + ft_strlen(pw->segment) + 1);
-	ft_strcpy(pw.buf, pw.tmp);
-	ft_strcat(pw.buf, pw.segment);
-	free(pw.tmp);
-	free(pw.segment);
+	ft_strcpy(pw->buf, pw->tmp);
+	ft_strcat(pw->buf, pw->segment);
+	free(pw->tmp);
+	free(pw->segment);
 }
 
 void	parse_word2(char *input, int *i, t_env *env, t_parse_word *pw)
@@ -62,7 +62,7 @@ void	parse_word1(char *input, int *i, t_env *env, t_parse_word *pw)
 		(*i)++;
 }
 
-char	parse_word(char *input, int *i, t_env *env)
+char	*parse_word(char *input, int *i, t_env *env)
 {
 	t_parse_word	pw;
 
