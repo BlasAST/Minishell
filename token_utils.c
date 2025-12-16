@@ -34,6 +34,10 @@ void	add_token(t_token **list, t_token *new)
 
 t_token_type	get_type(char *s)
 {
+	if (!ft_strncmp(s, "&&", 2))
+		return (AND);
+	if (!ft_strncmp(s, "||", 2))
+		return (OR);
 	if (!ft_strncmp(s, "<<", 2))
 		return (HEREDOC);
 	if (!ft_strncmp(s, ">>", 2))
@@ -49,7 +53,7 @@ t_token_type	get_type(char *s)
 
 int	ispecial(char *c)
 {
-	if (!ft_strncmp(c, ">>", 2) || !strncmp(c, "<<", 2))
+	if (!ft_strncmp(c, ">>", 2) || !ft_strncmp(c, "<<", 2) || !ft_strncmp(c, "&&", 2) || !ft_strncmp(c, "||", 2))
 		return (2);
 	if (*c == '|' || *c == '<' || *c == '>')
 		return (1);
