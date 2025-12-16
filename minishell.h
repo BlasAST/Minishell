@@ -125,6 +125,7 @@ void			free_env_list(t_env *env_list);
 char			*remove_quotes(char *str);
 void			expand_token(t_mini *mini, t_token *token);
 void			expander(t_mini *mini);
+void	run_herdoc(t_mini *mini, t_token *token);
 
 t_cmd			*parser_tokens(t_token *tokens);
 

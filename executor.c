@@ -2,7 +2,7 @@
 
 int execute_command(t_cmd *cmd, t_mini *mini)
 {
-    
+    return 1;
 }
 
 void    executor(t_cmd *cmd_list, t_mini *mini)
