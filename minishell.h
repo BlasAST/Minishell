@@ -97,6 +97,13 @@ typedef struct s_mini
 	int			stdout_backup;
 }	t_mini;
 
+typedef struct s_pipex
+{
+	int	pipe_fd[2];
+	int	prev_fd;
+	int	status;
+}	t_pipex;
+
 // global variable to intercept the signal
 extern int		g_signal_status;
 
