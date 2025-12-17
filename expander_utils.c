@@ -3,21 +3,22 @@
 char	*remove_quotes(char *str)
 {
 	char	*new_str;
-	int	tq;
+	char	quote;
 	int	i;
 	int	j;
 
 	new_str = malloc(sizeof(char) * (ft_strlen(str) + 1));
 	if (!new_str)
-		return ;
+		return (NULL);
 	i = 0;
-	tq = 1;
+	j = 0;
+	quote = 1;
 	while (str[i])
 	{
-		if (str[i] == '\'' && tq == 1 && tq != 2)
-			tq = 0;
-		else if (str[i] == '\"' && tq == 1 || tq != 0)
-			tq = 2;
+		if ((str[i] == '\'' || str[i] == '\"') && quote == 0)
+			quote = str[i];
+		else if (str[i] == quote)
+			quote = 0;
 		else
 		{
 			new_str[j] = str[i];
@@ -29,54 +30,76 @@ char	*remove_quotes(char *str)
 	return (new_str);
 }
 
-char	*expand_variable(char *input, int *i, t_env *env)
+char	*get_env_val(t_env *env, char *key)
+{
+	t_env	*env_temp;
+
+	env_temp = env;
+	while (env_temp)
+	{
+		if (strncmp(env_temp->key, key, ft_strlen(key) + 1) == 0)
+			return (ft_strdup(env_temp->value));
+		env_temp = env_temp->next;
+	}
+	return (ft_strdup(""));
+}
+
+char	*expand_variable(char *input, int *i, t_mini *mini)
 {
 	int		start;
 	char	*key;
-	t_env	*tmp;
+	char	*val;
 
-	if (ft_strncmp(input, '?', 1) == 0)
+	start = *i;
+	(*i)++;
+	if (input[*i] == '?')
 	{
-		if (g_signal_status != 0)
-			return (ft_itoa(g_signal_status));
-		return (ft_itoa(g_signal_status));
-	}
-	start = ++(*i);
-	while (input[*i] && (ft_isalnum(input[*i] || input[*i] == '_')))
 		(*i)++;
-	key = ft_strndup(input[*i], *i - start);
-	tmp = env;
-	while (tmp && ft_strcmp(tmp->key, key))
-		tmp = tmp->next;
+		return (ft_itoa(mini->exit_code));
+	}
+	while (input[*i] && (ft_isalnum(input[*i]) || input[*i] == '_'))
+		(*i)++;
+	key = ft_substr(input, start + 1, *i - (start + 1));
+	val = get_env_val(mini->env_list, key);
 	free(key);
-	if (tmp)
-		return (ft_strdup(tmp->value));
-	return (ft_strdup(""));
+	return (val);
 }
 
 void	expand_token(t_mini *mini, t_token *token)
 {
-	int	i;
-	int	single_quote;
-	int	double_quote;
-	char *str;
+	int		i;
+	int		in_sq;
+	char	*res;
+	char	*val;
+	char	*temp;
 
-	str = token->value;
 	i = 0;
-	single_quote = 0;
-	double_quote = 0;
-	while (str[i])
+	in_sq = 0;
+	res = ft_strdup("");
+	while (token->value[i])
 	{
-		if (str[i] == '\'' && !double_quote)
-			single_quote = !single_quote;
-		else if (str[i] == '\"' && !single_quote)
-			double_quote = !double_quote;
-		if (str[i] == '$' && !single_quote && (ft_isalpha(str[i+1]) || str[i + 1] == '?'))
+		if (token->value[i] == '\'')
+			in_sq = !in_sq;
+		if (token->value[i] == '$' && !in_sq && ft_isalnum(token->value[i + 1])
+			|| token->value[i + 1] == '_' || token->value [i + 1] == '?')
 		{
-			expand_variable(str[i], &i, mini->env_list);
+			val = expand_variable(token->value, &i, mini);
+			temp = ft_strjoin(res, val);
+			free(res);
+			free(val);
+			res = temp;
 		}
 		else
+		{
+			temp = ft_substr(token->value, i, 1);
+			val = ft_strjoin(res, temp);
+			free(res);
+			free(temp);
+			res = val;
 			i++;
+		}
 	}
+	free(token->value);
+	token->value  = res;
 }
 

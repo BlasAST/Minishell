@@ -16,45 +16,6 @@
 # include <termios.h>
 # include "libft/libft.h"
 
-typedef struct s_parse_token
-{
-	t_cmd	*cmd_list;
-	t_token	*tok;
-	t_cmd	*cmd;
-	t_cmd	*tmp;
-	int		arg_count;
-	int		i;
-}	t_parse_token;
-
-typedef struct s_redir
-{
-	t_token_type	redir_type;
-	char			*target;
-	struct s_redir	*next;
-}	t_redir;
-
-typedef struct s_cmd
-{
-	char			**args;
-	char			*cmd_path;
-	t_redir			*redir_list;
-	int				fd_in;
-	int				fd_out;
-	pid_t			pid;
-	t_token_type	cond_type;
-	struct s_cmd	*next;
-}	t_cmd;
-
-typedef struct s_parse_word
-{
-	char	*buf;
-	char	quote;
-	int		start;
-	char	*segment;
-	char	*tmp;
-	char	*exp;
-}	t_parse_word;
-
 typedef enum e_token_type
 {
 	WORD,
@@ -76,12 +37,54 @@ typedef struct s_token//list
 	struct s_token	*prev;
 }	t_token;
 
+
 typedef struct s_env
 {
 	char			*key;
 	char			*value;
 	struct s_env	*next;
 }	t_env;
+
+typedef struct s_redir
+{
+	t_token_type	redir_type;
+	char			*target;
+	struct s_redir	*next;
+}	t_redir;
+
+typedef struct s_cmd
+{
+	char			**args;
+	char			*cmd_path;
+	t_redir			*redir_list;
+	int				fd_in;
+	int				fd_out;
+	pid_t			pid;
+	t_token_type	cond_type;
+	struct s_cmd	*next;
+}	t_cmd;
+
+typedef struct s_parse_token
+{
+	t_cmd	*cmd_list;
+	t_token	*tok;
+	t_cmd	*cmd;
+	t_cmd	*tmp;
+	int		arg_count;
+	int		i;
+}	t_parse_token;
+
+
+
+typedef struct s_parse_word
+{
+	char	*buf;
+	char	quote;
+	int		start;
+	char	*segment;
+	char	*tmp;
+	char	*exp;
+}	t_parse_word;
 
 typedef struct s_mini
 {
@@ -129,6 +132,7 @@ void			free_env_list(t_env *env_list);
 char			*remove_quotes(char *str);
 void			expand_token(t_mini *mini, t_token *token);
 void			expander(t_mini *mini);
+void	run_herdoc(t_mini *mini, t_token *token);
 
 t_cmd			*parser_tokens(t_token *tokens);
 

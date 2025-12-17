@@ -12,6 +12,8 @@ SRCS = main.c \
 	parse_tokens.c \
 	executor.c \
 	executor_utils.c \
+	expander_utils.c \
+	expander.c
 DIR_LIBFT = libft
 LIBFT = $(DIR_LIBFT)/libft.a
 DIR_OBJS = objs
