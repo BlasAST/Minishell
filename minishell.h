@@ -37,7 +37,6 @@ typedef struct s_token//list
 	struct s_token	*prev;
 }	t_token;
 
-
 typedef struct s_env
 {
 	char			*key;
@@ -60,6 +59,7 @@ typedef struct s_cmd
 	int				fd_in;
 	int				fd_out;
 	pid_t			pid;
+	t_token_type	redir_type;
 	t_token_type	cond_type;
 	struct s_cmd	*next;
 }	t_cmd;
@@ -73,8 +73,6 @@ typedef struct s_parse_token
 	int		arg_count;
 	int		i;
 }	t_parse_token;
-
-
 
 typedef struct s_parse_word
 {
@@ -104,6 +102,15 @@ typedef struct s_pipex
 	int	status;
 }	t_pipex;
 
+typedef struct s_get_path
+{
+	char	**paths;
+	char	*full;
+	char	*path;
+	int		i;
+	int		j;
+}	t_get_path;
+
 // global variable to intercept the signal
 extern int		g_signal_status;
 
@@ -132,10 +139,12 @@ void			free_env_list(t_env *env_list);
 char			*remove_quotes(char *str);
 void			expand_token(t_mini *mini, t_token *token);
 void			expander(t_mini *mini);
-void	run_herdoc(t_mini *mini, t_token *token);
+void			run_herdoc(t_mini *mini, t_token *token);
 
 t_cmd			*parser_tokens(t_token *tokens);
 
 void			executor(t_cmd *cmd_list, t_mini *mini);
+
+char			*join_free(char *s1, char *s2, char *s3);
 
 #endif
