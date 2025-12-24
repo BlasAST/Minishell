@@ -1,108 +1,150 @@
 #include "minishell.h"
 
-void    heredoc(t_cmd *cmd)
+int heredoc(t_cmd *cmd)
 {
-    int     heredoc[2];
-    char    *limiter;
-    char    *line;
+	int     heredoc[2];
+	char    *limiter;
+	char    *line;
 
-    if (pipe(heredoc) < 0)
-        perror("pipe");
-    while (1)
-    {
-        line = readline("heredoc> ");
-        if (!line || ft_strcmp(line, limiter) == 0)
-        {
-            break ;
-            free(line); 
-        }
-            break ;
-        write(heredoc[1], line , ft_strlen(line));
-        free(line);
-    }
-
+	if (pipe(heredoc) < 0)
+		perror("pipe");
+	while (1)
+	{
+		line = readline("heredoc> ");
+		if (!line || ft_strcmp(line, limiter) == 0)
+		{
+			break ;
+			free(line); 
+		}
+			break ;
+		write(heredoc[1], line , ft_strlen(line));
+		free(line);
+	}
+	close(heredoc[1]);
+	return (heredoc[0]);
 }
 
-void    mng_redirections(t_cmd * cmd)
+void	mng_redirections(t_cmd * cmd)
 {
-    t_redir    *redir;
+	t_redir    *redir;
 
-    redir = cmd->redir_list;
-    while (redir)
-    {
-        if (redir->redir_type == REDIR_IN)
-            cmd->fd_in = open(redir->target, O_RDONLY);
-        else if (redir->redir_type == REDIR_OUT)
-            cmd->fd_out = open(redir->target, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-        else if (redir->redir_type == REDIR_APPEND)
-            cmd->fd_out = open(redir->target, O_WRONLY | O_CREAT | O_APPEND, 0644);
-        else if (redir->redir_type == HEREDOC)
-            cmd->fd_in = heredoc(redir->target);
-        if (cmd->fd_in == -1 || cmd->fd_out == -1)
-        {
-            perror("redirection error");
-            exit(EXIT_FAILURE);
-        }
-        redir = redir->next;
-    }
+	redir = cmd->redir_list;
+	while (redir)
+	{
+		if (redir->redir_type == REDIR_IN)
+			cmd->fd_in = open(redir->target, O_RDONLY);
+		else if (redir->redir_type == REDIR_OUT)
+			cmd->fd_out = open(redir->target, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		else if (redir->redir_type == REDIR_APPEND)
+			cmd->fd_out = open(redir->target, O_WRONLY | O_CREAT | O_APPEND, 0644);
+		else if (redir->redir_type == HEREDOC)
+			cmd->fd_in = heredoc(redir->target);
+		if (cmd->fd_in == -1 || cmd->fd_out == -1)
+		{
+			perror("Redirection error");
+			exit(EXIT_FAILURE);
+		}
+		redir = redir->next;
+	}
 }
 
-void    child_process(t_cmd *cmd, t_mini *mini)
+char	*get_path(char *cmd, char **envp)
 {
-    mng_redirections(cmd);
-    if (cmd->fd_in != STDIN_FILENO)
-    {
-        dup2(cmd->fd_in, STDIN_FILENO);
-        close(cmd->fd_in);
-    }
-    if (cmd->fd_out != STDOUT_FILENO)
-    {
-        dup2(cmd->fd_out, STDOUT_FILENO);
-        close(cmd->fd_out);
-    }
+	t_get_path	gp;
+
+	if (access(cmd, X_OK) == 0)
+		return (cmd);
+	gp.i = 0;
+	while (envp && envp[gp.i])
+	{
+		if (ft_strncmp(envp[gp.i], "PATH=", 5) == 0)
+		{
+			gp.path = envp[gp.i] + 5;
+			gp.paths = ft_split(gp.path, ':');
+			while (gp.paths && gp.paths[gp.j])
+			{
+				gp.full = join_free(gp.paths[gp.j], "/", cmd);
+				if (access(gp.full, X_OK) == 0)
+					return (gp.full);
+				ft_free_split(gp.full);
+				gp.j++;
+			}
+		}
+		gp.i++;
+	}
+	return (NULL);
 }
 
-int execute_command(t_cmd *cmd, t_mini *mini)
+void	child_process(t_cmd *cmd, t_mini *mini)
 {
-    
-        child_process(cmd, mini);
+	mng_redirections(cmd);
+	if (cmd->fd_in != STDIN_FILENO)
+	{
+		dup2(cmd->fd_in, STDIN_FILENO);
+		close(cmd->fd_in);
+	}
+	if (cmd->fd_out != STDOUT_FILENO)
+	{
+		dup2(cmd->fd_out, STDOUT_FILENO);
+		close(cmd->fd_out);
+	}
+	if (!cmd->cmd_path)
+		cmd->cmd_path = get_path(cmd->args[0], mini->env_arr);
+	if (!cmd->cmd_path)
+	{
+		stderr("minishell: command not found: ", cmd->args[0]);
+		exit(127);
+	}
+	execve(cmd->cmd_path, cmd->args, mini->env_arr);
+	perror("execve");
+	exit(126);
 }
 
-void    executor(t_cmd *cmd_list, t_mini *mini)
+void	executor(t_cmd *cmd_list, t_mini *mini)
 {
-    t_pipex pipex;
+	t_pipex pipex;
 
-    pipex.prev_fd = -1;
-    while (cmd_list)
-    {
-        if (cmd_list->next)
-            pipe(pipex.pipe_fd);
-        cmd_list->pid = fork();
-        if (cmd_list->pid == 0)
-        {
-            if (pipex.prev_fd != -1)
-            {
-                dup2(pipex.prev_fd, STDIN_FILENO);
-                close(pipex.prev_fd);
-            }
-            if (cmd_list->next)
-            {
-                close(pipex.pipe_fd[0]);
-                dup(pipex.pipe_fd[1], STDOUT_FILENO);
-                close(pipex.pipe_fd[1]);
-            }
-            child_process(cmd_list, mini);
-            exit(execute_command(cmd_list, mini));
-        }
-        if (pipex.prev_fd != -1)
-            close(pipex.prev_fd);
-        if (cmd_list->next)
-        {
-            close(pipex.pipe_fd[1]);
-            pipex.prev_fd = pipex.pipe_fd[0];
-        }
-        cmd_list = cmd_list->next;
-    }
-    while (wait(&status) > 0)
-        mini->exit_code = WEXITSTATUS(status);
+	pipex.prev_fd = -1;
+	while (cmd_list)
+	{
+		if (cmd_list->next)
+			pipe(pipex.pipe_fd);
+		cmd_list->pid = fork();
+		if (cmd_list->pid == 0)
+		{
+			if (pipex.prev_fd != -1)
+			{
+				dup2(pipex.prev_fd, STDIN_FILENO);
+				close(pipex.prev_fd);
+			}
+			if (cmd_list->next)
+			{
+				close(pipex.pipe_fd[0]);
+				dup(pipex.pipe_fd[1], STDOUT_FILENO);
+				close(pipex.pipe_fd[1]);
+			}
+			child_process(cmd_list, mini);
+		}
+		if (pipex.prev_fd != -1)
+			close(pipex.prev_fd);
+		if (cmd_list->next)
+		{
+			close(pipex.pipe_fd[1]);
+			pipex.prev_fd = pipex.pipe_fd[0];
+		}
+		waitpid(cmd_list->pid, &status, 0);
+		mini->exit_code = WEXITSTATUS(status);
+		if (cmd_list->cond_type == AND && mini->exit_code != 0)
+		{
+			while (cmd_list && cmd_list->cond_type == AND)
+				cmd_list = cmd_list->next;
+		}
+		else if (cmd_list->cond_type == OR && mini->exit_code == 0)
+		{
+			while (cmd_list && cmd_list->cond_type == OR)
+				cmd_list = cmd_list->next;
+		}
+	}
+	while (wait(NULL) > 0)
+		;
 }
