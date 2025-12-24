@@ -120,6 +120,9 @@ void			init_mini(t_mini *mini, char **envp);
 
 // Funciones entorno
 t_env			*new_env_node(char *str);
+int	*get_value_env(t_env *env, char *str, char **send);
+int	*get_value_env(t_env *env, char *str, char **send);
+int	find_path(t_env *env, char *str);
 
 
 //Funciones de señal
@@ -137,5 +140,8 @@ void	run_herdoc(t_mini *mini, t_token *token);
 t_cmd			*parser_tokens(t_token *tokens);
 
 void			executor(t_cmd *cmd_list, t_mini *mini);
+
+// Manejo de errores
+void	rerror(char *str, int error_status);
 
 #endif
