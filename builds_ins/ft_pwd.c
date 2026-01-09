@@ -1,15 +1,18 @@
 #include "../minishell.h"
 
-void	ft_pwd()
+int	ft_pwd(void)
 {
-	char	*buffer;
+	char	cwd[4096];
 
-	buffer = malloc(sizeof(char) * (256));
-	if (!buffer)
-		return (NULL);
-	if (getcwd(buffer,256) != NULL)
-		printf("%s", buffer);
+	if (getcwd(cwd, 4096) != NULL)
+	{
+		ft_putstr_fd(cwd, 1);
+		ft_putstr_fd("\n", 1);
+		return (0);
+	}
 	else
-		ft_putstr_fd("Error en getcwd", 2);
-	free(buffer);
+	{
+		perror("minishell: pwd");
+		return (1);
+	}
 }

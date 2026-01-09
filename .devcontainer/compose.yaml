@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   gcc:
     build: .  # Usa el Dockerfile en el directorio actual para construir la imagen

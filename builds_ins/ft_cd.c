@@ -23,48 +23,56 @@ int	update_env(t_mini *mini, char *key, char *value)
 	return (1);
 }
 
-void	get_route_cd(char	**args, t_mini *mini, char **value_path)
+char	*get_route_cd(char **args, t_mini *mini)
 {
-	char	*old;
+	char	*path;
 
-	if (!args[1] && get_value_env(mini->env_list, "HOME", value_path) == 1)
-		return ;
-	else
-		rerror("HOME not set\n", 1);
-	if (ft_strcmp(args[1], "-") == 0)
+	path = NULL;
+	if (!args[1])
 	{
-		get_value_env(mini->env_list, "OLDPWD", &old);
-		if (ft_strlen(old) == 0)
+		if (get_value_env(mini->env_list, "HOME", &path) == 0 || !path)
 		{
-			printf("minishell: cd: OLDPWD not set\n");
-			free(old);
+			ft_putstr_fd("minishell: cd: HOME not set\n", 2);
 			return (NULL);
 		}
-		printf("%s", old);
-		return (old);
 	}
-	return (ft_strdup(args[1]));
+	else if (ft_strcmp(args[1], "-") == 0)
+	{
+		if (get_value_env(mini->env_list, "OLDPWD", &path) == 0 || !path)
+		{
+			ft_putstr_fd("minishell: cd: OLDPWD not set\n", 2);
+			return (NULL);
+		}
+		printf("%s\n", path);
+	}
+	else
+		path = ft_strdup(args[1]);
+	return (path);
 }
 
-void	ft_cd(char	**args, t_mini *mini)
+int	ft_cd(char **args, t_mini *mini)
 {
 	char	*value_path;
 	char	cwd[4096];
 
 	if (args[1] && args[2])
-		rerror("Too many args", 1);
-	get_route_cd(args, mini, &value_path);
+	{
+		ft_putstr_fd("minishell: cd: too many arguments\n", 2);
+		return (1);
+	}
+	value_path = get_route_cd(args, mini);
 	if (!value_path)
 		return (1);
 	if (getcwd(cwd, 4096))
 		update_env(mini, "OLDPWD", cwd);
 	if (chdir(value_path) == -1)
 	{
-		free(value_path);
 		perror("minishell: cd");
+		free(value_path);
 		return (1);
 	}
 	if (getcwd(cwd, 4096))
 		update_env(mini, "PWD", cwd);
 	free(value_path);
+	return (0);
 }
