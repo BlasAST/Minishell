@@ -5,7 +5,8 @@ int	count_args(t_token *tok)
 	int	count;
 
 	count = 0;
-	while (tok && tok->type != PIPE && tok->type != END_OF_INPUT)
+	while (tok && tok->type != PIPE && tok->type != END_OF_INPUT
+			&& tok->type != AND && tok->type != OR)
 	{
 		if (tok->type == WORD)
 			count++;

@@ -8,16 +8,17 @@ int heredoc(t_cmd *cmd)
 
 	if (pipe(heredoc) < 0)
 		perror("pipe");
+	limiter = cmd->redir_list->target;
 	while (1)
 	{
 		line = readline("heredoc> ");
 		if (!line || ft_strcmp(line, limiter) == 0)
 		{
+			free(line);
 			break ;
-			free(line); 
 		}
-			break ;
 		write(heredoc[1], line , ft_strlen(line));
+		write(heredoc[1], "\n", 1);
 		free(line);
 	}
 	close(heredoc[1]);
@@ -39,7 +40,6 @@ void	mng_redirections(t_cmd * cmd)
 			cmd->fd_out = open(redir->target, O_WRONLY | O_CREAT | O_APPEND, 0644);
 		else if (redir->redir_type == HEREDOC)
 			cmd->fd_in = heredoc(cmd);
-			// cmd->fd_in = heredoc(redir->target);
 		if (cmd->fd_in == -1 || cmd->fd_out == -1)
 		{
 			perror("Redirection error");
@@ -55,7 +55,6 @@ char	*get_path(char *cmd, char **envp)
 
 	if (access(cmd, X_OK) == 0)
 		return (ft_strdup(cmd));
-
 	gp.i = 0;
 	while (envp && envp[gp.i])
 	{
@@ -105,7 +104,7 @@ void	child_process(t_cmd *cmd, t_mini *mini)
 		exit(127);
 	}
 	execve(cmd->cmd_path, cmd->args, mini->env_arr);
-	perror("execve");
+	perror(cmd->args[0]);
 	exit(126);
 }
 
@@ -122,7 +121,6 @@ void	executor(t_cmd *cmd_list, t_mini *mini)
 			if (pipe(pipex.pipe_fd) == -1)
 				perror("pipe");
 		}
-
 		cmd_list->pid = fork();
 		if (cmd_list->pid == -1)
 			perror("fork");
