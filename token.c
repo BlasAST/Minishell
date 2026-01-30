@@ -60,7 +60,7 @@ char	*parse_word(char *input, int *i)
 	return (pw.buf);
 }
 
-t_token	*tokenize_input(char *input)
+t_token	*tokenize_input(char *input, t_env *env)
 {
 	t_token	*list;
 	int		i;

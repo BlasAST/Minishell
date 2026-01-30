@@ -13,34 +13,36 @@ int	find_path(t_env *env, char *str)
 	return (0);
 }
 
+// int	*get_value_env(t_env *env, char *str, char **send)
+// {
+// 	char	*temp;
+
+// 	while (env)
+// 	{
+// 		if (ft_strcmp(env->key, str) == 0)
+// 		{
+// 			temp = ft_strdup(env->value);
+// 			*send = temp;
+// 			return (1);
+// 		}
+// 		env = env->next;
+// 	}
+// 	return (0);
+// }
+
 int	*get_value_env(t_env *env, char *str, char **send)
 {
 	char	*temp;
+	int	*i;
 
+	*i = 1;
 	while (env)
 	{
 		if (ft_strcmp(env->key, str) == 0)
 		{
 			temp = ft_strdup(env->value);
 			*send = temp;
-			return (1);
-		}
-		env = env->next;
-	}
-	return (0);
-}
-
-int	*get_value_env(t_env *env, char *str, char **send)
-{
-	char	*temp;
-
-	while (env)
-	{
-		if (ft_strcmp(env->key, str) == 0)
-		{
-			temp = ft_strdup(env->value);
-			*send = temp;
-			return (1);
+			return (i);
 		}
 		env = env->next;
 	}

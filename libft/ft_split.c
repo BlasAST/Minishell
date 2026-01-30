@@ -28,7 +28,7 @@ size_t	ft_count_words(const char *s, char c)
 	return (count);
 }
 
-void	ft_free_split(char **r, size_t n)
+void	ft_free_split_2(char **r, size_t n)
 {
 	while (n--)
 		free(r[n]);
@@ -52,7 +52,7 @@ char	**ft_split2(char const *s, char c, char **r, size_t i)
 			r[p] = malloc(((i - j) + 1) * sizeof(char));
 			if (!r[p])
 			{
-				ft_free_split(r, p);
+				ft_free_split_2(r, p);
 				return (NULL);
 			}
 			ft_strlcpy(r[p++], s + j, ((i - j) + 1));

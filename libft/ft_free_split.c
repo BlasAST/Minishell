@@ -1,4 +1,6 @@
-void	free_split(char **split)
+#include "libft.h"
+
+void	ft_free_split(char **split)
 {
 	int	i;
 
