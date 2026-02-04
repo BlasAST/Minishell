@@ -35,6 +35,9 @@ int	*get_value_env(t_env *env, char *str, char **send)
 	char	*temp;
 	int	*i;
 
+	i = malloc(sizeof(int));
+	if (!i)
+		return (NULL);
 	*i = 1;
 	while (env)
 	{

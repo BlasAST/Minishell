@@ -153,4 +153,16 @@ char			*join_free(char *s1, char *s2, char *s3);
 // Manejo de errores
 void	rerror(char *str, int error_status);
 
+//temp
+void	free_cmd_list(t_cmd *cmd);
+
+
+//builds-in
+int	ft_cd(char **args, t_mini *mini);
+void	ft_echo(char *val);
+int	ft_env(t_mini *mini);
+int	ft_exit(char **args, t_mini *mini);
+int	ft_export(char **args, t_mini *mini);
+int	ft_unset(char **args, t_mini *mini);
+int	ft_pwd(void);
 #endif

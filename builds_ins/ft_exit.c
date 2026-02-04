@@ -45,6 +45,7 @@ int	ft_exit(char **args, t_mini *mini)
 	}
 	if (!args[2])
 		ft_putstr_fd("exit\n", 1);
-	free_mini(mini);
+	free_env_list(mini->env_list);
+	// free_mini(mini);
 	exit(exit_st % 256);
 }

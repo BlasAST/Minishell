@@ -1,6 +1,7 @@
 #include "../minishell.h"
 
-void	ft_echo(char *value)
+void	ft_echo(char *val)
 {
-	write(1, value, ft_strlen(value));
+	printf("Hola no");
+	write(1, val, ft_strlen(val));
 }

@@ -64,6 +64,7 @@ void	init_mini(t_mini *mini, char **envp)
 {
 	ft_bzero(mini, sizeof(t_mini));
 	init_env(mini, envp);
+	mini->env_arr = envp;
 	init_fds(mini);
 	init_termios();
 	init_signals();

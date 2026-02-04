@@ -12,6 +12,6 @@ char	*join_free(char *s1, char *s2, char *s3)
 	ft_strcpy(joined, s1);
 	ft_strcat(joined, s2);
 	ft_strcat(joined, s3);
-	free(s1);
+	// free(s1);
 	return (joined);
 }
