@@ -53,6 +53,7 @@ char	*get_path(char *cmd, char **envp)
 {
 	t_get_path	gp;
 
+	gp = (t_get_path){0};
 	if (access(cmd, X_OK) == 0)
 		return (ft_strdup(cmd));
 	gp.i = 0;
@@ -101,14 +102,10 @@ void	child_process(t_cmd *cmd, t_mini *mini)
 		write(2, "minishell: command not found: ", 30);
 		write(2, cmd->args[0], ft_strlen(cmd->args[0]));
 		write(2, "\n", 1);
-		free_env_list(mini->env_list);
-		free_cmd_list(cmd);
 		exit(127);
 	}
 	execve(cmd->cmd_path, cmd->args, mini->env_arr);
 	perror(cmd->args[0]);
-	free_env_list(mini->env_list);
-	free_cmd_list(cmd);
 	exit(126);
 }
 
@@ -226,7 +223,6 @@ void	executor(t_cmd *cmd_list, t_mini *mini)
 				dup2(pipex.pipe_fd[1], STDOUT_FILENO);
 				close(pipex.pipe_fd[1]);
 			}
-
 			child_process(cmd_list, mini);
 		}
 		if (pipex.prev_fd != -1)
