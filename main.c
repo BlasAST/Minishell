@@ -24,6 +24,7 @@ int	main(int argc, char **argv, char **envp)
 			expander(&mini);
 			mini.cmd_list = parser_tokens(mini.token_list);
 			executor(mini.cmd_list, &mini);
+			free_all(&mini);
 		}
 		free(input);
 	}
