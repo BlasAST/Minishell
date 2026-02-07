@@ -6,7 +6,7 @@ int	count_args(t_token *tok)
 
 	count = 0;
 	while (tok && tok->type != PIPE && tok->type != END_OF_INPUT
-			&& tok->type != AND && tok->type != OR)
+		&& tok->type != AND && tok->type != OR)
 	{
 		if (tok->type == WORD)
 			count++;
@@ -29,6 +29,7 @@ static t_cmd	*new_cmd(void)
 	cmd->fd_out = 1;
 	cmd->pid = -1;
 	cmd->cond_type = END_OF_INPUT;
+	cmd->redir_type = END_OF_INPUT;
 	cmd->next = NULL;
 	return (cmd);
 }
@@ -65,7 +66,7 @@ void	parser_tokens2(t_parse_token *pt)
 	pt->i = 0;
 	printf("🧱 [PARSER] New command:\n");
 	while (pt->tok && pt->tok->type != PIPE && pt->tok->type != END_OF_INPUT
-			&& pt->tok->type != AND && pt->tok->type != OR)
+		&& pt->tok->type != AND && pt->tok->type != OR)
 	{
 		if (pt->tok->type == WORD)
 		{
@@ -73,7 +74,7 @@ void	parser_tokens2(t_parse_token *pt)
 			printf("   ➜ arg[%d] = \"%s\"\n", pt->i - 1, pt->tok->value);
 		}
 		else if (pt->tok->type == REDIR_IN || pt->tok->type == REDIR_OUT
-				|| pt->tok->type == REDIR_APPEND || pt->tok->type == HEREDOC)
+			|| pt->tok->type == REDIR_APPEND || pt->tok->type == HEREDOC)
 		{
 			pt->cmd->redir_type = pt->tok->type;
 			pt->tok = pt->tok->next;
@@ -119,8 +120,6 @@ t_cmd	*parser_tokens(t_token *tokens)
 				pt.tmp = pt.tmp->next;
 			pt.tmp->next = pt.cmd;
 		}
-		if (pt.tok && pt.tok->type == PIPE)
-			pt.tok = pt.tok->next;
 	}
 	printf("🏁 [PARSER] All tokens parsed.\n\n");
 	return (pt.cmd_list);

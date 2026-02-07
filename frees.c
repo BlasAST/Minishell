@@ -46,7 +46,7 @@ void	free_redir_list(t_redir *list)
 void	free_cmd_list(t_cmd *list)
 {
 	t_cmd	*tmp;
-	int 	i;
+	int		i;
 
 	while (list)
 	{

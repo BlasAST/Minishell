@@ -56,7 +56,8 @@ t_token_type	get_type(char *s)
 
 int	ispecial(char *c)
 {
-	if (!ft_strncmp(c, ">>", 2) || !ft_strncmp(c, "<<", 2) || !ft_strncmp(c, "&&", 2) || !ft_strncmp(c, "||", 2))
+	if (!ft_strncmp(c, ">>", 2) || !ft_strncmp(c, "<<", 2)
+		|| !ft_strncmp(c, "&&", 2) || !ft_strncmp(c, "||", 2))
 		return (2);
 	if (*c == '|' || *c == '<' || *c == '>')
 		return (1);

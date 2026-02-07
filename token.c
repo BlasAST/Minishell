@@ -3,8 +3,9 @@
 void	parse_word3(char *input, int *i, t_parse_word *pw)
 {
 	pw->start = *i;
-	while (input[*i] && !ispecial(&input[*i]) && input[*i] != ' '	
-			&& input[*i] != '\t' && input[*i] != '\'' && input[*i] != '"' && input[*i] != '$')
+	while (input[*i] && !ispecial(&input[*i]) && input[*i] != ' '
+		&& input[*i] != '\t' && input[*i] != '\''
+		&& input[*i] != '"' && input[*i] != '$')
 		(*i)++;
 	pw->segment = ft_strndup(&input[pw->start], *i - pw->start);
 	pw->tmp = pw->buf;
@@ -50,7 +51,8 @@ char	*parse_word(char *input, int *i)
 
 	pw.buf = ft_calloc(1, 1);
 	pw.start = *i;
-	while (input[*i] && input[*i] != ' ' && input[*i] != '\t' && !ispecial(&input[*i]))
+	while (input[*i] && input[*i] != ' '
+		&& input[*i] != '\t' && !ispecial(&input[*i]))
 	{
 		if (input[*i] == '\'' || input[*i] == '"')
 			parse_word1(input, i, &pw);
@@ -77,7 +79,8 @@ t_token	*tokenize_input(char *input, t_env *env)
 		if (ispecial(&input[i]))
 		{
 			printf("🧩 [LEXER] Operator token: \"%s\"\n", ft_strndup(&input[i], ispecial(&input[i])));
-			add_token(&list, new_token(get_type(&input[i]), ft_strndup(&input[i], ispecial(&input[i]))));
+			add_token(&list, new_token(get_type(&input[i]),
+					ft_strndup(&input[i], ispecial(&input[i]))));
 			i += ispecial(&input[i]);
 		}
 		else

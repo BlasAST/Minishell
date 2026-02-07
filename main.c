@@ -6,6 +6,7 @@ int	main(int argc, char **argv, char **envp)
 {
 	t_mini	mini;
 	char	*input;
+
 	(void)argc;
 	(void)argv;
 	init_mini(&mini, envp);

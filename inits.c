@@ -5,6 +5,7 @@
 void	init_signals(void)
 {
 	struct sigaction	sa;
+
 	sa.sa_handler = &handle_sigint;
 	sa.sa_flags = SA_RESTART;
 	sigemptyset(&sa.sa_mask);
@@ -14,7 +15,7 @@ void	init_signals(void)
 
 void	init_env(t_mini *mini, char **envp)
 {
-	int	i;
+	int		i;
 	t_env	*new_node;
 	t_env	*current;
 

@@ -12,12 +12,13 @@ void	expander(t_mini *mini)
 		{
 			if (ft_strchr(current->value, '$'))
 			{
-				if (!current->prev ||  current->prev->type != HEREDOC)
+				if (!current->prev || current->prev->type != HEREDOC)
 					expand_token(mini, current);
 			}
-			if (ft_strchr(current->value, '\'') || ft_strchr(current->value, '\"'))
+			if (ft_strchr(current->value, '\'')
+				|| ft_strchr(current->value, '\"'))
 			{
-				temp_str =  remove_quotes(current->value);
+				temp_str = remove_quotes(current->value);
 				free(current->value);
 				current->value = temp_str;
 			}

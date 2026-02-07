@@ -33,7 +33,7 @@ int	find_path(t_env *env, char *str)
 int	*get_value_env(t_env *env, char *str, char **send)
 {
 	char	*temp;
-	int	*i;
+	int		*i;
 
 	i = malloc(sizeof(int));
 	if (!i)
@@ -57,7 +57,7 @@ t_env	*new_env_node(char *str)
 	t_env	*node;
 	int		i;
 
-	node =(t_env *) malloc (sizeof(t_env));
+	node = (t_env *)malloc(sizeof(t_env));
 	if (!node)
 		return (NULL);
 	i = 0;
