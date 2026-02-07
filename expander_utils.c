@@ -4,8 +4,8 @@ char	*remove_quotes(char *str)
 {
 	char	*new_str;
 	char	quote;
-	int	i;
-	int	j;
+	int		i;
+	int		j;
 
 	new_str = malloc(sizeof(char) * (ft_strlen(str) + 1));
 	if (!new_str)

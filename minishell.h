@@ -20,12 +20,12 @@ typedef enum e_token_type
 {
 	WORD,
 	PIPE,
-	REDIR_IN,      // '<'
-	REDIR_OUT,     // '>'
-	REDIR_APPEND,  // '>>'
-	HEREDOC,       // '<<'
-	AND,		   // '&&'
-	OR,			   // '||'
+	REDIR_IN,
+	REDIR_OUT,
+	REDIR_APPEND,
+	HEREDOC,
+	AND,
+	OR,
 	END_OF_INPUT
 }	t_token_type;
 
@@ -111,6 +111,14 @@ typedef struct s_get_path
 	int		j;
 }	t_get_path;
 
+typedef int	(*t_builtin_func)(t_cmd *cmd, t_mini *mini);
+
+typedef struct s_builtin
+{
+	char			*name;
+	t_builtin_func	func;
+}	t_builtin;
+
 // global variable to intercept the signal
 extern int		g_signal_status;
 
@@ -121,16 +129,14 @@ t_token			*new_token(t_token_type type, char *value);
 t_token_type	get_type(char *s);
 int				ispecial(char *c);
 
-
 // Funciones de inicialización
 void			init_mini(t_mini *mini, char **envp);
 
 // Funciones entorno
 t_env			*new_env_node(char *str);
-int	*get_value_env(t_env *env, char *str, char **send);
-int	*get_value_env(t_env *env, char *str, char **send);
-int	find_path(t_env *env, char *str);
-
+int				*get_value_env(t_env *env, char *str, char **send);
+int				*get_value_env(t_env *env, char *str, char **send);
+int				find_path(t_env *env, char *str);
 
 //Funciones de señal
 void			handle_sigint(int sig);
@@ -148,21 +154,26 @@ t_cmd			*parser_tokens(t_token *tokens);
 
 void			executor(t_cmd *cmd_list, t_mini *mini);
 
+void			mng_redirections(t_cmd *cmd);
+int				heredoc(t_cmd *cmd);
 char			*join_free(char *s1, char *s2, char *s3);
 
+int				is_env_builtin(char *cmd);
+int				is_out_builtin(char *cmd);
+int				run_builtin(t_cmd *cmd, t_mini *mini);
+
 // Manejo de errores
-void	rerror(char *str, int error_status);
+void			rerror(char *str, int error_status);
 
 //temp
-void	free_cmd_list(t_cmd *cmd);
-
+void			free_cmd_list(t_cmd *cmd);
 
 //builds-in
-int	ft_cd(char **args, t_mini *mini);
-void	ft_echo(char *val);
-int	ft_env(t_mini *mini);
-int	ft_exit(char **args, t_mini *mini);
-int	ft_export(char **args, t_mini *mini);
-int	ft_unset(char **args, t_mini *mini);
-int	ft_pwd(void);
+int				ft_cd(t_cmd *cmd, t_mini *mini);
+void			ft_echo(t_cmd *cmd);
+int				ft_env(t_mini *mini);
+int				ft_exit(t_cmd *cmd, t_mini *mini);
+int				ft_export(t_cmd *cmd, t_mini *mini);
+int				ft_unset(t_cmd *cmd, t_mini *mini);
+int				ft_pwd(t_cmd *cmd);
 #endif
