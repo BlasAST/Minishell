@@ -20,8 +20,7 @@ static void	sort_and_print_env(t_env *env)
 {
 	t_env	*i;
 	t_env	*j;
-	char	*tmp_key;
-	char	*tmp_val;
+	char	*tmp;
 
 	i = env;
 	while (i)
@@ -31,12 +30,12 @@ static void	sort_and_print_env(t_env *env)
 		{
 			if (ft_strcmp(i->key, j->key) > 0)
 			{
-				tmp_key = i->key;
-				tmp_val = i->value;
+				tmp = i->key;
 				i->key = j->key;
+				j->key = tmp;
+				tmp = i->value;
 				i->value = j->value;
-				j->key = tmp_key;
-				j->value = tmp_val;
+				j->value = tmp;
 			}
 			j = j->next;
 		}
@@ -71,46 +70,44 @@ static void	add_to_env(t_mini *mini, char *arg)
 		key = ft_strdup(arg);
 		value = NULL;
 	}
-	if (update_env(mini, key, value) == 1)
-	{
-		new_node = malloc(sizeof(t_env));
-		if (!new_node)
-			return ;
-		new_node->key = key;
-		new_node->value = value;
-		new_node->next = mini->env_list;
-		mini->env_list = new_node;
-	}
-	else
+	if (update_env(mini, key, value) == 0) // ->  1
 	{
 		free(key);
 		free(value);
+		return ;
 	}
+	new_node = malloc(sizeof(t_env));
+	if (!new_node)
+		return ;
+	new_node->key = key;
+	new_node->value = value;
+	new_node->next = mini->env_list;
+	mini->env_list = new_node;
 }
 
-int	ft_export(char **args, t_mini *mini)
+int	ft_export(t_cmd *cmd, t_mini *mini)
 {
 	int	i;
 	int	exit_st;
 
 	exit_st = 0;
-	if (!args[1])
+	if (!cmd->args[1])
 	{
 		sort_and_print_env(mini->env_list);
 		return (0);
 	}
 	i = 1;
-	while (args[i])
+	while (cmd->args[i])
 	{
-		if (!is_valid_id(args[i]))
+		if (!is_valid_id(cmd->args[i]))
 		{
 			ft_putstr_fd("minishell: export: `", 2);
-			ft_putstr_fd(args[i], 2);
+			ft_putstr_fd(cmd->args[i], 2);
 			ft_putstr_fd("': not a valid identifier\n", 2);
 			exit_st = 1;
 		}
 		else
-			add_to_env(mini, args[i]);
+			add_to_env(mini, cmd->args[i]);
 		i++;
 	}
 	return (exit_st);

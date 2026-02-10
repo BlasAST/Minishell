@@ -15,7 +15,8 @@ SRCS = main.c \
     executor.c \
     executor_utils.c \
     expander_utils.c \
-    expander.c 
+    expander.c \
+    build_ins.c
 
 SRCS_BUILDINS = builds_ins/ft_echo.c \
                 builds_ins/ft_cd.c \

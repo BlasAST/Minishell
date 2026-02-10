@@ -19,7 +19,8 @@ int	run_builtin(t_cmd *cmd, t_mini *mini)
 	{"export", ft_export},
 	{"unset", ft_unset},
 	{"env", ft_env},
-	{"exit", ft_exit}
+	{"exit", ft_exit},
+	{NULL, NULL}
 	};
 	int					i;
 

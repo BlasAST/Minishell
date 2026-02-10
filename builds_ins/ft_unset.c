@@ -16,15 +16,6 @@ static int	is_valid_unset_id(char *str)
 	return (1);
 }
 
-static void	free_env_node(t_env *node)
-{
-	if (node->key)
-		free(node->key);
-	if (node->value)
-		free(node->value);
-	free(node);
-}
-
 static void	remove_env_node(t_mini *mini, char *key)
 {
 	t_env	*current;
@@ -40,7 +31,9 @@ static void	remove_env_node(t_mini *mini, char *key)
 				mini->env_list = current->next;
 			else
 				prev->next = current->next;
-			free_env_node(current);
+			free(current->key);
+			free(current->value);
+			free(current);
 			return ;
 		}
 		prev = current;
@@ -48,26 +41,26 @@ static void	remove_env_node(t_mini *mini, char *key)
 	}
 }
 
-int	ft_unset(char **args, t_mini *mini)
+int	ft_unset(t_cmd *cmd, t_mini *mini)
 {
 	int	i;
 	int	exit_st;
 
 	exit_st = 0;
-	if (!args[1])
+	if (!cmd->args[1])
 		return (0);
 	i = 1;
-	while (args[i])
+	while (cmd->args[i])
 	{
-		if (!is_valid_unset_id(args[i]))
+		if (!is_valid_unset_id(cmd->args[i]))
 		{
 			ft_putstr_fd("minishell: unset: `", 2);
-			ft_putstr_fd(args[i], 2);
+			ft_putstr_fd(cmd->args[i], 2);
 			ft_putstr_fd("': not a valid identifier\n", 2);
 			exit_st = 1;
 		}
 		else
-			remove_env_node(mini, args[i]);
+			remove_env_node(mini, cmd->args[i]);
 		i++;
 	}
 	return (exit_st);

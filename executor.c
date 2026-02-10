@@ -99,7 +99,7 @@ void	executor2(t_mini *mini, t_pipex pipex, int status)
 	}
 }
 
-void	executor(t_mini *mini)
+void	executor(t_cmd *cmd_list, t_mini *mini)
 {
 	t_pipex	pipex;
 	int		status;
