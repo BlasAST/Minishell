@@ -34,7 +34,7 @@ int	run_builtin(t_cmd *cmd, t_mini *mini)
 	return (0);
 }
 
-void	built_ins(char	*cmd)
+int	built_ins(char	*cmd)
 {
 	if (!cmd)
 		return (0);
@@ -55,7 +55,7 @@ void	built_ins(char	*cmd)
 	return (0);
 }
 
-void	exec_built_ins(char	*cmd)
+int	exec_built_ins(char	*cmd)
 {
 	if (!cmd)
 		return (0);

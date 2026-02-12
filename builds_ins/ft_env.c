@@ -1,9 +1,11 @@
 #include "../minishell.h"
 
+// FUNCIONA CORRECTAMENTE
 int	ft_env(t_cmd *cmd, t_mini *mini)
 {
 	t_env	*temp;
 
+	write (1, "Función minishell\n", 19);
 	(void)cmd;
 	if (!mini || !mini->env_list)
 		return (0);

@@ -1,5 +1,7 @@
 #include "../minishell.h"
 
+// SIN FUNCIONAMIENTO
+
 static int	is_all_digit(char *str)
 {
 	int	i;
@@ -24,6 +26,7 @@ int	ft_exit(t_cmd *cmd, t_mini *mini)
 {
 	long long	exit_st;
 
+	write (1, "Función minishell\n", 19);
 	if (cmd->args[1])
 	{
 		if (!is_all_digit(cmd->args[1]))

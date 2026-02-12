@@ -1,5 +1,7 @@
 #include "../minishell.h"
 
+// FUNCIONA CORRECTAMENTE
+
 static int	is_valid_id(char *str)
 {
 	int	i;
@@ -90,6 +92,7 @@ int	ft_export(t_cmd *cmd, t_mini *mini)
 	int	i;
 	int	exit_st;
 
+	write (1, "Función minishell\n", 19);
 	exit_st = 0;
 	if (!cmd->args[1])
 	{

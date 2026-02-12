@@ -171,12 +171,12 @@ int	update_env(t_mini *mini, char *key, char *value);
 
 //builds-in
 int				ft_cd(t_cmd *cmd, t_mini *mini);
-int				ft_echo(t_cmd *cmd);
+int				ft_echo(t_cmd *cmd, t_mini *mini);
 int				ft_env(t_cmd *cmd, t_mini *mini);
 int				ft_exit(t_cmd *cmd, t_mini *mini);
 int				ft_export(t_cmd *cmd, t_mini *mini);
 int				ft_unset(t_cmd *cmd, t_mini *mini);
-int				ft_pwd(t_cmd *cmd);
+int				ft_pwd(t_cmd *cmd, t_mini *mini);
 
 // int	ft_cd(char **args, t_mini *mini);
 // void	ft_echo(char *val);

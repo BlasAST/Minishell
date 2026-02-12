@@ -1,5 +1,6 @@
 #include "../minishell.h"
 
+// FUNCIONA PERO NO \N
 static int	is_n_flag(char *arg)
 {
 	int	i;
@@ -18,7 +19,7 @@ static int	is_n_flag(char *arg)
 	return (1);
 }
 
-int	ft_echo(t_cmd *cmd)
+int	ft_echo(t_cmd *cmd, t_mini *mini)
 {
 	int	i;
 	int	n_flag;
