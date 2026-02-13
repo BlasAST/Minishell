@@ -15,8 +15,8 @@ int	check_sintax(t_token *token_list)
 				return (0);
 		if (token_list->type == REDIR_IN || token_list->type == REDIR_OUT
 			|| token_list->type == REDIR_APPEND || token_list->type == HEREDOC)
-				if (!token_list->next || token_list->next->type != WORD)
-					return (sintax_error("newline"));
+			if (!token_list->next || token_list->next->type != WORD)
+				return (sintax_error("newline"));
 		token_list = token_list->next;
 	}
 	if (token_list->type == PIPE)
