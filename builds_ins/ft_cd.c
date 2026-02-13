@@ -1,5 +1,7 @@
 #include "../minishell.h"
 
+
+// NO FUNCIONA
 int	update_env(t_mini *mini, char *key, char *value)
 {
 	t_env	*temp;

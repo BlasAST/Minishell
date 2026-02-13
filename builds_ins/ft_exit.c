@@ -1,5 +1,7 @@
 #include "../minishell.h"
 
+// SIN FUNCIONAMIENTO
+
 static int	is_all_digit(char *str)
 {
 	int	i;

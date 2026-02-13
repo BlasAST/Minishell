@@ -3,7 +3,7 @@
 int	ft_pwd(t_cmd *cmd, t_mini *mini)
 {
 	char	cwd[4096];
-
+ 
 	(void)cmd;
 	(void)mini;
 	write (1, "Función minishell\n", 19);
