@@ -4,8 +4,7 @@ void	parse_word3(char *input, int *i, t_parse_word *pw)
 {
 	pw->start = *i;
 	while (input[*i] && !ispecial(&input[*i]) && input[*i] != ' '
-		&& input[*i] != '\t' && input[*i] != '\''
-		&& input[*i] != '"' && input[*i] != '$')
+		&& input[*i] != '\t')
 		(*i)++;
 	pw->segment = ft_strndup(&input[pw->start], *i - pw->start);
 	pw->tmp = pw->buf;
@@ -26,9 +25,11 @@ void	parse_word1(char *input, int *i, t_parse_word *pw)
 {
 	pw->quote = input[*i];
 	pw->start = *i;
+	(*i)++;
 	while (input[*i] && input[*i] != pw->quote)
 		(*i)++;
-	(*i)++;
+	if (input[*i] == pw->quote)
+		(*i)++;
 	pw->segment = ft_strndup(&input[pw->start], *i - pw->start);
 	pw->tmp = pw->buf;
 	pw->buf = malloc(ft_strlen(pw->tmp) + ft_strlen(pw->segment) + 1);
@@ -53,7 +54,7 @@ char	*parse_word(char *input, int *i)
 	while (input[*i] && input[*i] != ' '
 		&& input[*i] != '\t' && !ispecial(&input[*i]))
 	{
-		if (input[*i] == '\'' || input[*i] == '"')
+		if (input[*i] == '\'' || input[*i] == '\"')
 			parse_word1(input, i, &pw);
 		else
 			parse_word3(input, i, &pw);
@@ -71,6 +72,7 @@ t_token	*tokenize_input(char *input, t_env *env)
 	i = 0;
 	while (input[i])
 	{
+		write (1, "Aqui muere el input: ", 20);
 		while (input[i] && (input[i] == ' ' || input[i] == '\t'))
 			i++;
 		if (!input[i])
