@@ -1,6 +1,5 @@
 #include "../minishell.h"
 
-
 // NO FUNCIONA
 int	update_env(t_mini *mini, char *key, char *value)
 {
@@ -25,7 +24,7 @@ int	update_env(t_mini *mini, char *key, char *value)
 	return (1);
 }
 
-static char	*get_route_cd(t_cmd *cmd, t_mini *mini) // ->  1
+static char	*get_route_cd(t_cmd *cmd, t_mini *mini)
 {
 	char	*path;
 	char	*env_val;

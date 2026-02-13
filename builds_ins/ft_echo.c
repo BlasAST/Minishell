@@ -1,6 +1,6 @@
 #include "../minishell.h"
 
-// FUNCIONA PERO NO \N
+// FUNCIONA
 static int	is_n_flag(char *arg)
 {
 	int	i;
