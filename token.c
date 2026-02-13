@@ -24,10 +24,11 @@ void	parse_word3(char *input, int *i, t_parse_word *pw)
 
 void	parse_word1(char *input, int *i, t_parse_word *pw)
 {
-	pw->quote = input[(*i)++];
+	pw->quote = input[*i];
 	pw->start = *i;
 	while (input[*i] && input[*i] != pw->quote)
 		(*i)++;
+	(*i)++;
 	pw->segment = ft_strndup(&input[pw->start], *i - pw->start);
 	pw->tmp = pw->buf;
 	pw->buf = malloc(ft_strlen(pw->tmp) + ft_strlen(pw->segment) + 1);
@@ -41,8 +42,6 @@ void	parse_word1(char *input, int *i, t_parse_word *pw)
 	ft_strcat(pw->buf, pw->segment);
 	free(pw->tmp);
 	free(pw->segment);
-	if (input[*i] == pw->quote)
-		(*i)++;
 }
 
 char	*parse_word(char *input, int *i)
