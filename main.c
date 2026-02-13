@@ -22,6 +22,8 @@ int	main(int argc, char **argv, char **envp)
 		{
 			add_history(input);
 			mini.token_list = tokenize_input(input, mini.env_list);
+			if (!check_sintax(mini.token_list))
+				continue ;
 			expander(&mini);
 			mini.cmd_list = parser_tokens(mini.token_list);
 			executor(mini.cmd_list, &mini);

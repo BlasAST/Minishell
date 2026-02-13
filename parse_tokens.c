@@ -77,7 +77,8 @@ void	parser_tokens2(t_parse_token *pt)
 			|| pt->tok->type == REDIR_APPEND || pt->tok->type == HEREDOC)
 		{
 			pt->cmd->redir_type = pt->tok->type;
-			pt->tok = pt->tok->next;
+			if (pt->tok->next)
+				pt->tok = pt->tok->next;
 			if (pt->tok && pt->tok->type == WORD)
 			{
 				add_redir(pt->cmd, pt->cmd->redir_type, pt->tok->value);

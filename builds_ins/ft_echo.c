@@ -24,6 +24,7 @@ int	ft_echo(t_cmd *cmd, t_mini *mini)
 	int	i;
 	int	n_flag;
 
+	(void)mini;
 	write (1, "Función minishell\n", 19);
 	i = 1;
 	n_flag = 0;
