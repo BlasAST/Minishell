@@ -143,6 +143,7 @@ void			handle_sigint(int sig);
 
 // Funciones limpieza
 void			free_env_list(t_env *env_list);
+void			free_all(t_mini *mini);
 
 // Funciones expander
 char			*remove_quotes(char *str);
@@ -151,7 +152,7 @@ void			expander(t_mini *mini);
 void			run_herdoc(t_mini *mini, t_token *token);
 
 t_cmd			*parser_tokens(t_token *tokens);
-
+// Funciones executor
 void			executor(t_cmd *cmd_list, t_mini *mini);
 
 void			mng_redirections(t_cmd *cmd);
@@ -162,30 +163,22 @@ int				is_env_builtin(char *cmd);
 int				is_out_builtin(char *cmd);
 int				run_builtin(t_cmd *cmd, t_mini *mini);
 
+int				check_sintax(t_token *token_list);
+
 // Manejo de errores
 void			rerror(char *str, int error_status);
+int				sintax_error(char *msg);
 
 //temp
-void			free_cmd_list(t_cmd *cmd);
-int	update_env(t_mini *mini, char *key, char *value);
+int				update_env(t_mini *mini, char *key, char *value);
 
 //builds-in
 int				ft_cd(t_cmd *cmd, t_mini *mini);
-int				ft_echo(t_cmd *cmd);
+int				ft_echo(t_cmd *cmd, t_mini *mini);
 int				ft_env(t_cmd *cmd, t_mini *mini);
 int				ft_exit(t_cmd *cmd, t_mini *mini);
 int				ft_export(t_cmd *cmd, t_mini *mini);
 int				ft_unset(t_cmd *cmd, t_mini *mini);
-int				ft_pwd(t_cmd *cmd);
+int				ft_pwd(t_cmd *cmd, t_mini *mini);
 
-// int	ft_cd(char **args, t_mini *mini);
-// void	ft_echo(char *val);
-// int	ft_env(t_mini *mini);
-// int	ft_exit(char **args, t_mini *mini);
-// int	ft_export(char **args, t_mini *mini);
-// int	ft_unset(char **args, t_mini *mini);
-// int	ft_pwd(void);
-int	is_env_builtin(char *cmd);
-int	is_out_builtin(char *cmd);
-void	free_all(t_mini *mini);
 #endif
