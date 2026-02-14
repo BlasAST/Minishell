@@ -1,45 +1,52 @@
-
 NAME = minishell
 CC = cc
-# CFLAGS = -Wall -Wextra -Werror -I. -g
+CFLAGS = -Wall -Wextra -Werror -I. -g
 READLINE_FLAGS = -lreadline
 
 SRCS = main.c \
-    token.c \
-    token_utils.c \
-    inits.c \
-    env.c \
-    signal.c \
-    frees.c \
-    parse_tokens.c \
-    executor.c \
-    executor_utils.c \
-    expander_utils.c \
-    expander.c \
-    build_ins.c \
-    sintax.c \
-    errors.c
+	token.c \
+	token_utils.c \
+	inits.c \
+	env.c \
+	signal.c \
+	frees.c \
+	parse_tokens.c \
+	executor.c \
+	executor_utils.c \
+	expander_utils.c \
+	expander.c \
+	build_ins.c \
+	sintax.c \
+	errors.c \
+	heredoc.c
 
 SRCS_BUILDINS = builds_ins/ft_echo.c \
-                builds_ins/ft_cd.c \
-                builds_ins/ft_pwd.c \
-                builds_ins/ft_export.c \
-                builds_ins/ft_unset.c \
-                builds_ins/ft_env.c \
-                builds_ins/ft_exit.c
+				builds_ins/ft_cd.c \
+				builds_ins/ft_pwd.c \
+				builds_ins/ft_export.c \
+				builds_ins/ft_unset.c \
+				builds_ins/ft_env.c \
+				builds_ins/ft_exit.c
 
 # Generamos los nombres de los objetos (.o) en sus respectivas rutas
-OBJS = $(SRCS:.c=.o)
+# OBJS = $(SRCS:.c=.o)
 OBJS_BUILDINS = $(SRCS_BUILDINS:.c=.o)
 
 DIR_LIBFT = libft
 LIBFT = $(DIR_LIBFT)/libft.a
+
+DIR_OBJS = objs
+OBJS = $(addprefix $(DIR_OBJS)/, $(SRCS:.c=.o))
 
 all: $(LIBFT) $(NAME)
 
 $(LIBFT):
 	@make bonus -C $(DIR_LIBFT)
 	@echo "Libft compiled"
+
+$(DIR_OBJS)/%.o: %.c
+	@mkdir -p objs
+	$(CC) $(CFLAGS) -c $< -o $@
 
 # Regla para compilar los .c de la raíz
 %.o: %.c
@@ -54,6 +61,7 @@ $(NAME): $(OBJS) $(OBJS_BUILDINS)
 	@echo "Minishell compiled"
 
 clean:
+	rm -rf $(DIR_OBJS)
 	rm -f $(OBJS)
 	rm -f $(OBJS_BUILDINS)
 	@make -C $(DIR_LIBFT) clean

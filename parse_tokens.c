@@ -64,15 +64,11 @@ void	parser_tokens2(t_parse_token *pt)
 	if (!pt->cmd->args)
 		return ;
 	pt->i = 0;
-	printf("🧱 [PARSER] New command:\n");
 	while (pt->tok && pt->tok->type != PIPE && pt->tok->type != END_OF_INPUT
 		&& pt->tok->type != AND && pt->tok->type != OR)
 	{
 		if (pt->tok->type == WORD)
-		{
 			pt->cmd->args[pt->i++] = ft_strdup(pt->tok->value);
-			printf("   ➜ arg[%d] = \"%s\"\n", pt->i - 1, pt->tok->value);
-		}
 		else if (pt->tok->type == REDIR_IN || pt->tok->type == REDIR_OUT
 			|| pt->tok->type == REDIR_APPEND || pt->tok->type == HEREDOC)
 		{
@@ -80,14 +76,10 @@ void	parser_tokens2(t_parse_token *pt)
 			if (pt->tok->next)
 				pt->tok = pt->tok->next;
 			if (pt->tok && pt->tok->type == WORD)
-			{
 				add_redir(pt->cmd, pt->cmd->redir_type, pt->tok->value);
-				printf("   🔁 redir: %d -> \"%s\"\n", pt->cmd->redir_type, pt->tok->value);
-			}
 		}
 		pt->tok = pt->tok->next;
 	}
-	printf("✅ [PARSER] Command finished.\n\n");
 	pt->cmd->args[pt->i] = NULL;
 }
 
@@ -103,15 +95,10 @@ t_cmd	*parser_tokens(t_token *tokens)
 		if (pt.tok && (pt.tok->type == AND || pt.tok->type == OR))
 		{
 			pt.cmd->cond_type = pt.tok->type;
-			printf("⚙️  [PARSER] Logical operator: %s\n",
-				(pt.tok->type == AND) ? "&&" : "||");
 			pt.tok = pt.tok->next;
 		}
 		else if (pt.tok && pt.tok->type == PIPE)
-		{
-			printf("🚇 [PARSER] PIPE detected, moving to next command...\n");
 			pt.tok = pt.tok->next;
-		}
 		if (!pt.cmd_list)
 			pt.cmd_list = pt.cmd;
 		else
@@ -122,6 +109,5 @@ t_cmd	*parser_tokens(t_token *tokens)
 			pt.tmp->next = pt.cmd;
 		}
 	}
-	printf("🏁 [PARSER] All tokens parsed.\n\n");
 	return (pt.cmd_list);
 }

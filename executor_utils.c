@@ -30,8 +30,6 @@ void	mng_redirections(t_cmd *cmd)
 		else if (redir->redir_type == REDIR_APPEND)
 			cmd->fd_out = open(redir->target, O_WRONLY
 					| O_CREAT | O_APPEND, 0644);
-		else if (redir->redir_type == HEREDOC)
-			cmd->fd_in = heredoc(cmd);
 		if (cmd->fd_in == -1 || cmd->fd_out == -1)
 		{
 			perror("Redirection error");
@@ -41,27 +39,56 @@ void	mng_redirections(t_cmd *cmd)
 	}
 }
 
-int	heredoc(t_cmd *cmd)
+void	is_and_or(t_mini *mini)
 {
-	int		heredoc[2];
-	char	*limiter;
-	char	*line;
-
-	if (pipe(heredoc) < 0)
-		perror("pipe");
-	limiter = cmd->redir_list->target;
-	while (1)
+	while (mini->cmd_list)
 	{
-		line = readline("heredoc> ");
-		if (!line || ft_strcmp(line, limiter) == 0)
+		if (mini->cmd_list->cond_type == AND)
 		{
-			free(line);
-			break ;
+			if (mini->exit_code != 0)
+			{
+				while (mini->cmd_list && mini->cmd_list->cond_type == AND)
+					mini->cmd_list = mini->cmd_list->next;
+				break ;
+			}
 		}
-		write(heredoc[1], line, ft_strlen(line));
-		write(heredoc[1], "\n", 1);
-		free(line);
+		else if (mini->cmd_list->cond_type == OR)
+		{
+			if (mini->exit_code == 0)
+			{
+				while (mini->cmd_list && mini->cmd_list->cond_type == OR)
+					mini->cmd_list = mini->cmd_list->next;
+				break ;
+			}
+		}
+		mini->cmd_list = mini->cmd_list->next;
 	}
-	close(heredoc[1]);
-	return (heredoc[0]);
+}
+
+void	close_updt_pipe(t_cmd *cmd, t_pipex *pipex)
+{
+	if (pipex->prev_fd != -1)
+		close(pipex->prev_fd);
+	if (cmd->next)
+	{
+		close(pipex->pipe_fd[1]);
+		pipex->prev_fd = pipex->pipe_fd[0];
+	}
+	else
+		pipex->prev_fd = -1;
+}
+
+void	path_found(t_cmd *cmd, t_mini *mini)
+{
+	if (!cmd->cmd_path)
+	{
+		write(2, "minishell: command not found: ", 30);
+		write(2, cmd->args[0], 
+			ft_strlen(cmd->args[0]));
+		write(2, "\n", 1);
+		exit(127);
+	}
+	execve(cmd->cmd_path, cmd->args, mini->env_arr);
+	perror(cmd->args[0]);
+	exit(126);
 }

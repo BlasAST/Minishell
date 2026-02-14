@@ -13,3 +13,19 @@ int	sintax_error(char *msg)
 	write(1, "'\n", 2);
 	return (2);
 }
+
+int	handle_sintax_error(t_mini *mini, char *input)
+{
+	mini->exit_code = 258;
+	free_all(mini);
+	free(input);
+	return (0);
+}
+
+int	handle_heredoc_error(t_mini *mini, char *input)
+{
+	mini->exit_code = 130;
+	free_all(mini);
+	free(input);
+	return (0);
+}

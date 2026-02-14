@@ -62,7 +62,7 @@ char	*parse_word(char *input, int *i)
 	return (pw.buf);
 }
 
-t_token	*tokenize_input(char *input, t_env *env)
+t_token	*tokenize_input(char *input)
 {
 	t_token	*list;
 	int		i;
@@ -72,14 +72,12 @@ t_token	*tokenize_input(char *input, t_env *env)
 	i = 0;
 	while (input[i])
 	{
-		write (1, "Aqui muere el input: ", 20);
 		while (input[i] && (input[i] == ' ' || input[i] == '\t'))
 			i++;
 		if (!input[i])
 			break ;
 		if (ispecial(&input[i]))
 		{
-			printf("🧩 [LEXER] Operator token: \"%s\"\n", ft_strndup(&input[i], ispecial(&input[i])));
 			add_token(&list, new_token(get_type(&input[i]),
 					ft_strndup(&input[i], ispecial(&input[i]))));
 			i += ispecial(&input[i]);
@@ -89,7 +87,6 @@ t_token	*tokenize_input(char *input, t_env *env)
 			word = parse_word(input, &i);
 			if (word && *word)
 			{
-				printf("🔠 [LEXER] Word token: \"%s\"\n", word);
 				add_token(&list, new_token(WORD, word));
 				free(word);
 			}

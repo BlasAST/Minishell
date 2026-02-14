@@ -80,8 +80,8 @@ void	expand_token(t_mini *mini, t_token *token)
 	{
 		if (token->value[i] == '\'')
 			in_sq = !in_sq;
-		if (token->value[i] == '$' && !in_sq && ft_isalnum(token->value[i + 1])
-			|| token->value[i + 1] == '_' || token->value [i + 1] == '?')
+		if (token->value[i] == '$' && !in_sq && (ft_isalnum(token->value[i + 1])
+				|| token->value[i + 1] == '_' || token->value [i + 1] == '?'))
 		{
 			val = expand_variable(token->value, &i, mini);
 			temp = ft_strjoin(res, val);
@@ -100,6 +100,6 @@ void	expand_token(t_mini *mini, t_token *token)
 		}
 	}
 	free(token->value);
-	token->value  = res;
+	token->value = res;
 }
 

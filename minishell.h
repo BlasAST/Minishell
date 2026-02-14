@@ -29,7 +29,7 @@ typedef enum e_token_type
 	END_OF_INPUT
 }	t_token_type;
 
-typedef struct s_token//list
+typedef struct s_token
 {
 	t_token_type	type;
 	char			*value;
@@ -122,7 +122,7 @@ typedef struct s_builtin
 // global variable to intercept the signal
 extern int		g_signal_status;
 
-t_token			*tokenize_input(char *input, t_env *env);
+t_token			*tokenize_input(char *input);
 
 void			add_token(t_token **list, t_token *new);
 t_token			*new_token(t_token_type type, char *value);
@@ -143,6 +143,8 @@ void			handle_sigint(int sig);
 
 // Funciones limpieza
 void			free_env_list(t_env *env_list);
+void			free_token_list(t_token *token_list);
+void			free_cmd_list(t_cmd *cmd_list);
 void			free_all(t_mini *mini);
 
 // Funciones expander
@@ -152,12 +154,17 @@ void			expander(t_mini *mini);
 void			run_herdoc(t_mini *mini, t_token *token);
 
 t_cmd			*parser_tokens(t_token *tokens);
+
+int				handle_heredoc(t_cmd **cmd_list);
+int				heredoc(char *limiter);
 // Funciones executor
-void			executor(t_cmd *cmd_list, t_mini *mini);
+void			executor(t_mini *mini);
 
 void			mng_redirections(t_cmd *cmd);
-int				heredoc(t_cmd *cmd);
 char			*join_free(char *s1, char *s2, char *s3);
+void			is_and_or(t_mini *mini);
+void			close_updt_pipe(t_cmd *cmd, t_pipex *pipex);
+void			path_found(t_cmd *cmd, t_mini *mini);
 
 int				is_env_builtin(char *cmd);
 int				is_out_builtin(char *cmd);
@@ -168,6 +175,8 @@ int				check_sintax(t_token *token_list);
 // Manejo de errores
 void			rerror(char *str, int error_status);
 int				sintax_error(char *msg);
+int				handle_sintax_error(t_mini *mini, char *input);
+int				handle_heredoc_error(t_mini *mini, char *input);
 
 //temp
 int				update_env(t_mini *mini, char *key, char *value);
