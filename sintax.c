@@ -1,25 +1,39 @@
 #include "minishell.h"
 
-int	check_sintax(t_token *token_list)
+int	sintax_error2(t_token *tok)
 {
-	if (!token_list)
+	if (tok->type == PIPE)
+		return (sintax_error("|"));
+	if (tok->type == AND)
+		return (sintax_error("&&"));
+	if (tok->type == OR)
+		return (sintax_error("||"));
+	return (0);
+}
+
+int	check_sintax(t_token *tok)
+{
+	if (!tok)
 		return (0);
-	if (token_list->type == PIPE)
-		return (sintax_error("|"));
-	while (token_list && token_list->next)
+	if (tok->type == PIPE || tok->type == AND || tok->type == OR)
+		return (sintax_error2(tok));
+	while (tok && tok->next)
 	{
-		if (token_list->type == PIPE && token_list->next->type == PIPE)
+		if (tok->type == PIPE && tok->next->type == PIPE)
 			return (sintax_error("|"));
-		if (token_list->type == AND || token_list->type == OR)
-			if (token_list->prev != WORD || token_list->next != WORD)
-				return (0);
-		if (token_list->type == REDIR_IN || token_list->type == REDIR_OUT
-			|| token_list->type == REDIR_APPEND || token_list->type == HEREDOC)
-			if (!token_list->next || token_list->next->type != WORD)
+		if (tok->type == AND || tok->type == OR)
+			if (!tok->prev || !tok->next || tok->next->type == AND
+				|| tok->next->type == OR || tok->next->type == PIPE
+				|| (tok->prev->type == AND || tok->prev->type == OR
+					|| tok->prev->type == PIPE))
+				return (sintax_error2(tok));
+		if (tok->type == REDIR_IN || tok->type == REDIR_OUT
+			|| tok->type == REDIR_APPEND || tok->type == HEREDOC)
+			if (!tok->next || tok->next->type != WORD)
 				return (sintax_error("newline"));
-		token_list = token_list->next;
+		tok = tok->next;
 	}
-	if (token_list->type == PIPE)
-		return (sintax_error("|"));
+	if (tok->type == PIPE || tok->type == AND || tok->type == OR)
+		return (sintax_error2(tok));
 	return (1);
 }

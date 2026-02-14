@@ -2,6 +2,21 @@
 
 int	g_signal_status = 0;
 
+int	main2(t_mini *mini, char *input)
+{
+	add_history(input);
+	mini->token_list = tokenize_input(input);
+	if (!check_sintax(mini->token_list))
+		return (handle_sintax_error(mini, input));
+	expander(mini);
+	mini->cmd_list = parser_tokens(mini->token_list);
+	if (!handle_heredoc(&mini->cmd_list))
+		return (handle_heredoc_error(mini, input));
+	executor(mini);
+	free_all(mini);
+	return (1);
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	t_mini	mini;
@@ -13,22 +28,14 @@ int	main(int argc, char **argv, char **envp)
 	while (1)
 	{
 		input = readline("minishell$ ");
-		if (input == NULL)
+		if (!input)
 		{
 			ft_putstr_fd("exit\n", 1);
 			break ;
 		}
 		if (input[0] != '\0')
-		{
-			add_history(input);
-			mini.token_list = tokenize_input(input, mini.env_list);
-			if (!check_sintax(mini.token_list))
+			if (!main2(&mini, input))
 				continue ;
-			expander(&mini);
-			mini.cmd_list = parser_tokens(mini.token_list);
-			executor(mini.cmd_list, &mini);
-			free_all(&mini);
-		}
 		free(input);
 	}
 	rl_clear_history();
