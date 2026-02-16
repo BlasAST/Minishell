@@ -12,7 +12,7 @@ char	*remove_quotes(char *str)
 		return (NULL);
 	i = 0;
 	j = 0;
-	quote = 1;
+	quote = 0;
 	while (str[i])
 	{
 		if ((str[i] == '\'' || str[i] == '\"') && quote == 0)
@@ -69,16 +69,20 @@ void	expand_token(t_mini *mini, t_token *token)
 {
 	int		i;
 	int		in_sq;
+	int		in_dq;
 	char	*res;
 	char	*val;
 	char	*temp;
 
 	i = 0;
 	in_sq = 0;
+	in_dq = 0;
 	res = ft_strdup("");
 	while (token->value[i])
 	{
-		if (token->value[i] == '\'')
+		if (token->value[i] == '\"' && !in_sq)
+			in_dq = !in_dq;
+		if (token->value[i] == '\'' && ! in_dq)
 			in_sq = !in_sq;
 		if (token->value[i] == '$' && !in_sq && (ft_isalnum(token->value[i + 1])
 				|| token->value[i + 1] == '_' || token->value [i + 1] == '?'))
