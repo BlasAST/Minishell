@@ -41,35 +41,29 @@ void	mng_redirections(t_cmd *cmd)
 
 void	is_and_or(t_mini *mini)
 {
-	while (mini->cmd_list)
+	t_cmd	*cmd;
+
+	cmd = mini->cmd_list;
+	if (!cmd)
+		return ;
+	if (cmd->cond_type == AND && mini->exit_code != 0)
 	{
-		if (mini->cmd_list->cond_type == AND)
-		{
-			if (mini->exit_code != 0)
-			{
-				while (mini->cmd_list && mini->cmd_list->cond_type == AND)
-					mini->cmd_list = mini->cmd_list->next;
-				break ;
-			}
-		}
-		else if (mini->cmd_list->cond_type == OR)
-		{
-			if (mini->exit_code == 0)
-			{
-				while (mini->cmd_list && mini->cmd_list->cond_type == OR)
-					mini->cmd_list = mini->cmd_list->next;
-				break ;
-			}
-		}
-		mini->cmd_list = mini->cmd_list->next;
+		while (cmd && cmd->cond_type == AND)
+			cmd = cmd->next;
 	}
+	else if (cmd->cond_type == OR && mini->exit_code == 0)
+	{
+		while (cmd && cmd->cond_type == OR)
+			cmd = cmd->next;
+	}
+	mini->cmd_list = cmd->next;
 }
 
 void	close_updt_pipe(t_cmd *cmd, t_pipex *pipex)
 {
 	if (pipex->prev_fd != -1)
 		close(pipex->prev_fd);
-	if (cmd->next)
+	if (cmd->next && cmd->cond_type != AND && cmd->cond_type != OR)
 	{
 		close(pipex->pipe_fd[1]);
 		pipex->prev_fd = pipex->pipe_fd[0];

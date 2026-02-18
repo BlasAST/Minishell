@@ -31,6 +31,7 @@ static t_cmd	*new_cmd(void)
 	cmd->cond_type = END_OF_INPUT;
 	cmd->redir_type = END_OF_INPUT;
 	cmd->next = NULL;
+	cmd->prev = NULL;
 	return (cmd);
 }
 
@@ -92,6 +93,14 @@ t_cmd	*parser_tokens(t_token *tokens)
 	while (pt.tok && pt.tok->type != END_OF_INPUT)
 	{
 		parser_tokens2(&pt);
+		if (!pt.cmd_list)
+			pt.cmd_list = pt.cmd;
+		else
+		{
+			pt.prev->next = pt.cmd;
+			pt.cmd->prev = pt.prev;
+		}
+		pt.prev = pt.cmd;
 		if (pt.tok && (pt.tok->type == AND || pt.tok->type == OR))
 		{
 			pt.cmd->cond_type = pt.tok->type;
@@ -99,15 +108,6 @@ t_cmd	*parser_tokens(t_token *tokens)
 		}
 		else if (pt.tok && pt.tok->type == PIPE)
 			pt.tok = pt.tok->next;
-		if (!pt.cmd_list)
-			pt.cmd_list = pt.cmd;
-		else
-		{
-			pt.tmp = pt.cmd_list;
-			while (pt.tmp->next)
-				pt.tmp = pt.tmp->next;
-			pt.tmp->next = pt.cmd;
-		}
 	}
 	return (pt.cmd_list);
 }
