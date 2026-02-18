@@ -10,7 +10,7 @@ int	main2(t_mini *mini, char *input)
 		return (handle_sintax_error(mini, input));
 	expander(mini);
 	mini->cmd_list = parser_tokens(mini->token_list);
-	if (!handle_heredoc(&mini->cmd_list))
+	if (!handle_heredoc(mini))
 		return (handle_heredoc_error(mini, input));
 	executor(mini);
 	free_all(mini);

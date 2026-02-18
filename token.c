@@ -86,12 +86,8 @@ t_token	*tokenize_input(char *input)
 		{
 			word = parse_word(input, &i);
 			if (word && *word)
-			{
 				add_token(&list, new_token(WORD, word));
-				free(word);
-			}
-			else
-				free(word);
+			free(word);
 		}
 	}
 	add_token(&list, new_token(END_OF_INPUT, NULL));

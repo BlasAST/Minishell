@@ -121,6 +121,15 @@ typedef struct s_builtin
 	t_builtin_func	func;
 }	t_builtin;
 
+typedef struct s_heredoc
+{
+	int		heredoc[2];
+	char	*line;
+	char	*clean_lim;
+	char	*expanded;
+	int		quote;
+}	t_heredoc;
+
 // global variable to intercept the signal
 extern int		g_signal_status;
 
@@ -153,12 +162,11 @@ void			free_all(t_mini *mini);
 char			*remove_quotes(char *str);
 void			expand_token(t_mini *mini, t_token *token);
 void			expander(t_mini *mini);
-void			run_herdoc(t_mini *mini, t_token *token);
 
 t_cmd			*parser_tokens(t_token *tokens);
 
-int				handle_heredoc(t_cmd **cmd_list);
-int				heredoc(char *limiter);
+int				handle_heredoc(t_mini *mini);
+int				heredoc(char *limiter, t_mini *mini);
 // Funciones executor
 void			executor(t_mini *mini);
 
