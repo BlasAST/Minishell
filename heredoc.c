@@ -34,6 +34,7 @@ int	heredoc(char *limiter)
 	while (1)
 	{
 		line = readline("heredoc> ");
+		add_history(line);
 		if (!line || ft_strcmp(line, limiter) == 0)
 		{
 			free(line);
