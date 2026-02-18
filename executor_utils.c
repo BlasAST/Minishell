@@ -41,28 +41,18 @@ void	mng_redirections(t_cmd *cmd)
 
 void	is_and_or(t_mini *mini)
 {
-	while (mini->cmd_list)
+	if (mini->cmd_list->cond_type == AND && mini->exit_code != 0)
 	{
-		if (mini->cmd_list->cond_type == AND)
-		{
-			if (mini->exit_code != 0)
-			{
-				while (mini->cmd_list && mini->cmd_list->cond_type == AND)
-					mini->cmd_list = mini->cmd_list->next;
-				break ;
-			}
-		}
-		else if (mini->cmd_list->cond_type == OR)
-		{
-			if (mini->exit_code == 0)
-			{
-				while (mini->cmd_list && mini->cmd_list->cond_type == OR)
-					mini->cmd_list = mini->cmd_list->next;
-				break ;
-			}
-		}
-		mini->cmd_list = mini->cmd_list->next;
+		while (mini->cmd_list && mini->cmd_list->cond_type == AND)
+			mini->cmd_list = mini->cmd_list->next;
+}
+	else if (mini->cmd_list->cond_type == OR && mini->exit_code == 0)
+	{
+		while (mini->cmd_list && mini->cmd_list->cond_type == OR)
+			mini->cmd_list = mini->cmd_list->next;
 	}
+	else
+		mini->cmd_list = mini->cmd_list->next;
 }
 
 void	close_updt_pipe(t_cmd *cmd, t_pipex *pipex)

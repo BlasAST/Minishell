@@ -124,8 +124,6 @@ void	executor(t_mini *mini)
 				mini->exit_code = 128 + WTERMSIG(status);
 		}
 		is_and_or(mini);
-		if (mini->cmd_list->next)
-			mini->cmd_list = mini->cmd_list->next;
 	}
 	while (wait(&status) > 0)
 		;
