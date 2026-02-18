@@ -62,6 +62,7 @@ typedef struct s_cmd
 	t_token_type	redir_type;
 	t_token_type	cond_type;
 	struct s_cmd	*next;
+	struct s_cmd	*prev;
 }	t_cmd;
 
 typedef struct s_parse_token
@@ -70,6 +71,7 @@ typedef struct s_parse_token
 	t_token	*tok;
 	t_cmd	*cmd;
 	t_cmd	*tmp;
+	t_cmd	*prev;
 	int		arg_count;
 	int		i;
 }	t_parse_token;

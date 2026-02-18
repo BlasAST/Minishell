@@ -31,7 +31,6 @@ char	*get_path(char *cmd, char **envp)
 
 void	child_process(t_cmd *cmd, t_mini *mini, t_pipex *pipex)
 {
-	mng_redirections(cmd);
 	if (cmd->fd_in != STDIN_FILENO)
 	{
 		dup2(cmd->fd_in, STDIN_FILENO);
@@ -47,12 +46,14 @@ void	child_process(t_cmd *cmd, t_mini *mini, t_pipex *pipex)
 		dup2(cmd->fd_out, STDOUT_FILENO);
 		close(cmd->fd_out);
 	}
-	else if (cmd->next)
+	else if (cmd->next && cmd->cond_type != AND && cmd->cond_type != OR)
 	{
 		close(pipex->pipe_fd[0]);
 		dup2(pipex->pipe_fd[1], STDOUT_FILENO);
 		close(pipex->pipe_fd[1]);
 	}
+	if (!cmd->args || !cmd->args[0])
+		exit(0);
 	if (cmd->args && is_out_builtin(cmd->args[0]))
 		exit(run_builtin(cmd, mini));
 }
@@ -76,14 +77,14 @@ void	no_args(t_cmd *cmd, t_pipex *pipex)
 
 void	executor2(t_mini *mini, t_cmd *cmd, t_pipex *pipex)
 {
-	if (cmd->next)
+	if (cmd->next && cmd->cond_type != AND && cmd->cond_type != OR)
 		if (pipe(pipex->pipe_fd) == -1)
 			perror("pipe");
 	cmd->pid = fork();
 	if (cmd->pid == -1)
 	{
 		perror("fork");
-		if (cmd->next)
+		if (cmd->next && cmd->cond_type != AND && cmd->cond_type != OR)
 		{
 			close(pipex->pipe_fd[0]);
 			close(pipex->pipe_fd[1]);
@@ -92,8 +93,7 @@ void	executor2(t_mini *mini, t_cmd *cmd, t_pipex *pipex)
 	}
 	if (cmd->pid == 0)
 	{
-		if (!cmd->args || !cmd->args[0])
-			no_args(cmd, pipex);
+		mng_redirections(cmd);
 		child_process(cmd, mini, pipex);
 		if (!cmd->cmd_path)
 			cmd->cmd_path = get_path(cmd->args[0], mini->env_arr);
