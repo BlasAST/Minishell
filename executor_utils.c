@@ -46,7 +46,6 @@ void	is_and_or(t_mini *mini)
 	cmd = mini->cmd_list;
 	if (!cmd)
 		return ;
-
 	if (cmd->cond_type == AND && mini->exit_code != 0)
 	{
 		while (cmd && cmd->cond_type == AND)
