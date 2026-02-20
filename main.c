@@ -7,11 +7,17 @@ int	main2(t_mini *mini, char *input)
 	add_history(input);
 	mini->token_list = tokenize_input(input);
 	if (!check_sintax(mini->token_list))
+	{
+		free_token_list(mini->token_list);
 		return (handle_sintax_error(mini, input));
+	}
 	expander(mini);
 	mini->cmd_list = parser_tokens(mini->token_list);
 	if (!handle_heredoc(mini))
+	{
+		free_all(mini);
 		return (handle_heredoc_error(mini, input));
+	}
 	executor(mini);
 	free_all(mini);
 	return (1);
@@ -34,11 +40,16 @@ int	main(int argc, char **argv, char **envp)
 			break ;
 		}
 		if (input[0] != '\0')
+		{
 			if (!main2(&mini, input))
 				continue ;
+		}
+		else
+			free_all(&mini);
 		free(input);
 	}
-	rl_clear_history();
+	free_all(&mini);
 	free_env_list(mini.env_list);
+	rl_clear_history();
 	return (0);
 }
