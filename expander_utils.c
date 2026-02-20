@@ -30,11 +30,12 @@ char	*remove_quotes(char *str)
 	return (new_str);
 }
 
-char	*get_env_val(t_env *env, char *key)
+char	*get_env_val(t_env *env, char *key, char *input)
 {
 	t_env	*env_temp;
 
 	env_temp = env;
+	(void)input;
 	while (env_temp)
 	{
 		if (strncmp(env_temp->key, key, ft_strlen(key) + 1) == 0)
@@ -60,7 +61,7 @@ char	*expand_variable(char *input, int *i, t_mini *mini)
 	while (input[*i] && (ft_isalnum(input[*i]) || input[*i] == '_'))
 		(*i)++;
 	key = ft_substr(input, start + 1, *i - (start + 1));
-	val = get_env_val(mini->env_list, key);
+	val = get_env_val(mini->env_list, key, input);
 	free(key);
 	return (val);
 }
@@ -84,7 +85,7 @@ void	expand_token(t_mini *mini, t_token *token)
 			in_dq = !in_dq;
 		if (token->value[i] == '\'' && ! in_dq)
 			in_sq = !in_sq;
-		if (token->value[i] == '$' && !in_sq && (ft_isalnum(token->value[i + 1])
+		if (token->value[i] == '$' && !in_sq && (ft_isalpha(token->value[i + 1])
 				|| token->value[i + 1] == '_' || token->value [i + 1] == '?'))
 		{
 			val = expand_variable(token->value, &i, mini);
@@ -102,6 +103,7 @@ void	expand_token(t_mini *mini, t_token *token)
 			res = val;
 			i++;
 		}
+		
 	}
 	free(token->value);
 	token->value = res;

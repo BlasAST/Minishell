@@ -161,7 +161,9 @@ void			free_all(t_mini *mini);
 // Funciones expander
 char			*remove_quotes(char *str);
 void			expand_token(t_mini *mini, t_token *token);
-void			expander(t_mini *mini);
+void	expander(t_mini *mini);
+char	*expand_heredoc(char *line, t_mini *mini);
+char	*expand_variable(char *input, int *i, t_mini *mini);
 
 t_cmd			*parser_tokens(t_token *tokens);
 

@@ -24,12 +24,14 @@ int	handle_heredoc(t_mini *mini)
 	return (1);
 }
 
-char	*remove_quotes(char *str)
+static char	*remove_quotes_1(char *str)
 {
 	char	*res;
 	int		i;
 	int		j;
 
+	i = 0;
+	j = 0;
 	res = malloc(ft_strlen(str) + 1);
 	if (!res)
 		return (NULL);
@@ -54,7 +56,7 @@ int	is_quoted(char *limiter)
 	return (0);
 }
 
-void	*expanding(t_heredoc hd, t_mini *mini)
+void	expanding(t_heredoc hd, t_mini *mini)
 {
 	hd.expanded = expand_heredoc(hd.line, mini);
 	write(hd.heredoc[1], hd.expanded, ft_strlen(hd.expanded));
@@ -66,7 +68,7 @@ int	heredoc(char *limiter, t_mini *mini)
 	t_heredoc	hd;
 
 	hd.quote = is_quoted(limiter);
-	hd.clean_lim = remove_quotes(limiter);
+	hd.clean_lim = remove_quotes_1(limiter);
 	if (pipe(hd.heredoc) < 0)
 		return (perror("pipe"), -1);
 	while (1)

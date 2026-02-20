@@ -62,21 +62,21 @@ char	*parse_word(char *input, int *i)
 	return (pw.buf);
 }
 
-void	tokenation(t_token *list, char *input, int *i)
+void	tokenation(t_token **list, char *input, int *i)
 {
 	char	*word;
 
 	if (ispecial(&input[*i]))
 	{
-		add_token(&list, new_token(get_type(&input[*i]),
+		add_token(list, new_token(get_type(&input[*i]),
 				ft_strndup(&input[*i], ispecial(&input[*i]))));
 		*i += ispecial(&input[*i]);
 	}
 	else
 	{
-		word = parse_word(input, *i);
+		word = parse_word(input, i);
 		if (word && *word)
-			add_token(&list, new_token(WORD, word));
+			add_token(list, new_token(WORD, word));
 		free(word);
 	}
 }
@@ -94,7 +94,7 @@ t_token	*tokenize_input(char *input)
 			i++;
 		if (!input[i])
 			break ;
-		tokenation(list, input, &i);
+		tokenation(&list, input, &i);
 	}
 	add_token(&list, new_token(END_OF_INPUT, NULL));
 	return (list);
