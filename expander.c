@@ -1,49 +1,54 @@
 #include "minishell.h"
 
+char *ft_strjoin_free(char *s1, char *s2)
+{
+    char *new;
+
+    if (!s1 || !s2)
+        return (NULL);
+    new = ft_strjoin(s1, s2);
+    free(s1);
+    free(s2);
+    return (new);
+}
+
+#include "minishell.h"
+
 char	*expand_heredoc(char *line, t_mini *mini)
 {
-	t_env *temp_env;
-	char *temp;
-	char **temp_split;
-	char *new_str;
-	char *res;
-	int	i;
-	int	j;
+	char	**temp_split;
+	char	*new_str;
+	char	*temp;
+	char	*res;
+	int		i;
+	int		j;
 
-	temp_env = mini->env_list;
+	if (!line)
+		return (NULL);
+	res = ft_strdup("");
 	temp_split = ft_split(line, ' ');
-	while (temp_env)
+	i = 0;
+	while (temp_split[i])
 	{
-		i = 0;
 		j = 0;
-		while (temp_split[i])
+		while (temp_split[i][j])
 		{
-			while (temp_split[i][j])
+			if (temp_split[i][j] == '$')
 			{
-				if (temp_split[i][j] == '$')
-				{
-					new_str = expand_variable((temp_split[i]), &j, mini);
-					temp = ft_strjoin(res, new_str);
-					free(res);
-					free(new_str);
-					res = temp;
-				}
-				else
-				{
-					temp = ft_substr(&(temp_split[i][j]), i, 1);
-					new_str = ft_strjoin(res, temp);
-					free(res);
-					free(temp);
-					res = new_str;
-					j++;
-				}
+				new_str = expand_variable(temp_split[i], &j, mini);
+				res = ft_strjoin_free(res, new_str);
 			}
-			i++;
+			else
+			{
+				temp = ft_substr(temp_split[i], j, 1);
+				res = ft_strjoin_free(res, temp);
+				j++;
+			}
 		}
-		temp_env = temp_env->next;
+		if (temp_split[i + 1])
+			res = ft_strjoin_free(res, ft_strdup(" "));
+		i++;
 	}
-	if (!new_str)
-		free(new_str);
 	ft_free_split(temp_split);
 	return (res);
 }

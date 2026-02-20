@@ -1,46 +1,60 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   expander_utils.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/20 18:47:25 by blas              #+#    #+#             */
+/*   Updated: 2026/02/20 19:31:25 by blas             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
+
+int	is_expansible(char *str)
+{
+	if ((ft_isalpha(*str) || *str == '_' || *str == '?'))
+		return (1);
+	return (0);
+}
 
 char	*remove_quotes(char *str)
 {
-	char	*new_str;
-	char	quote;
+	char	*new;
 	int		i;
 	int		j;
+	char	status;
 
-	new_str = malloc(sizeof(char) * (ft_strlen(str) + 1));
-	if (!new_str)
-		return (NULL);
+	new = malloc(sizeof(char) * (ft_strlen(str) + 1));
 	i = 0;
 	j = 0;
-	quote = 0;
+	status = 0;
 	while (str[i])
 	{
-		if ((str[i] == '\'' || str[i] == '\"') && quote == 0)
-			quote = str[i];
-		else if (str[i] == quote)
-			quote = 0;
+		if (status == 0 && (str[i] == '\'' || str[i] == '\"'))
+			status = str[i];
+		else if (status == str[i])
+			status = 0;
 		else
-		{
-			new_str[j] = str[i];
-			j++;
-		}
+			new[j++] = str[i];
 		i++;
 	}
-	new_str[j] = '\0';
-	return (new_str);
+	new[j] = '\0';
+	return (new);
 }
 
-char	*get_env_val(t_env *env, char *key, char *input)
+char	*get_env_val(t_env *env, char *key)
 {
-	t_env	*env_temp;
+	t_env	*temp;
 
-	env_temp = env;
-	(void)input;
-	while (env_temp)
+	temp = env;
+	while (temp)
 	{
-		if (strncmp(env_temp->key, key, ft_strlen(key) + 1) == 0)
-			return (ft_strdup(env_temp->value));
-		env_temp = env_temp->next;
+		if (ft_strlen(key) == ft_strlen(temp->key) 
+			&& ft_strncmp(temp->key, key, ft_strlen(key)) == 0)
+			return (ft_strdup(temp->value));
+		temp = temp->next;
 	}
 	return (ft_strdup(""));
 }
@@ -61,7 +75,7 @@ char	*expand_variable(char *input, int *i, t_mini *mini)
 	while (input[*i] && (ft_isalnum(input[*i]) || input[*i] == '_'))
 		(*i)++;
 	key = ft_substr(input, start + 1, *i - (start + 1));
-	val = get_env_val(mini->env_list, key, input);
+	val = get_env_val(mini->env_list, key);
 	free(key);
 	return (val);
 }
@@ -85,8 +99,7 @@ void	expand_token(t_mini *mini, t_token *token)
 			in_dq = !in_dq;
 		if (token->value[i] == '\'' && ! in_dq)
 			in_sq = !in_sq;
-		if (token->value[i] == '$' && !in_sq && (ft_isalpha(token->value[i + 1])
-				|| token->value[i + 1] == '_' || token->value [i + 1] == '?'))
+		if (token->value[i] == '$' && !in_sq && is_expansible(&(token->value[i + 1])))
 		{
 			val = expand_variable(token->value, &i, mini);
 			temp = ft_strjoin(res, val);
@@ -108,4 +121,3 @@ void	expand_token(t_mini *mini, t_token *token)
 	free(token->value);
 	token->value = res;
 }
-
