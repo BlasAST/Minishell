@@ -1,11 +1,11 @@
 #include "minishell.h"
 
-int	handle_heredoc(t_cmd **cmd_list)
+int	handle_heredoc(t_mini *mini)
 {
 	t_cmd	*cmd;
 	t_redir	*redir;
 
-	cmd = *cmd_list;
+	cmd = mini->cmd_list;
 	while (cmd)
 	{
 		redir = cmd->redir_list;
@@ -13,7 +13,7 @@ int	handle_heredoc(t_cmd **cmd_list)
 		{
 			if (redir->redir_type == HEREDOC)
 			{
-				cmd->fd_in = heredoc(redir->target);
+				cmd->fd_in = heredoc(redir->target, mini);
 				if (cmd->fd_in == -1)
 					return (0);
 			}
@@ -24,26 +24,66 @@ int	handle_heredoc(t_cmd **cmd_list)
 	return (1);
 }
 
-int	heredoc(char *limiter)
+char	*remove_quotes(char *str)
 {
-	int		heredoc[2];
-	char	*line;
+	char	*res;
+	int		i;
+	int		j;
 
-	if (pipe(heredoc) < 0)
+	res = malloc(ft_strlen(str) + 1);
+	if (!res)
+		return (NULL);
+	while (str[i])
+	{
+		if (str[i] != '\'' && str[i] != '\"')
+			res[j++] = str[i];
+		i++;
+	}
+	res[j] = '\0';
+	return (res);
+}
+
+int	is_quoted(char *limiter)
+{
+	while (*limiter)
+	{
+		if (*limiter == '\'' || *limiter == '\"')
+			return (1);
+		limiter++;
+	}
+	return (0);
+}
+
+void	*expanding(t_heredoc hd, t_mini *mini)
+{
+	hd.expanded = expand_heredoc(hd.line, mini);
+	write(hd.heredoc[1], hd.expanded, ft_strlen(hd.expanded));
+	free(hd.expanded);
+}
+
+int	heredoc(char *limiter, t_mini *mini)
+{
+	t_heredoc	hd;
+
+	hd.quote = is_quoted(limiter);
+	hd.clean_lim = remove_quotes(limiter);
+	if (pipe(hd.heredoc) < 0)
 		return (perror("pipe"), -1);
 	while (1)
 	{
-		line = readline("heredoc> ");
-		add_history(line);
-		if (!line || ft_strcmp(line, limiter) == 0)
+		hd.line = readline("heredoc> ");
+		if (!hd.line || ft_strcmp(hd.line, hd.clean_lim) == 0)
 		{
-			free(line);
+			free(hd.line);
 			break ;
 		}
-		write(heredoc[1], line, ft_strlen(line));
-		write(heredoc[1], "\n", 1);
-		free(line);
+		add_history(hd.line);
+		if (!hd.quote)
+			expanding(hd, mini);
+		else
+			write(hd.heredoc[1], hd.line, ft_strlen(hd.line));
+		write(hd.heredoc[1], "\n", 1);
+		free(hd.line);
 	}
-	close(heredoc[1]);
-	return (heredoc[0]);
+	return (free(hd.clean_lim), close(hd.heredoc[1]), hd.heredoc[0]);
 }
