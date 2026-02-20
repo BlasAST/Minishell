@@ -63,7 +63,11 @@ void	parser_tokens2(t_parse_token *pt)
 	pt->arg_count = count_args(pt->tok);
 	pt->cmd->args = malloc(sizeof(char *) * (pt->arg_count + 1));
 	if (!pt->cmd->args)
+	{
+		free(pt->cmd);
+		pt->cmd = NULL;
 		return ;
+	}
 	pt->i = 0;
 	while (pt->tok && pt->tok->type != PIPE && pt->tok->type != END_OF_INPUT
 		&& pt->tok->type != AND && pt->tok->type != OR)
@@ -93,6 +97,8 @@ t_cmd	*parser_tokens(t_token *tokens)
 	while (pt.tok && pt.tok->type != END_OF_INPUT)
 	{
 		parser_tokens2(&pt);
+		if (!pt.cmd)
+			return (NULL);
 		if (!pt.cmd_list)
 			pt.cmd_list = pt.cmd;
 		else

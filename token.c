@@ -13,6 +13,7 @@ void	parse_word3(char *input, int *i, t_parse_word *pw)
 	{
 		free(pw->tmp);
 		free(pw->segment);
+		pw->buf = NULL;
 		return ;
 	}
 	ft_strcpy(pw->buf, pw->tmp);
@@ -37,6 +38,7 @@ void	parse_word1(char *input, int *i, t_parse_word *pw)
 	{
 		free(pw->tmp);
 		free(pw->segment);
+		pw->buf = NULL;
 		return ;
 	}
 	ft_strcpy(pw->buf, pw->tmp);
@@ -58,6 +60,8 @@ char	*parse_word(char *input, int *i)
 			parse_word1(input, i, &pw);
 		else
 			parse_word3(input, i, &pw);
+		if (pw.buf == NULL)
+			return (NULL);
 	}
 	return (pw.buf);
 }

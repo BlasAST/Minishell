@@ -56,11 +56,14 @@ int	is_quoted(char *limiter)
 	return (0);
 }
 
-void	expanding(t_heredoc hd, t_mini *mini)
+void	expanding(t_heredoc *hd, t_mini *mini)
 {
-	hd.expanded = expand_heredoc(hd.line, mini);
-	write(hd.heredoc[1], hd.expanded, ft_strlen(hd.expanded));
-	free(hd.expanded);
+	hd->expanded = expand_heredoc(hd->line, mini);
+	if (hd->expanded)
+	{
+		write(hd->heredoc[1], hd->expanded, ft_strlen(hd->expanded));
+		free(hd->expanded);
+	}
 }
 
 int	heredoc(char *limiter, t_mini *mini)
@@ -69,6 +72,7 @@ int	heredoc(char *limiter, t_mini *mini)
 
 	hd.quote = is_quoted(limiter);
 	hd.clean_lim = remove_quotes_1(limiter);
+	hd.expanded = NULL;
 	if (pipe(hd.heredoc) < 0)
 		return (perror("pipe"), -1);
 	while (1)
@@ -81,7 +85,7 @@ int	heredoc(char *limiter, t_mini *mini)
 		}
 		add_history(hd.line);
 		if (!hd.quote)
-			expanding(hd, mini);
+			expanding(&hd, mini);
 		else
 			write(hd.heredoc[1], hd.line, ft_strlen(hd.line));
 		write(hd.heredoc[1], "\n", 1);
