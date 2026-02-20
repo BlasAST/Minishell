@@ -12,8 +12,6 @@ char *ft_strjoin_free(char *s1, char *s2)
     return (new);
 }
 
-#include "minishell.h"
-
 char	*expand_heredoc(char *line, t_mini *mini)
 {
 	char	**temp_split;
