@@ -1,34 +1,5 @@
 #include "minishell.h"
 
-char	*get_path(char *cmd, char **envp)
-{
-	t_get_path	gp;
-
-	gp = (t_get_path){0};
-	if (access(cmd, X_OK) == 0)
-		return (ft_strdup(cmd));
-	while (envp && envp[gp.i])
-	{
-		if (ft_strncmp(envp[gp.i], "PATH=", 5) == 0)
-		{
-			gp.path = envp[gp.i] + 5;
-			gp.paths = ft_split(gp.path, ':');
-			gp.j = 0;
-			while (gp.paths && gp.paths[gp.j])
-			{
-				gp.full = join_free(gp.paths[gp.j], "/", cmd);
-				if (access(gp.full, X_OK) == 0)
-					return (ft_free_split(gp.paths), gp.full);
-				free(gp.full);
-				gp.j++;
-			}
-			ft_free_split(gp.paths);
-		}
-		gp.i++;
-	}
-	return (NULL);
-}
-
 void	child_process(t_cmd *cmd, t_mini *mini, t_pipex *pipex)
 {
 	if (cmd->fd_in != STDIN_FILENO)
@@ -107,6 +78,8 @@ void	executor(t_mini *mini)
 {
 	t_pipex	pipex;
 	int		status;
+	pid_t	wpid;
+	pid_t	last_pid;
 
 	pipex.prev_fd = -1;
 	while (mini->cmd_list)
@@ -117,11 +90,12 @@ void	executor(t_mini *mini)
 		else
 		{
 			executor2(mini, mini->cmd_list, &pipex);
-			waitpid(mini->cmd_list->pid, &status, 0);
-			if (WIFEXITED(status))
-				mini->exit_code = WEXITSTATUS(status);
-			else if (WIFSIGNALED(status))
-				mini->exit_code = 128 + WTERMSIG(status);
+			last_pid = mini->cmd_list->pid;
+			while ((wpid = wait(&status)) > 0)
+			{
+				if (wpid == last_pid && WIFEXITED(status))
+					mini->exit_code = WEXITSTATUS(status);
+			}
 		}
 		is_and_or(mini);
 	}
