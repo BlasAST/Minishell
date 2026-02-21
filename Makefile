@@ -13,6 +13,7 @@ SRCS = main.c \
 	parse_tokens.c \
 	executor.c \
 	executor_utils.c \
+	executor_utils2.c \
 	expander_utils.c \
 	expander.c \
 	build_ins.c \

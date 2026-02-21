@@ -1,18 +1,32 @@
 #include "minishell.h"
 
-char	*join_free(char *s1, char *s2, char *s3)
+char	*get_path(char *cmd, char **envp)
 {
-	char	*joined;
-	size_t	len;
+	t_get_path	gp;
 
-	len = ft_strlen(s1) + ft_strlen(s2) + ft_strlen(s3) + 1;
-	joined = malloc(len);
-	if (!joined)
-		return (NULL);
-	ft_strcpy(joined, s1);
-	ft_strcat(joined, s2);
-	ft_strcat(joined, s3);
-	return (joined);
+	gp = (t_get_path){0};
+	if (access(cmd, X_OK) == 0)
+		return (ft_strdup(cmd));
+	while (envp && envp[gp.i])
+	{
+		if (ft_strncmp(envp[gp.i], "PATH=", 5) == 0)
+		{
+			gp.path = envp[gp.i] + 5;
+			gp.paths = ft_split(gp.path, ':');
+			gp.j = 0;
+			while (gp.paths && gp.paths[gp.j])
+			{
+				gp.full = join_free(gp.paths[gp.j], "/", cmd);
+				if (access(gp.full, X_OK) == 0)
+					return (ft_free_split(gp.paths), gp.full);
+				free(gp.full);
+				gp.j++;
+			}
+			ft_free_split(gp.paths);
+		}
+		gp.i++;
+	}
+	return (NULL);
 }
 
 void	mng_redirections(t_cmd *cmd)
@@ -44,19 +58,23 @@ void	is_and_or(t_mini *mini)
 	t_cmd	*cmd;
 
 	cmd = mini->cmd_list;
-	if (!cmd)
-		return ;
-	if (cmd->cond_type == AND && mini->exit_code != 0)
+	while (cmd && cmd->next && cmd->cond_type != AND && cmd->cond_type != OR)
+		cmd = cmd->next;
+	if (cmd && ((cmd->cond_type == AND && mini->exit_code != 0)
+			|| (cmd->cond_type == OR && mini->exit_code == 0)))
 	{
-		while (cmd && cmd->cond_type == AND)
+		cmd = cmd->next;
+		while (cmd && cmd->next && cmd->cond_type != END_OF_INPUT)
+		{
+			if (cmd->cond_type == AND || cmd->cond_type == OR)
+				break ;
 			cmd = cmd->next;
+		}
 	}
-	else if (cmd->cond_type == OR && mini->exit_code == 0)
-	{
-		while (cmd && cmd->cond_type == OR)
-			cmd = cmd->next;
-	}
-	mini->cmd_list = cmd->next;
+	if (cmd)
+		mini->cmd_list = cmd->next;
+	else
+		mini->cmd_list = NULL;
 }
 
 void	close_updt_pipe(t_cmd *cmd, t_pipex *pipex)

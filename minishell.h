@@ -172,6 +172,7 @@ int				heredoc(char *limiter, t_mini *mini);
 // Funciones executor
 void			executor(t_mini *mini);
 
+char			*get_path(char *cmd, char **envp);
 void			mng_redirections(t_cmd *cmd);
 char			*join_free(char *s1, char *s2, char *s3);
 void			is_and_or(t_mini *mini);
