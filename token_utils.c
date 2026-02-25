@@ -20,10 +20,16 @@ t_token	*new_token(t_token_type type, char *value)
 	if (!new)
 		return (NULL);
 	new->type = type;
-	if (!value)
-		new->value = NULL;
-	else
+	new->value = NULL;
+	if (value)
+	{
 		new->value = ft_strdup(value);
+		if (!new->value)
+		{
+			free(new);
+			return (NULL);
+		}
+	}
 	new->prev = NULL;
 	new->next = NULL;
 	return (new);

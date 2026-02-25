@@ -79,8 +79,8 @@ void	expander(t_mini *mini)
 					expand_token(mini, current);
 			}
 			if ((ft_strchr(current->value, '\'')
-					|| ft_strchr(current->value, '\"'))
-				&& current->prev->type != HEREDOC)
+				|| ft_strchr(current->value, '\"'))
+				&& (!current->prev || current->prev->type != HEREDOC))
 			{
 				printf("Token Value before removing quotes: %s\n",
 					current->value);

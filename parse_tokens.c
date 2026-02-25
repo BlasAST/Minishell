@@ -17,8 +17,7 @@ int	count_args(t_token *tok)
 	int	count;
 
 	count = 0;
-	while (tok && tok->type != PIPE && tok->type != END_OF_INPUT
-		&& tok->type != AND && tok->type != OR)
+	while (tok && tok->type < PIPE)
 	{
 		if (tok->type == WORD)
 			count++;
@@ -81,10 +80,22 @@ void	parser_tokens2(t_parse_token *pt)
 		return ;
 	}
 	pt->i = 0;
-	while (pt->tok && pt->tok->type < PIPE && pt->tok->type > END_OF_INPUT)
+	while (pt->tok && pt->tok->type < PIPE)
 	{
 		if (pt->tok->type == WORD)
-			pt->cmd->args[pt->i++] = ft_strdup(pt->tok->value);
+		{
+			pt->cmd->args[pt->i] = ft_strdup(pt->tok->value);
+			if (!pt->cmd->args[pt->i])
+			{
+				while (pt->i-- >= 0)
+					free(pt->cmd->args[pt->i]);
+				free(pt->cmd->args);
+				free(pt->cmd);
+				pt->cmd = NULL;
+				return ;
+			}
+			pt->i++;
+		}
 		else if (pt->tok->type >= REDIR_IN && pt->tok->type <= HEREDOC)
 		{
 			pt->cmd->redir_type = pt->tok->type;

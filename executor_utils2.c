@@ -12,17 +12,19 @@
 
 #include "minishell.h"
 
-char	*join_free(char *s1, char *s2, char *s3)
+char	*join_path(char *dir, char *sep, char *cmd)
 {
 	char	*joined;
 	size_t	len;
 
-	len = ft_strlen(s1) + ft_strlen(s2) + ft_strlen(s3) + 1;
+	if (!dir || !sep || !cmd)
+		return (NULL);
+	len = ft_strlen(dir) + ft_strlen(sep) + ft_strlen(cmd) + 1;
 	joined = malloc(len);
 	if (!joined)
 		return (NULL);
-	ft_strcpy(joined, s1);
-	ft_strcat(joined, s2);
-	ft_strcat(joined, s3);
+	ft_strcpy(joined, dir);
+	ft_strcat(joined, sep);
+	ft_strcat(joined, cmd);
 	return (joined);
 }

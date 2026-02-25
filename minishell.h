@@ -197,8 +197,8 @@ void			executor(t_mini *mini);
 
 char			*get_path(char *cmd, char **envp);
 void			mng_redirections(t_cmd *cmd);
-char			*join_free(char *s1, char *s2, char *s3);
-void			is_and_or(t_cmd **cmd, t_mini *mini);
+char			*join_path(char *s1, char *s2, char *s3);
+void			is_and_or(t_mini *mini);
 void			close_updt_pipe(t_cmd *cmd, t_pipex *pipex);
 void			path_found(t_cmd *cmd, t_mini *mini);
 
@@ -211,7 +211,7 @@ int				check_sintax(t_token *token_list);
 // Manejo de errores
 void			rerror(char *str, int error_status);
 int				sintax_error(char *msg);
-int				handle_sintax_error(t_mini *mini, char *input);
+int				handle_sintax_error(t_mini *mini);
 int				handle_heredoc_error(t_mini *mini, char *input);
 
 int				update_env(t_mini *mini, char *key, char *value);

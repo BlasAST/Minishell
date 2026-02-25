@@ -26,11 +26,10 @@ int	sintax_error(char *msg)
 	return (2);
 }
 
-int	handle_sintax_error(t_mini *mini, char *input)
+int	handle_sintax_error(t_mini *mini)
 {
 	mini->exit_code = 258;
 	free_all(mini);
-	free(input);
 	return (0);
 }
 

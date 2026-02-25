@@ -28,7 +28,7 @@ char	*get_path(char *cmd, char **envp)
 			gp.j = 0;
 			while (gp.paths && gp.paths[gp.j])
 			{
-				gp.full = join_free(gp.paths[gp.j], "/", cmd);
+				gp.full = join_path(gp.paths[gp.j], "/", cmd);
 				if (access(gp.full, X_OK) == 0)
 					return (ft_free_split(gp.paths), gp.full);
 				free(gp.full);

@@ -42,6 +42,14 @@ int	check_sintax(t_token *tok)
 				return (sintax_error2(tok));
 		if (tok->type >= REDIR_IN && tok->type <= HEREDOC)
 		{
+///////Codespace
+		if (tok->type == AND || tok->type == OR)
+			if (!tok->prev || !tok->next || tok->next->type == AND
+				|| tok->next->type == OR || tok->next->type == PIPE
+				|| (tok->prev->type >= REDIR_IN && tok->prev->type <= HEREDOC))
+				return (sintax_error2(tok));
+///////
+		if (tok->type >= REDIR_IN && tok->type <= HEREDOC)
 			if (!tok->next || tok->next->type != WORD)
 				return (sintax_error("newline"));
 			else if (tok->prev->type >= REDIR_IN && tok->prev->type <= HEREDOC)
