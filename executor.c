@@ -86,36 +86,47 @@ void	executor2(t_mini *mini, t_cmd *cmd, t_pipex *pipex)
 		close_updt_pipe(cmd, pipex);
 }
 
-//Aqui modificada la parte while pid xq no se puede asignación en condición
 void	executor(t_mini *mini)
 {
-	t_pipex	pipex;
-	int		status;
-	t_cmd	*cmd;
-	pid_t	wpid;
-	pid_t	last_pid;
+	t_executor	exc;
 
-	pipex.prev_fd = -1;
-	cmd = mini->cmd_list;
-	while (cmd)
+	exc.pipex.prev_fd = -1;
+	exc.cmd = mini->cmd_list;
+	while (exc.cmd)
 	{
-		if (cmd->args && cmd->args[0]
-			&& is_env_builtin(cmd->args[0]) && !cmd->next)
-			mini->exit_code = run_builtin(cmd, mini);
-		else
+		if (exc.cmd->args && exc.cmd->args[0]
+			&& is_env_builtin(exc.cmd->args[0]) && !exc.cmd->next)
 		{
-			executor2(mini, cmd, &pipex);
-			last_pid = cmd->pid;
-			wpid = wait(&status);
-			while (wpid > 0)
-			{
-				if (wpid == last_pid && WIFEXITED(status))
-					mini->exit_code = WEXITSTATUS(status);
-				wpid = wait(&status);
-			}
+			mini->exit_code = run_builtin(exc.cmd, mini);
+			is_and_or(&exc.cmd, mini);
+			exc.cmd = exc.cmd->next;
+			continue;
 		}
-		is_and_or(cmd, mini);
+		exc.runner = exc.cmd;
+		exc.last_pid = -1;
+		while (exc.runner && exc.runner->cond_type != AND && exc.runner->cond_type != OR)
+		{
+			executor2(mini, exc.runner, &exc.pipex);
+			exc.last_pid = exc.runner->pid;
+			exc.runner = exc.runner->next;
+		}
+		// else
+		// {
+		// 	executor2(mini, exc.cmd, &exc.pipex);
+		// 	exc.last_pid = exc.cmd->pid;
+		// 	exc.wpid = wait(&exc.status);
+		while ((exc.wpid = wait(&exc.status)) > 0)
+		{
+			if (exc.wpid == exc.last_pid && WIFEXITED(exc.status))
+				mini->exit_code = WEXITSTATUS(exc.status);
+		}
+		exc.cmd = exc.runner;
+		is_and_or(exc.cmd, mini);
+		if (!exc.cmd)
+			exc.pipex.prev_fd = -1;
 	}
-	while (wait(&status) > 0)
+		// is_and_or(exc.cmd, mini);
+		// exc.cmd = exc.cmd->next;
+	while (wait(&exc.status) > 0)
 		;
 }

@@ -142,6 +142,17 @@ typedef struct s_heredoc
 	int		quote;
 }	t_heredoc;
 
+typedef struct s_executor
+{
+	t_pipex	pipex;
+	int		status;
+	t_cmd	*cmd;
+	t_cmd	*runner;
+	pid_t	wpid;
+	pid_t	last_pid;
+}	t_executor;
+
+
 // global variable to intercept the signal
 extern int		g_signal_status;
 
@@ -187,7 +198,7 @@ void			executor(t_mini *mini);
 char			*get_path(char *cmd, char **envp);
 void			mng_redirections(t_cmd *cmd);
 char			*join_free(char *s1, char *s2, char *s3);
-void			is_and_or(t_cmd *cmd, t_mini *mini);
+void			is_and_or(t_cmd **cmd, t_mini *mini);
 void			close_updt_pipe(t_cmd *cmd, t_pipex *pipex);
 void			path_found(t_cmd *cmd, t_mini *mini);
 
