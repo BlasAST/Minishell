@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:19:13 by blas              #+#    #+#             */
-/*   Updated: 2026/02/25 02:20:36 by blas             ###   ########.fr       */
+/*   Updated: 2026/02/25 11:54:05 by andtruji         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,11 @@
 typedef enum e_token_type
 {
 	WORD,
-	PIPE,
 	REDIR_IN,
 	REDIR_OUT,
 	REDIR_APPEND,
 	HEREDOC,
+	PIPE,
 	AND,
 	OR,
 	END_OF_INPUT
@@ -187,7 +187,7 @@ void			executor(t_mini *mini);
 char			*get_path(char *cmd, char **envp);
 void			mng_redirections(t_cmd *cmd);
 char			*join_free(char *s1, char *s2, char *s3);
-void			is_and_or(t_mini *mini);
+void			is_and_or(t_cmd *cmd, t_mini *mini);
 void			close_updt_pipe(t_cmd *cmd, t_pipex *pipex);
 void			path_found(t_cmd *cmd, t_mini *mini);
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   frees.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:18:27 by blas              #+#    #+#             */
-/*   Updated: 2026/02/25 01:18:28 by blas             ###   ########.fr       */
+/*   Updated: 2026/02/25 11:39:35 by andtruji         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ void	free_env_list(t_env *env_list)
 		free(env_list);
 		env_list = tmp;
 	}
+	env_list = NULL;
 }
 
 void	free_token_list(t_token *list)
@@ -39,6 +40,7 @@ void	free_token_list(t_token *list)
 		free(list);
 		list = tmp;
 	}
+	list = NULL;
 }
 
 void	free_redir_list(t_redir *list)
@@ -53,6 +55,7 @@ void	free_redir_list(t_redir *list)
 		free(list);
 		list = tmp;
 	}
+	list = NULL;
 }
 
 void	free_cmd_list(t_cmd *list)
@@ -77,6 +80,7 @@ void	free_cmd_list(t_cmd *list)
 		free(list);
 		list = tmp;
 	}
+	list = NULL;
 }
 
 void	free_all(t_mini *mini)

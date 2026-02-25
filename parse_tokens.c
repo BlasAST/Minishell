@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_tokens.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:20:10 by blas              #+#    #+#             */
-/*   Updated: 2026/02/25 02:00:58 by blas             ###   ########.fr       */
+/*   Updated: 2026/02/25 11:52:59 by andtruji         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,13 +81,11 @@ void	parser_tokens2(t_parse_token *pt)
 		return ;
 	}
 	pt->i = 0;
-	while (pt->tok && pt->tok->type != PIPE && pt->tok->type != END_OF_INPUT
-		&& pt->tok->type != AND && pt->tok->type != OR)
+	while (pt->tok && pt->tok->type < PIPE && pt->tok->type > END_OF_INPUT)
 	{
 		if (pt->tok->type == WORD)
 			pt->cmd->args[pt->i++] = ft_strdup(pt->tok->value);
-		else if (pt->tok->type == REDIR_IN || pt->tok->type == REDIR_OUT
-			|| pt->tok->type == REDIR_APPEND || pt->tok->type == HEREDOC)
+		else if (pt->tok->type >= REDIR_IN && pt->tok->type <= HEREDOC)
 		{
 			pt->cmd->redir_type = pt->tok->type;
 			if (pt->tok->next)

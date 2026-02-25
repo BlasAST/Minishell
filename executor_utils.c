@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:09:02 by blas              #+#    #+#             */
-/*   Updated: 2026/02/25 01:23:01 by blas             ###   ########.fr       */
+/*   Updated: 2026/02/25 11:50:04 by andtruji         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,11 +65,8 @@ void	mng_redirections(t_cmd *cmd)
 	}
 }
 
-void	is_and_or(t_mini *mini)
+void	is_and_or(t_cmd *cmd, t_mini *mini)
 {
-	t_cmd	*cmd;
-
-	cmd = mini->cmd_list;
 	while (cmd && cmd->next && cmd->cond_type != AND && cmd->cond_type != OR)
 		cmd = cmd->next;
 	if (cmd && ((cmd->cond_type == AND && mini->exit_code != 0)
@@ -83,10 +80,6 @@ void	is_and_or(t_mini *mini)
 			cmd = cmd->next;
 		}
 	}
-	if (cmd)
-		mini->cmd_list = cmd->next;
-	else
-		mini->cmd_list = NULL;
 }
 
 void	close_updt_pipe(t_cmd *cmd, t_pipex *pipex)

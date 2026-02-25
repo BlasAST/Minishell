@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:15:12 by blas              #+#    #+#             */
-/*   Updated: 2026/02/25 01:56:41 by blas             ###   ########.fr       */
+/*   Updated: 2026/02/25 11:54:09 by andtruji         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,19 +91,21 @@ void	executor(t_mini *mini)
 {
 	t_pipex	pipex;
 	int		status;
+	t_cmd	*cmd;
 	pid_t	wpid;
 	pid_t	last_pid;
 
 	pipex.prev_fd = -1;
-	while (mini->cmd_list)
+	cmd = mini->cmd_list;
+	while (cmd)
 	{
-		if (mini->cmd_list->args && mini->cmd_list->args[0]
-			&& is_env_builtin(mini->cmd_list->args[0]) && !mini->cmd_list->next)
-			mini->exit_code = run_builtin(mini->cmd_list, mini);
+		if (cmd->args && cmd->args[0]
+			&& is_env_builtin(cmd->args[0]) && !cmd->next)
+			mini->exit_code = run_builtin(cmd, mini);
 		else
 		{
-			executor2(mini, mini->cmd_list, &pipex);
-			last_pid = mini->cmd_list->pid;
+			executor2(mini, cmd, &pipex);
+			last_pid = cmd->pid;
 			wpid = wait(&status);
 			while (wpid > 0)
 			{
@@ -112,7 +114,7 @@ void	executor(t_mini *mini)
 				wpid = wait(&status);
 			}
 		}
-		is_and_or(mini);
+		is_and_or(cmd, mini);
 	}
 	while (wait(&status) > 0)
 		;
