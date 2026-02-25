@@ -6,7 +6,7 @@
 /*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:15:12 by blas              #+#    #+#             */
-/*   Updated: 2026/02/25 01:15:13 by blas             ###   ########.fr       */
+/*   Updated: 2026/02/25 01:56:41 by blas             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@ void	executor2(t_mini *mini, t_cmd *cmd, t_pipex *pipex)
 		close_updt_pipe(cmd, pipex);
 }
 
+//Aqui modificada la parte while pid xq no se puede asignación en condición
 void	executor(t_mini *mini)
 {
 	t_pipex	pipex;
@@ -108,6 +109,7 @@ void	executor(t_mini *mini)
 			{
 				if (wpid == last_pid && WIFEXITED(status))
 					mini->exit_code = WEXITSTATUS(status);
+				wpid = wait(&status);
 			}
 		}
 		is_and_or(mini);

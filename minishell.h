@@ -6,7 +6,7 @@
 /*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:19:13 by blas              #+#    #+#             */
-/*   Updated: 2026/02/25 01:22:19 by blas             ###   ########.fr       */
+/*   Updated: 2026/02/25 02:20:36 by blas             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,8 +203,9 @@ int				sintax_error(char *msg);
 int				handle_sintax_error(t_mini *mini, char *input);
 int				handle_heredoc_error(t_mini *mini, char *input);
 
-//temp
 int				update_env(t_mini *mini, char *key, char *value);
+void			update_env_arr(t_mini *mini);
+void	update_shlvl(t_mini *mini);
 
 //builds-in
 int				ft_cd(t_cmd *cmd, t_mini *mini);

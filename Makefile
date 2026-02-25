@@ -7,6 +7,7 @@ SRCS = main.c \
 	token.c \
 	token_utils.c \
 	inits.c \
+	inits_utils.c \
 	env.c \
 	signal.c \
 	frees.c \

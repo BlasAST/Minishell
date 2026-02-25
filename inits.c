@@ -6,7 +6,7 @@
 /*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:18:42 by blas              #+#    #+#             */
-/*   Updated: 2026/02/25 01:18:43 by blas             ###   ########.fr       */
+/*   Updated: 2026/02/25 02:23:50 by blas             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,8 @@ void	init_mini(t_mini *mini, char **envp)
 {
 	ft_bzero(mini, sizeof(t_mini));
 	init_env(mini, envp);
-	mini->env_arr = envp;
+	update_shlvl(mini);
+	update_env_arr(mini);
 	init_fds(mini);
 	init_termios();
 	init_signals();
