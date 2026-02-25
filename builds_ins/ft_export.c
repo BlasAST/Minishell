@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_export.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/25 01:08:11 by blas              #+#    #+#             */
+/*   Updated: 2026/02/25 01:11:10 by blas             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
 // FUNCIONA CORRECTAMENTE
@@ -72,7 +84,7 @@ static void	add_to_env(t_mini *mini, char *arg)
 		key = ft_strdup(arg);
 		value = NULL;
 	}
-	if (update_env(mini, key, value) == 0) // ->  1
+	if (update_env(mini, key, value) == 0)
 	{
 		free(key);
 		free(value);

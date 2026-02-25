@@ -6,7 +6,7 @@
 /*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/20 18:47:25 by blas              #+#    #+#             */
-/*   Updated: 2026/02/20 19:31:25 by blas             ###   ########.fr       */
+/*   Updated: 2026/02/25 01:16:50 by blas             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ char	*get_env_val(t_env *env, char *key)
 	temp = env;
 	while (temp)
 	{
-		if (ft_strlen(key) == ft_strlen(temp->key) 
+		if (ft_strlen(key) == ft_strlen(temp->key)
 			&& ft_strncmp(temp->key, key, ft_strlen(key)) == 0)
 			return (ft_strdup(temp->value));
 		temp = temp->next;
@@ -99,7 +99,8 @@ void	expand_token(t_mini *mini, t_token *token)
 			in_dq = !in_dq;
 		if (token->value[i] == '\'' && ! in_dq)
 			in_sq = !in_sq;
-		if (token->value[i] == '$' && !in_sq && is_expansible(&(token->value[i + 1])))
+		if (token->value[i] == '$'
+			&& !in_sq && is_expansible(&(token->value[i + 1])))
 		{
 			val = expand_variable(token->value, &i, mini);
 			temp = ft_strjoin(res, val);
@@ -116,7 +117,6 @@ void	expand_token(t_mini *mini, t_token *token)
 			res = val;
 			i++;
 		}
-		
 	}
 	free(token->value);
 	token->value = res;

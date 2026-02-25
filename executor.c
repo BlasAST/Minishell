@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   executor.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/25 01:15:12 by blas              #+#    #+#             */
+/*   Updated: 2026/02/25 01:15:13 by blas             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	child_process(t_cmd *cmd, t_mini *mini, t_pipex *pipex)
@@ -91,7 +103,8 @@ void	executor(t_mini *mini)
 		{
 			executor2(mini, mini->cmd_list, &pipex);
 			last_pid = mini->cmd_list->pid;
-			while ((wpid = wait(&status)) > 0)
+			wpid = wait(&status);
+			while (wpid > 0)
 			{
 				if (wpid == last_pid && WIFEXITED(status))
 					mini->exit_code = WEXITSTATUS(status);

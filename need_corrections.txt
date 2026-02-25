@@ -1,0 +1,10 @@
+Errores de funciones con lineas de más:
+
+	ft_cd -> Error
+	ft_export -> Error
+	executor -> Error
+	expander_utils -> Error
+	expander -> Error
+	parser_tokens -> Error
+	main -> Error
+	error header -> Alineación y el otro error es pasable

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/25 01:19:13 by blas              #+#    #+#             */
+/*   Updated: 2026/02/25 01:22:19 by blas             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
@@ -161,9 +173,9 @@ void			free_all(t_mini *mini);
 // Funciones expander
 char			*remove_quotes(char *str);
 void			expand_token(t_mini *mini, t_token *token);
-void	expander(t_mini *mini);
-char	*expand_heredoc(char *line, t_mini *mini);
-char	*expand_variable(char *input, int *i, t_mini *mini);
+void			expander(t_mini *mini);
+char			*expand_heredoc(char *line, t_mini *mini);
+char			*expand_variable(char *input, int *i, t_mini *mini);
 
 t_cmd			*parser_tokens(t_token *tokens);
 

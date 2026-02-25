@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/25 01:08:49 by blas              #+#    #+#             */
+/*   Updated: 2026/02/25 01:11:48 by blas             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 // File for things related to the environment
@@ -12,23 +24,6 @@ int	find_path(t_env *env, char *str)
 	}
 	return (0);
 }
-
-// int	*get_value_env(t_env *env, char *str, char **send)
-// {
-// 	char	*temp;
-
-// 	while (env)
-// 	{
-// 		if (ft_strcmp(env->key, str) == 0)
-// 		{
-// 			temp = ft_strdup(env->value);
-// 			*send = temp;
-// 			return (1);
-// 		}
-// 		env = env->next;
-// 	}
-// 	return (0);
-// }
 
 int	*get_value_env(t_env *env, char *str, char **send)
 {

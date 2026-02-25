@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   executor_utils.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/25 01:09:02 by blas              #+#    #+#             */
+/*   Updated: 2026/02/25 01:23:01 by blas             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 char	*get_path(char *cmd, char **envp)
@@ -95,8 +107,7 @@ void	path_found(t_cmd *cmd, t_mini *mini)
 	if (!cmd->cmd_path)
 	{
 		write(2, "minishell: command not found: ", 30);
-		write(2, cmd->args[0], 
-			ft_strlen(cmd->args[0]));
+		write(2, cmd->args[0], ft_strlen(cmd->args[0]));
 		write(2, "\n", 1);
 		exit(127);
 	}

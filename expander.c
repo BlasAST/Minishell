@@ -1,15 +1,27 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   expander.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/25 01:16:55 by blas              #+#    #+#             */
+/*   Updated: 2026/02/25 01:18:20 by blas             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-char *ft_strjoin_free(char *s1, char *s2)
+char	*ft_strjoin_free(char *s1, char *s2)
 {
-    char *new;
+	char	*new;
 
-    if (!s1 || !s2)
-        return (NULL);
-    new = ft_strjoin(s1, s2);
-    free(s1);
-    free(s2);
-    return (new);
+	if (!s1 || !s2)
+		return (NULL);
+	new = ft_strjoin(s1, s2);
+	free(s1);
+	free(s2);
+	return (new);
 }
 
 char	*expand_heredoc(char *line, t_mini *mini)
@@ -70,11 +82,13 @@ void	expander(t_mini *mini)
 					|| ft_strchr(current->value, '\"'))
 				&& current->prev->type != HEREDOC)
 			{
-				printf("Token Value before removing quotes: %s\n", current->value);
+				printf("Token Value before removing quotes: %s\n",
+					current->value);
 				temp_str = remove_quotes(current->value);
 				free(current->value);
 				current->value = temp_str;
-				printf("Token Value after removing quotes: %s\n", current->value);
+				printf("Token Value after removing quotes: %s\n",
+					current->value);
 			}
 		}
 		current = current->next;
