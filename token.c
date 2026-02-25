@@ -69,18 +69,37 @@ char	*parse_word(char *input, int *i)
 void	tokenation(t_token **list, char *input, int *i)
 {
 	char	*word;
+	char	*tmp;
+	t_token	*new;
 
 	if (ispecial(&input[*i]))
 	{
-		add_token(list, new_token(get_type(&input[*i]),
-				ft_strndup(&input[*i], ispecial(&input[*i]))));
+		tmp = ft_strndup(&input[*i], ispecial(&input[*i]));
+		new = new_token(get_type(&input[*i]), tmp);
+		if (!new)
+		{
+			free_token_list(*list);
+			free(tmp);
+			return ;
+		}
+		add_token(list, new);
 		*i += ispecial(&input[*i]);
+		free(tmp);
 	}
 	else
 	{
 		word = parse_word(input, i);
 		if (word && *word)
-			add_token(list, new_token(WORD, word));
+		{
+			new = new_token(WORD, word);
+			if (!new)
+			{
+				free_token_list(*list);
+				free(word);
+				return ;
+			}
+			add_token(list, new);
+		}
 		free(word);
 	}
 }
@@ -99,6 +118,8 @@ t_token	*tokenize_input(char *input)
 		if (!input[i])
 			break ;
 		tokenation(&list, input, &i);
+		if (list == NULL && input[i])
+			return (NULL);
 	}
 	add_token(&list, new_token(END_OF_INPUT, NULL));
 	return (list);

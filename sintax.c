@@ -19,16 +19,16 @@ int	check_sintax(t_token *tok)
 		return (sintax_error2(tok));
 	while (tok && tok->next)
 	{
-		if (tok->type == PIPE && tok->next->type == PIPE)
+		if (tok->type == PIPE && (tok->next->type == PIPE
+				|| tok->next->type == AND || tok->prev->type == OR
+				|| (tok->prev->type >= REDIR_IN && tok->prev->type <= HEREDOC)))
 			return (sintax_error("|"));
 		if (tok->type == AND || tok->type == OR)
 			if (!tok->prev || !tok->next || tok->next->type == AND
 				|| tok->next->type == OR || tok->next->type == PIPE
-				|| (tok->prev->type == AND || tok->prev->type == OR
-					|| tok->prev->type == PIPE))
+				|| (tok->prev->type >= REDIR_IN && tok->prev->type <= HEREDOC))
 				return (sintax_error2(tok));
-		if (tok->type == REDIR_IN || tok->type == REDIR_OUT
-			|| tok->type == REDIR_APPEND || tok->type == HEREDOC)
+		if (tok->type >= REDIR_IN && tok->type <= HEREDOC)
 			if (!tok->next || tok->next->type != WORD)
 				return (sintax_error("newline"));
 		tok = tok->next;

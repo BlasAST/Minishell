@@ -13,6 +13,7 @@ void	free_env_list(t_env *env_list)
 		free(env_list);
 		env_list = tmp;
 	}
+	env_list = NULL;
 }
 
 void	free_token_list(t_token *list)
@@ -27,6 +28,7 @@ void	free_token_list(t_token *list)
 		free(list);
 		list = tmp;
 	}
+	list = NULL;
 }
 
 void	free_redir_list(t_redir *list)
@@ -41,6 +43,7 @@ void	free_redir_list(t_redir *list)
 		free(list);
 		list = tmp;
 	}
+	list = NULL;
 }
 
 void	free_cmd_list(t_cmd *list)
@@ -65,6 +68,7 @@ void	free_cmd_list(t_cmd *list)
 		free(list);
 		list = tmp;
 	}
+	list = NULL;
 }
 
 void	free_all(t_mini *mini)

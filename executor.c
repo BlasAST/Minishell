@@ -76,28 +76,36 @@ void	executor2(t_mini *mini, t_cmd *cmd, t_pipex *pipex)
 
 void	executor(t_mini *mini)
 {
+	t_cmd	*cmd;
 	t_pipex	pipex;
 	int		status;
-	pid_t	wpid;
-	pid_t	last_pid;
 
+	cmd = mini->cmd_list;
 	pipex.prev_fd = -1;
-	while (mini->cmd_list)
+	while (cmd)
 	{
-		if (mini->cmd_list->args && mini->cmd_list->args[0]
-			&& is_env_builtin(mini->cmd_list->args[0]) && !mini->cmd_list->next)
-			mini->exit_code = run_builtin(mini->cmd_list, mini);
+		if (cmd->args && cmd->args[0]
+			&& is_env_builtin(cmd->args[0]) && !cmd->next)
+		{
+			mini->exit_code = run_builtin(cmd, mini);
+			mini->cmd_list = cmd->next;
+			is_and_or(mini);
+			cmd = mini->cmd_list;
+			continue ;
+		}
 		else
 		{
-			executor2(mini, mini->cmd_list, &pipex);
-			last_pid = mini->cmd_list->pid;
-			while ((wpid = wait(&status)) > 0)
+			executor2(mini, cmd, &pipex);
+			if (!cmd->next || cmd->cond_type == AND 
+				|| cmd->cond_type == OR)
 			{
-				if (wpid == last_pid && WIFEXITED(status))
+				waitpid(cmd->pid, &status, 0);
+				if (WIFEXITED(status))
 					mini->exit_code = WEXITSTATUS(status);
 			}
 		}
 		is_and_or(mini);
+		cmd = cmd->next;
 	}
 	while (wait(&status) > 0)
 		;
