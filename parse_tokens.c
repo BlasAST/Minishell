@@ -23,7 +23,7 @@ int	count_args(t_token *tok)
 			count++;
 		tok = tok->next;
 	}
-	return (count);
+	return (count);	
 }
 
 static t_cmd	*new_cmd(void)
@@ -99,10 +99,11 @@ void	parser_tokens2(t_parse_token *pt)
 		else if (pt->tok->type >= REDIR_IN && pt->tok->type <= HEREDOC)
 		{
 			pt->cmd->redir_type = pt->tok->type;
-			if (pt->tok->next)
+			if (pt->tok->next && pt->tok->next->type == WORD)
+			{
 				pt->tok = pt->tok->next;
-			if (pt->tok && pt->tok->type == WORD)
 				add_redir(pt->cmd, pt->cmd->redir_type, pt->tok->value);
+			}
 		}
 		pt->tok = pt->tok->next;
 	}
@@ -114,6 +115,7 @@ t_cmd	*parser_tokens(t_token *tokens)
 	t_parse_token	pt;
 
 	pt.cmd_list = NULL;
+	pt.prev = NULL;
 	pt.tok = tokens;
 	while (pt.tok && pt.tok->type != END_OF_INPUT)
 	{

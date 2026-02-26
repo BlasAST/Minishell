@@ -81,28 +81,20 @@ char	*parse_word(char *input, int *i)
 void	tokenation(t_token **list, char *input, int *i)
 {
 	char	*word;
-<<<<<<< HEAD
-	t_token	*new;
-	char	*tmp;
-=======
 	char	*tmp;
 	t_token	*new;
->>>>>>> origin/andres
 
 	new = NULL;
 	if (ispecial(&input[*i]))
 	{
 		tmp = ft_strndup(&input[*i], ispecial(&input[*i]));
 		new = new_token(get_type(&input[*i]), tmp);
-<<<<<<< HEAD
-=======
 		if (!new)
 		{
 			free_token_list(*list);
 			free(tmp);
 			return ;
 		}
->>>>>>> origin/andres
 		add_token(list, new);
 		*i += ispecial(&input[*i]);
 		free(tmp);

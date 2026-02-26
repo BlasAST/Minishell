@@ -86,6 +86,20 @@ void	executor2(t_mini *mini, t_cmd *cmd, t_pipex *pipex)
 		close_updt_pipe(cmd, pipex);
 }
 
+static void	wait_for_children(t_mini *mini, t_executor *exc)
+{
+	while ((exc->wpid = wait(&exc->status)) > 0)
+	{
+		if (exc->wpid == exc->last_pid)
+		{
+			if (WIFEXITED(exc->status))
+				mini->exit_code = WEXITSTATUS(exc->status);
+			else if (WIFSIGNALED(exc->status))
+				mini->exit_code = 128 + WTERMSIG(exc->status);
+		}
+	}
+}
+
 void	executor(t_mini *mini)
 {
 	t_executor	exc;
@@ -98,35 +112,19 @@ void	executor(t_mini *mini)
 			&& is_env_builtin(exc.cmd->args[0]) && !exc.cmd->next)
 		{
 			mini->exit_code = run_builtin(exc.cmd, mini);
-			is_and_or(&exc.cmd, mini);
 			exc.cmd = exc.cmd->next;
 			continue;
 		}
-		exc.runner = exc.cmd;
-		exc.last_pid = -1;
-		while (exc.runner && exc.runner->cond_type != AND && exc.runner->cond_type != OR)
+		if (exc.prev && ((exc.prev->cond_type == AND && mini->exit_code != 0)
+			|| (exc.prev->cond_type == OR && mini->exit_code == 0)))
 		{
-			executor2(mini, exc.runner, &exc.pipex);
-			exc.last_pid = exc.runner->pid;
-			exc.runner = exc.runner->next;
+			exc.cmd = exc.cmd->next;
+			continue;
 		}
-		// else
-		// {
-		// 	executor2(mini, exc.cmd, &exc.pipex);
-		// 	exc.last_pid = exc.cmd->pid;
-		// 	exc.wpid = wait(&exc.status);
-		while ((exc.wpid = wait(&exc.status)) > 0)
-		{
-			if (exc.wpid == exc.last_pid && WIFEXITED(exc.status))
-				mini->exit_code = WEXITSTATUS(exc.status);
-		}
-		exc.cmd = exc.runner;
-		is_and_or(exc.cmd, mini);
-		if (!exc.cmd)
-			exc.pipex.prev_fd = -1;
+		executor2(mini, exc.cmd, &exc.pipex);
+		exc.last_pid = exc.cmd->pid;
+		wait_for_children(mini, &exc);
+		exc.prev = exc.cmd;
+		exc.cmd = exc.cmd->next;
 	}
-		// is_and_or(exc.cmd, mini);
-		// exc.cmd = exc.cmd->next;
-	while (wait(&exc.status) > 0)
-		;
 }

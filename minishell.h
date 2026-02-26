@@ -147,6 +147,7 @@ typedef struct s_executor
 	t_pipex	pipex;
 	int		status;
 	t_cmd	*cmd;
+	t_cmd	*prev;
 	t_cmd	*runner;
 	pid_t	wpid;
 	pid_t	last_pid;
@@ -198,7 +199,7 @@ void			executor(t_mini *mini);
 char			*get_path(char *cmd, char **envp);
 void			mng_redirections(t_cmd *cmd);
 char			*join_path(char *s1, char *s2, char *s3);
-void			is_and_or(t_mini *mini);
+void			is_and_or(t_cmd **cmd, t_mini *mini);
 void			close_updt_pipe(t_cmd *cmd, t_pipex *pipex);
 void			path_found(t_cmd *cmd, t_mini *mini);
 

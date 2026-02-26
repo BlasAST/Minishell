@@ -65,21 +65,56 @@ void	mng_redirections(t_cmd *cmd)
 	}
 }
 
+// void	is_and_or(t_cmd **cmd, t_mini *mini)
+// {
+// 	while (cmd && *cmd && (*cmd)->next && (*cmd)->cond_type != AND && (*cmd)->cond_type != OR)
+// 		*cmd = (*cmd)->next;
+// 	if (cmd && *cmd && (*cmd)->cond_type == AND && mini->exit_code != 0)
+// 	{
+// 		*cmd = (*cmd)->next;
+// 		while (cmd && *cmd && (*cmd)->cond_type != END_OF_INPUT)
+// 		{
+// 			if ((*cmd)->cond_type == AND || (*cmd)->cond_type == OR)
+// 				break ;
+// 			*cmd = (*cmd)->next;
+// 		}
+// 	}
+// 	if (*cmd)
+// 		*cmd = (*cmd)->next;
+// }
+
 void	is_and_or(t_cmd **cmd, t_mini *mini)
 {
-	while (cmd && *cmd && (*cmd)->next && (*cmd)->cond_type != AND && (*cmd)->cond_type != OR)
-		cmd = &(*cmd)->next;
-	if (cmd && *cmd && ((*cmd)->cond_type == AND && mini->exit_code != 0)
-			|| ((*cmd)->cond_type == OR && mini->exit_code == 0))
+	// avanzar hasta encontrar un operador AND / OR o fin
+	while (*cmd && (*cmd)->next
+		&& (*cmd)->cond_type != AND && (*cmd)->cond_type != OR)
+		*cmd = (*cmd)->next;
+
+	// saltar comandos según el exit_code y tipo de operador
+	if (*cmd && ((*cmd)->cond_type == AND && mini->exit_code != 0))
 	{
-		cmd = &(*cmd)->next;
-		while (cmd && *cmd && (*cmd)->cond_type != END_OF_INPUT)
+		*cmd = (*cmd)->next;
+		while (*cmd && (*cmd)->cond_type != END_OF_INPUT)
 		{
 			if ((*cmd)->cond_type == AND || (*cmd)->cond_type == OR)
 				break ;
-			cmd = &(*cmd)->next;
+			*cmd = (*cmd)->next;
 		}
 	}
+	else if (*cmd && ((*cmd)->cond_type == OR && mini->exit_code == 0))
+	{
+		*cmd = (*cmd)->next;
+		while (*cmd && (*cmd)->cond_type != END_OF_INPUT)
+		{
+			if ((*cmd)->cond_type == AND || (*cmd)->cond_type == OR)
+				break ;
+			*cmd = (*cmd)->next;
+		}
+	}
+
+	// finalmente, mover al siguiente comando si existe
+	if (*cmd)
+		*cmd = (*cmd)->next;
 }
 
 void	close_updt_pipe(t_cmd *cmd, t_pipex *pipex)
