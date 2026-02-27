@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bsiguenc <bsiguenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:09:02 by blas              #+#    #+#             */
-/*   Updated: 2026/02/27 11:53:08 by andtruji         ###   ########.fr       */
+/*   Updated: 2026/02/27 13:01:26 by bsiguenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,8 +128,10 @@ void	close_updt_pipe(t_cmd *cmd, t_pipex *pipex)
 	}
 	else
 	{
-		close(pipex->pipe_fd[0]);
-		close(pipex->pipe_fd[1]);
+		if (pipex->pipe_fd[0] != -1)
+			close(pipex->pipe_fd[0]);
+		if (pipex->pipe_fd[1] != -1)
+			close(pipex->pipe_fd[1]);
 		pipex->prev_fd = -1;
 	}
 }

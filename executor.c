@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bsiguenc <bsiguenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:15:12 by blas              #+#    #+#             */
-/*   Updated: 2026/02/27 11:53:14 by andtruji         ###   ########.fr       */
+/*   Updated: 2026/02/27 12:56:21 by bsiguenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,8 @@ void	executor(t_mini *mini)
 	t_executor	exc;
 
 	exc.pipex.prev_fd = -1;
+	exc.pipex.pipe_fd[0] = -1;
+	exc.pipex.pipe_fd[1] = -1;
 	exc.cmd = mini->cmd_list;
 	exc.prev = NULL;
 	while (exc.cmd)

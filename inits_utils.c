@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   inits_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: bsiguenc <bsiguenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 02:17:22 by blas              #+#    #+#             */
-/*   Updated: 2026/02/25 02:22:03 by blas             ###   ########.fr       */
+/*   Updated: 2026/02/27 14:06:49 by bsiguenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,34 +17,36 @@ void	update_shlvl(t_mini *mini)
 	char	*shlvl_str;
 	char	*new_shlvl_str;
 	int		shlvl_num;
+	int		*i;
 
 	shlvl_str = NULL;
-	get_value_env(mini->env_list, "SHLVL", &shlvl_str);
+	i = get_value_env(mini->env_list, "SHLVL", &shlvl_str);
 	if (shlvl_str)
 	{
 		shlvl_num = ft_atoi(shlvl_str) + 1;
 		new_shlvl_str = ft_itoa(shlvl_num);
+		free(shlvl_str);
 	}
 	else
 		new_shlvl_str = ft_strdup("1");
 	update_env(mini, "SHLVL", new_shlvl_str);
 	free(new_shlvl_str);
+	free(i);
 }
 
-static int	env_list_size(t_env *env_list)
-{
-	int	i;
+// static int	env_list_size(t_env *env_list)
+// {
+// 	int	i;
 
-	i = 0;
-	while (env_list)
-	{
-		i++;
-		env_list = env_list->next;
-	}
-	return (i);
-}
-
-
+// 	i = 0;
+// 	while (env_list)
+// 	{
+// 		i++;
+// 		env_list = env_list->next;
+// 	}
+// 	return (i);
+// }
+/* 
 void	update_env_arr(t_mini *mini)
 {
 	t_env	*temp;
@@ -69,4 +71,4 @@ void	update_env_arr(t_mini *mini)
 		i++;
 	}
 	mini->env_arr[i] = NULL;
-}
+} */

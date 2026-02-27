@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bsiguenc <bsiguenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:19:13 by blas              #+#    #+#             */
-/*   Updated: 2026/02/27 11:53:26 by andtruji         ###   ########.fr       */
+/*   Updated: 2026/02/27 14:07:00 by bsiguenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -217,7 +217,7 @@ int				handle_heredoc_error(t_mini *mini, char *input);
 
 int				update_env(t_mini *mini, char *key, char *value);
 void			update_env_arr(t_mini *mini);
-void	update_shlvl(t_mini *mini);
+void			update_shlvl(t_mini *mini);
 
 //builds-in
 int				ft_cd(t_cmd *cmd, t_mini *mini);
