@@ -6,7 +6,7 @@
 /*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:15:12 by blas              #+#    #+#             */
-/*   Updated: 2026/02/25 11:54:09 by andtruji         ###   ########.fr       */
+/*   Updated: 2026/02/27 11:53:14 by andtruji         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,22 +41,22 @@ void	child_process(t_cmd *cmd, t_mini *mini, t_pipex *pipex)
 		exit(run_builtin(cmd, mini));
 }
 
-void	no_args(t_cmd *cmd, t_pipex *pipex)
-{
-	if (pipex->prev_fd != -1)
-	{
-		dup2(pipex->prev_fd, STDIN_FILENO);
-		close(pipex->prev_fd);
-	}
-	if (cmd->next)
-	{
-		close(pipex->pipe_fd[0]);
-		dup2(pipex->pipe_fd[1], STDOUT_FILENO);
-		close(pipex->pipe_fd[1]);
-	}
-	mng_redirections(cmd);
-	exit(0);
-}
+// void	no_args(t_cmd *cmd, t_pipex *pipex)
+// {
+// 	if (pipex->prev_fd != -1)
+// 	{
+// 		dup2(pipex->prev_fd, STDIN_FILENO);
+// 		close(pipex->prev_fd);
+// 	}
+// 	if (cmd->next)
+// 	{
+// 		close(pipex->pipe_fd[0]);
+// 		dup2(pipex->pipe_fd[1], STDOUT_FILENO);
+// 		close(pipex->pipe_fd[1]);
+// 	}
+// 	mng_redirections(cmd);
+// 	exit(0);
+// }
 
 void	executor2(t_mini *mini, t_cmd *cmd, t_pipex *pipex)
 {
@@ -106,6 +106,7 @@ void	executor(t_mini *mini)
 
 	exc.pipex.prev_fd = -1;
 	exc.cmd = mini->cmd_list;
+	exc.prev = NULL;
 	while (exc.cmd)
 	{
 		if (exc.cmd->args && exc.cmd->args[0]

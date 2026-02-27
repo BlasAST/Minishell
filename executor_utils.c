@@ -6,7 +6,7 @@
 /*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:09:02 by blas              #+#    #+#             */
-/*   Updated: 2026/02/25 11:50:04 by andtruji         ###   ########.fr       */
+/*   Updated: 2026/02/27 11:53:08 by andtruji         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,7 +127,11 @@ void	close_updt_pipe(t_cmd *cmd, t_pipex *pipex)
 		pipex->prev_fd = pipex->pipe_fd[0];
 	}
 	else
+	{
+		close(pipex->pipe_fd[0]);
+		close(pipex->pipe_fd[1]);
 		pipex->prev_fd = -1;
+	}
 }
 
 void	path_found(t_cmd *cmd, t_mini *mini)

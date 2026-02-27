@@ -6,7 +6,7 @@
 /*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:20:32 by blas              #+#    #+#             */
-/*   Updated: 2026/02/25 11:54:42 by andtruji         ###   ########.fr       */
+/*   Updated: 2026/02/27 11:07:17 by andtruji         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int	check_sintax(t_token *tok)
 				return (sintax_error2(tok));
 		if (tok->type >= REDIR_IN && tok->type <= HEREDOC)
 		{
-			if (tok->prev->type >= REDIR_IN && tok->prev->type <= HEREDOC)
+			if (tok->prev && tok->prev->type >= 1 && tok->prev->type <= 4)
 				return (sintax_error2(tok));
 			else if (!tok->next || tok->next->type != WORD)
 				return (sintax_error("newline"));
