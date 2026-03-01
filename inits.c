@@ -12,8 +12,6 @@
 
 #include "minishell.h"
 
-// ** File for initialization of the entire mini structure
-
 void	init_signals(void)
 {
 	struct sigaction	sa;
@@ -53,17 +51,6 @@ void	init_env(t_mini *mini, char **envp)
 	}
 }
 
-static void	init_fds(t_mini *mini)
-{
-	mini->stdin_backup = dup(STDIN_FILENO);
-	mini->stdout_backup = dup(STDOUT_FILENO);
-	if (mini->stdin_backup == -1 || mini->stdout_backup == -1)
-	{
-		ft_putstr_fd("Error: Could not backup FDs\n", 2);
-		exit(1);
-	}
-}
-
 void	init_termios(void)
 {
 	struct termios	term_attrs;
@@ -79,7 +66,6 @@ void	init_mini(t_mini *mini, char **envp)
 	init_env(mini, envp);
 	mini->env_arr = envp;
 	update_shlvl(mini);
-	init_fds(mini);
 	init_termios();
 	init_signals();
 }

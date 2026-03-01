@@ -81,3 +81,9 @@ int	ispecial(char *c)
 		return (1);
 	return (0);
 }
+void	free_tk(t_token *list, char **tmp)
+{
+	free_token_list(&list);
+	if (*tmp)
+		free(*tmp);
+}

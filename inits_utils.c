@@ -17,11 +17,12 @@ void	update_shlvl(t_mini *mini)
 	char	*shlvl_str;
 	char	*new_shlvl_str;
 	int		shlvl_num;
-	int		*i;
+	// int		*i;
 
 	shlvl_str = NULL;
-	i = get_value_env(mini->env_list, "SHLVL", &shlvl_str);
-	if (shlvl_str)
+	// i = get_value_env(mini->env_list, "SHLVL", &shlvl_str);
+	// if (shlvl_str)
+	if (get_value_env(mini->env_list, "SHLVL", &shlvl_str))
 	{
 		shlvl_num = ft_atoi(shlvl_str) + 1;
 		new_shlvl_str = ft_itoa(shlvl_num);
@@ -31,7 +32,7 @@ void	update_shlvl(t_mini *mini)
 		new_shlvl_str = ft_strdup("1");
 	update_env(mini, "SHLVL", new_shlvl_str);
 	free(new_shlvl_str);
-	free(i);
+	// free(i);
 }
 
 // static int	env_list_size(t_env *env_list)

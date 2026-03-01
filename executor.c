@@ -36,27 +36,10 @@ void	child_process(t_cmd *cmd, t_mini *mini, t_pipex *pipex)
 		close(pipex->pipe_fd[1]);
 	}
 	if (!cmd->args || !cmd->args[0])
-		exit(0);
+		child_exit(mini, 0);
 	if (cmd->args && is_out_builtin(cmd->args[0]))
-		exit(run_builtin(cmd, mini));
+		child_exit(mini, run_builtin(cmd, mini));
 }
-
-// void	no_args(t_cmd *cmd, t_pipex *pipex)
-// {
-// 	if (pipex->prev_fd != -1)
-// 	{
-// 		dup2(pipex->prev_fd, STDIN_FILENO);
-// 		close(pipex->prev_fd);
-// 	}
-// 	if (cmd->next)
-// 	{
-// 		close(pipex->pipe_fd[0]);
-// 		dup2(pipex->pipe_fd[1], STDOUT_FILENO);
-// 		close(pipex->pipe_fd[1]);
-// 	}
-// 	mng_redirections(cmd);
-// 	exit(0);
-// }
 
 void	executor2(t_mini *mini, t_cmd *cmd, t_pipex *pipex)
 {
@@ -76,7 +59,7 @@ void	executor2(t_mini *mini, t_cmd *cmd, t_pipex *pipex)
 	}
 	if (cmd->pid == 0)
 	{
-		mng_redirections(cmd);
+		mng_redirections(cmd, mini);
 		child_process(cmd, mini, pipex);
 		if (!cmd->cmd_path)
 			cmd->cmd_path = get_path(cmd->args[0], mini->env_arr);
@@ -100,6 +83,54 @@ static void	wait_for_children(t_mini *mini, t_executor *exc)
 	}
 }
 
+void	execute_block(t_mini *mini, t_executor *exc)
+{
+	while (exc->cmd && exc->cmd->cond_type != AND
+		&& exc->cmd->cond_type != OR)
+	{
+		executor2(mini, exc->cmd, &exc->pipex);
+		exc->last_pid = exc->cmd->pid;
+		wait_for_children(mini, exc);
+		exc->prev = exc->cmd;
+		exc->cmd = exc->cmd->next;
+	}
+}
+
+// void	skip_block(t_mini *mini, t_executor *exc)
+// {
+// 	t_token_type type;
+
+// 	type = exc->cmd->cond_type;
+// 	if ((type == AND && mini->exit_code != 0)
+// 		|| (type == OR && mini->exit_code == 0))
+// 	{
+// 		while (exc->cmd && exc->cmd->cond_type == type)
+// 			exc->cmd = exc->cmd->next;
+// 	}
+// 	else
+// 		exc->cmd = exc->cmd->next;
+// }
+
+void	skip_block(t_mini *mini, t_executor *exc)
+{
+	t_token_type	type;
+	int				skip;
+
+	type = exc->cmd->cond_type;
+	skip = 0;
+	if (type == AND && mini->exit_code != 0)
+		skip = 1;
+	else if (type == OR && mini->exit_code == 0)
+		skip = 1;
+	exc->cmd = exc->cmd->next;
+	while (skip && exc->cmd)
+	{
+		if (exc->cmd->cond_type != type)
+			break ;
+		exc->cmd = exc->cmd->next;
+	}
+}
+
 void	executor(t_mini *mini)
 {
 	t_executor	exc;
@@ -116,18 +147,10 @@ void	executor(t_mini *mini)
 		{
 			mini->exit_code = run_builtin(exc.cmd, mini);
 			exc.cmd = exc.cmd->next;
-			continue;
+			continue ;
 		}
-		if (exc.prev && ((exc.prev->cond_type == AND && mini->exit_code != 0)
-			|| (exc.prev->cond_type == OR && mini->exit_code == 0)))
-		{
-			exc.cmd = exc.cmd->next;
-			continue;
-		}
-		executor2(mini, exc.cmd, &exc.pipex);
-		exc.last_pid = exc.cmd->pid;
-		wait_for_children(mini, &exc);
-		exc.prev = exc.cmd;
-		exc.cmd = exc.cmd->next;
+		execute_block(mini, &exc);
+		if (exc.cmd)
+			skip_block(mini, &exc);
 	}
 }

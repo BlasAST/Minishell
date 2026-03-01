@@ -73,47 +73,40 @@ char	*parse_word(char *input, int *i)
 		else
 			parse_word3(input, i, &pw);
 		if (pw.buf == NULL)
+		{
+			free(pw.buf);
 			return (NULL);
+		}
 	}
 	return (pw.buf);
 }
 
 void	tokenation(t_token **list, char *input, int *i)
 {
-	char	*word;
-	char	*tmp;
-	t_token	*new;
+	t_tokenation	tknt;
 
-	new = NULL;
+	tknt.new = NULL;
 	if (ispecial(&input[*i]))
 	{
-		tmp = ft_strndup(&input[*i], ispecial(&input[*i]));
-		new = new_token(get_type(&input[*i]), tmp);
-		if (!new)
-		{
-			free_token_list(*list);
-			free(tmp);
-			return ;
-		}
-		add_token(list, new);
+		tknt.tmp = ft_strndup(&input[*i], ispecial(&input[*i]));
+		tknt.new = new_token(get_type(&input[*i]), tknt.tmp);
+		if (!tknt.new)
+			return (free_tk(*list, &tknt.tmp)) ;
+		add_token(list, tknt.new);
 		*i += ispecial(&input[*i]);
-		free(tmp);
+		free(tknt.tmp);
 	}
 	else
 	{
-		word = parse_word(input, i);
-		if (word && *word)
+		tknt.word = parse_word(input, i);
+		if (tknt.word && *tknt.word)
 		{
-			new = new_token(WORD, word);
-			if (!new)
-			{
-				free_token_list(*list);
-				free(word);
-				return ;
-			}
-			add_token(list, new);
+			tknt.new = new_token(WORD, tknt.word);
+			if (!tknt.new)
+				return (free_tk(*list, &tknt.word)) ;
+			add_token(list, tknt.new);
 		}
-		free(word);
+		free(tknt.word);
 	}
 }
 

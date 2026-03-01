@@ -38,7 +38,6 @@ int	ft_exit(t_cmd *cmd, t_mini *mini)
 {
 	long long	exit_st;
 
-	write (1, "Función minishell\n", 19);
 	if (cmd->args[1])
 	{
 		if (!is_all_digit(cmd->args[1]))
@@ -58,6 +57,8 @@ int	ft_exit(t_cmd *cmd, t_mini *mini)
 	else
 		exit_st = mini->exit_code;
 	ft_putstr_fd("exit\n", 1);
+	free_env_list(&mini->env_list);
 	free_all(mini);
+	rl_clear_history();
 	exit(exit_st % 256);
 }

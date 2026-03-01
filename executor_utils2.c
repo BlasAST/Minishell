@@ -12,6 +12,14 @@
 
 #include "minishell.h"
 
+void	child_exit(t_mini *mini, int status)
+{
+	free_all(mini);
+	free_env_list(&mini->env_list);
+	rl_clear_history();
+	exit(status);
+}
+
 char	*join_path(char *dir, char *sep, char *cmd)
 {
 	char	*joined;

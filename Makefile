@@ -12,6 +12,7 @@ SRCS = main.c \
 	signal.c \
 	frees.c \
 	parse_tokens.c \
+	parser_tokens_utils.c \
 	executor.c \
 	executor_utils.c \
 	executor_utils2.c \
@@ -20,7 +21,7 @@ SRCS = main.c \
 	build_ins.c \
 	sintax.c \
 	errors.c \
-	heredoc.c
+	heredoc.c \
 
 SRCS_BUILDINS = builds_ins/ft_echo.c \
 				builds_ins/ft_cd.c \

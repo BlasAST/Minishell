@@ -88,6 +88,13 @@ typedef struct s_parse_token
 	int		i;
 }	t_parse_token;
 
+typedef struct s_tokenation
+{
+	t_token	*new;
+	char	*tmp;
+	char	*word;
+}	t_tokenation;
+
 typedef struct s_parse_word
 {
 	char	*buf;
@@ -105,8 +112,6 @@ typedef struct s_mini
 	t_cmd		*cmd_list;
 	char		**env_arr;
 	int			exit_code;
-	int			stdin_backup;
-	int			stdout_backup;
 }	t_mini;
 
 typedef struct s_pipex
@@ -163,24 +168,26 @@ void			add_token(t_token **list, t_token *new);
 t_token			*new_token(t_token_type type, char *value);
 t_token_type	get_type(char *s);
 int				ispecial(char *c);
+void			free_tk(t_token *list, char **tmp);
 
 // Funciones de inicialización
 void			init_mini(t_mini *mini, char **envp);
 
 // Funciones entorno
 t_env			*new_env_node(char *str);
-int				*get_value_env(t_env *env, char *str, char **send);
-int				*get_value_env(t_env *env, char *str, char **send);
+// int				*get_value_env(t_env *env, char *str, char **send);
+int				get_value_env(t_env *env, char *str, char **send);
 int				find_path(t_env *env, char *str);
 
 //Funciones de señal
 void			handle_sigint(int sig);
 
 // Funciones limpieza
-void			free_env_list(t_env *env_list);
-void			free_token_list(t_token *token_list);
+void			free_env_list(t_env **env_list);
+void			free_token_list(t_token **token_list);
 void			free_cmd_list(t_cmd *cmd_list);
 void			free_all(t_mini *mini);
+void			child_exit(t_mini *mini, int status);
 
 // Funciones expander
 char			*remove_quotes(char *str);
@@ -191,13 +198,16 @@ char			*expand_variable(char *input, int *i, t_mini *mini);
 
 t_cmd			*parser_tokens(t_token *tokens);
 
+int				count_args(t_token *tok);
+t_cmd			*new_cmd(void);
+
 int				handle_heredoc(t_mini *mini);
 int				heredoc(char *limiter, t_mini *mini);
 // Funciones executor
 void			executor(t_mini *mini);
 
 char			*get_path(char *cmd, char **envp);
-void			mng_redirections(t_cmd *cmd);
+void			mng_redirections(t_cmd *cmd, t_mini *mini);
 char			*join_path(char *s1, char *s2, char *s3);
 void			is_and_or(t_cmd **cmd, t_mini *mini);
 void			close_updt_pipe(t_cmd *cmd, t_pipex *pipex);
@@ -216,7 +226,6 @@ int				handle_sintax_error(t_mini *mini);
 int				handle_heredoc_error(t_mini *mini, char *input);
 
 int				update_env(t_mini *mini, char *key, char *value);
-void			update_env_arr(t_mini *mini);
 void			update_shlvl(t_mini *mini);
 
 //builds-in

@@ -58,12 +58,10 @@ int	main(int argc, char **argv, char **envp)
 		}
 		if (input[0] != '\0')
 			main2(&mini, input);
-		else
-			free_all(&mini);
 		free(input);
 	}
 	free_all(&mini);
-	free_env_list(mini.env_list);
+	free_env_list(&mini.env_list);
 	rl_clear_history();
 	return (0);
 }

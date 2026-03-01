@@ -82,13 +82,9 @@ void	expander(t_mini *mini)
 				|| ft_strchr(current->value, '\"'))
 				&& (!current->prev || current->prev->type != HEREDOC))
 			{
-				printf("Token Value before removing quotes: %s\n",
-					current->value);
 				temp_str = remove_quotes(current->value);
 				free(current->value);
 				current->value = temp_str;
-				printf("Token Value after removing quotes: %s\n",
-					current->value);
 			}
 		}
 		current = current->next;

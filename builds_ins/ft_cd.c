@@ -72,7 +72,6 @@ int	ft_cd(t_cmd *cmd, t_mini *mini)
 	char	*value_path;
 	char	cwd[4096];
 
-	write (1, "Función minishell\n", 19);
 	if (cmd->args[1] && cmd->args[2])
 	{
 		ft_putstr_fd("minishell: cd: too many arguments\n", 2);
