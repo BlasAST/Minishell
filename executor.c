@@ -85,72 +85,39 @@ static void	wait_for_children(t_mini *mini, t_executor *exc)
 
 void	execute_block(t_mini *mini, t_executor *exc)
 {
-	while (exc->cmd && exc->cmd->cond_type != AND
-		&& exc->cmd->cond_type != OR)
-	{
-		executor2(mini, exc->cmd, &exc->pipex);
-		exc->last_pid = exc->cmd->pid;
-		wait_for_children(mini, exc);
-		exc->prev = exc->cmd;
-		exc->cmd = exc->cmd->next;
-	}
-}
-
-// void	skip_block(t_mini *mini, t_executor *exc)
-// {
-// 	t_token_type type;
-
-// 	type = exc->cmd->cond_type;
-// 	if ((type == AND && mini->exit_code != 0)
-// 		|| (type == OR && mini->exit_code == 0))
-// 	{
-// 		while (exc->cmd && exc->cmd->cond_type == type)
-// 			exc->cmd = exc->cmd->next;
-// 	}
-// 	else
-// 		exc->cmd = exc->cmd->next;
-// }
-
-void	skip_block(t_mini *mini, t_executor *exc)
-{
-	t_token_type	type;
-	int				skip;
-
-	type = exc->cmd->cond_type;
-	skip = 0;
-	if (type == AND && mini->exit_code != 0)
-		skip = 1;
-	else if (type == OR && mini->exit_code == 0)
-		skip = 1;
+	
+	executor2(mini, exc->cmd, &exc->pipex);
+	exc->last_pid = exc->cmd->pid;
+	wait_for_children(mini, exc);
+	exc->prev = exc->cmd;
 	exc->cmd = exc->cmd->next;
-	while (skip && exc->cmd)
-	{
-		if (exc->cmd->cond_type != type)
-			break ;
-		exc->cmd = exc->cmd->next;
-	}
+	
 }
 
 void	executor(t_mini *mini)
 {
-	t_executor	exc;
+	t_executor	e;
 
-	exc.pipex.prev_fd = -1;
-	exc.pipex.pipe_fd[0] = -1;
-	exc.pipex.pipe_fd[1] = -1;
-	exc.cmd = mini->cmd_list;
-	exc.prev = NULL;
-	while (exc.cmd)
+	e.pipex.prev_fd = -1;
+	e.pipex.pipe_fd[0] = -1;
+	e.pipex.pipe_fd[1] = -1;
+	e.cmd = mini->cmd_list;
+	e.prev = NULL;
+	while (e.cmd)
 	{
-		if (exc.cmd->args && exc.cmd->args[0]
-			&& is_env_builtin(exc.cmd->args[0]) && !exc.cmd->next)
+		if (e.prev && ((e.prev->cond_type == AND && mini->exit_code != 0)
+			|| (e.prev->cond_type == OR && mini->exit_code == 0)))
 		{
-			mini->exit_code = run_builtin(exc.cmd, mini);
-			exc.cmd = exc.cmd->next;
+			sat_next(&e);
 			continue ;
 		}
-		execute_block(mini, &exc);
-		if (exc.cmd)
-			skip_block(mini, &exc);
+		if (e.cmd->args && e.cmd->args[0]
+			&& is_env_builtin(e.cmd->args[0]))
+		{
+			mini->exit_code = run_builtin(e.cmd, mini);
+			sat_next(&e);
+			continue ;
+		}
+		execute_block(mini, &e);
 	}
 }

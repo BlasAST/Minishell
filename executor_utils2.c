@@ -12,6 +12,12 @@
 
 #include "minishell.h"
 
+void	sat_next(t_executor *e)
+{
+	e->prev = e->cmd;
+	e->cmd = e->cmd->next;
+}
+
 void	child_exit(t_mini *mini, int status)
 {
 	free_all(mini);
