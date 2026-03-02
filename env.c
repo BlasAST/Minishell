@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bsiguenc <bsiguenc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:08:49 by blas              #+#    #+#             */
-/*   Updated: 2026/02/27 13:13:17 by bsiguenc         ###   ########.fr       */
+/*   Updated: 2026/03/02 01:55:19 by blas             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,28 +41,6 @@ int	get_value_env(t_env *env, char *str, char **send)
 	}
 	return (0); // No encontrado
 }
-
-// int	*get_value_env(t_env *env, char *str, char **send)
-// {
-// 	char	*temp;
-// 	int		*i;
-
-// 	i = malloc(sizeof(int));
-// 	if (!i)
-// 		return (NULL);
-// 	*i = 1;
-// 	while (env)
-// 	{
-// 		if (ft_strcmp(env->key, str) == 0)
-// 		{
-// 			temp = ft_strdup(env->value);
-// 			*send = temp;
-// 			return (i);
-// 		}
-// 		env = env->next;
-// 	}
-// 	return (0);
-// }
 
 t_env	*new_env_node(char *str)
 {

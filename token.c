@@ -6,7 +6,7 @@
 /*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:20:45 by blas              #+#    #+#             */
-/*   Updated: 2026/02/25 01:20:46 by blas             ###   ########.fr       */
+/*   Updated: 2026/03/02 02:47:00 by blas             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,10 @@ void	tokenation(t_token **list, char *input, int *i)
 		tknt.word = parse_word(input, i);
 		if (tknt.word && *tknt.word)
 		{
-			tknt.new = new_token(WORD, tknt.word);
+			if (is_wildcard_special(tknt.word))
+				tknt.new = new_token(WORD_SPECIAL, tknt.word);
+			else
+				tknt.new = new_token(WORD, tknt.word);
 			if (!tknt.new)
 				return (free_tk(*list, &tknt.word)) ;
 			add_token(list, tknt.new);

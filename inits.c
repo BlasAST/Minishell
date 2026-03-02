@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   inits.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bsiguenc <bsiguenc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:18:42 by blas              #+#    #+#             */
-/*   Updated: 2026/02/27 14:07:23 by bsiguenc         ###   ########.fr       */
+/*   Updated: 2026/03/02 01:35:22 by blas             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ void	init_mini(t_mini *mini, char **envp)
 {
 	ft_bzero(mini, sizeof(t_mini));
 	init_env(mini, envp);
-	mini->env_arr = envp;
+	get_envp(mini, envp);
 	update_shlvl(mini);
 	init_termios();
 	init_signals();

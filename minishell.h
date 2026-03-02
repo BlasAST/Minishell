@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bsiguenc <bsiguenc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:19:13 by blas              #+#    #+#             */
-/*   Updated: 2026/02/27 14:07:00 by bsiguenc         ###   ########.fr       */
+/*   Updated: 2026/03/02 03:01:32 by blas             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <termios.h>
+# include <dirent.h>
 # include "libft/libft.h"
 
 typedef enum e_token_type
@@ -38,7 +39,8 @@ typedef enum e_token_type
 	PIPE,
 	AND,
 	OR,
-	END_OF_INPUT
+	END_OF_INPUT,
+	WORD_SPECIAL
 }	t_token_type;
 
 typedef struct s_token
@@ -178,6 +180,7 @@ t_env			*new_env_node(char *str);
 // int				*get_value_env(t_env *env, char *str, char **send);
 int				get_value_env(t_env *env, char *str, char **send);
 int				find_path(t_env *env, char *str);
+void			get_envp(t_mini *mini, char **envp);
 
 //Funciones de señal
 void			handle_sigint(int sig);
@@ -236,5 +239,8 @@ int				ft_exit(t_cmd *cmd, t_mini *mini);
 int				ft_export(t_cmd *cmd, t_mini *mini);
 int				ft_unset(t_cmd *cmd, t_mini *mini);
 int				ft_pwd(t_cmd *cmd, t_mini *mini);
+
+// Functions wildcard
+int				is_wildcard_special(char *word);
 
 #endif
