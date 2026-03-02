@@ -3,25 +3,48 @@
 /*                                                        :::      ::::::::   */
 /*   inits_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bsiguenc <bsiguenc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 02:17:22 by blas              #+#    #+#             */
-/*   Updated: 2026/02/27 14:06:49 by bsiguenc         ###   ########.fr       */
+/*   Updated: 2026/03/02 01:57:22 by blas             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	update_env_arr(t_mini *mini)
+{
+	int		i;
+	char	*temp;
+	char	*full;
+	int		val_temp;
+
+	i = 0;
+	while (mini->env_arr[i] != NULL)
+	{
+		if (ft_strncmp(mini->env_arr[i], "SHLVL=", 6) == 0)
+		{
+			temp = ft_substr(mini->env_arr[i], 6, ft_strlen(mini->env_arr[i]));
+			val_temp = ft_atoi(temp) + 1;
+			free(temp);
+			temp = ft_itoa(val_temp);
+			full = ft_strjoin("SHLVL=", temp);
+			free(temp);
+			free(mini->env_arr[i]);
+			mini->env_arr[i] = full;
+			return ;
+		}
+		i++;
+	}
+}
 
 void	update_shlvl(t_mini *mini)
 {
 	char	*shlvl_str;
 	char	*new_shlvl_str;
 	int		shlvl_num;
-	// int		*i;
 
 	shlvl_str = NULL;
-	// i = get_value_env(mini->env_list, "SHLVL", &shlvl_str);
-	// if (shlvl_str)
 	if (get_value_env(mini->env_list, "SHLVL", &shlvl_str))
 	{
 		shlvl_num = ft_atoi(shlvl_str) + 1;
@@ -31,45 +54,23 @@ void	update_shlvl(t_mini *mini)
 	else
 		new_shlvl_str = ft_strdup("1");
 	update_env(mini, "SHLVL", new_shlvl_str);
+	update_env_arr(mini);
 	free(new_shlvl_str);
-	// free(i);
 }
 
-// static int	env_list_size(t_env *env_list)
-// {
-// 	int	i;
-
-// 	i = 0;
-// 	while (env_list)
-// 	{
-// 		i++;
-// 		env_list = env_list->next;
-// 	}
-// 	return (i);
-// }
-/* 
-void	update_env_arr(t_mini *mini)
+void	get_envp(t_mini *mini, char **envp)
 {
-	t_env	*temp;
-	char	*temp_str;
 	int		i;
 
-	mini->env_arr = malloc(sizeof(char *)
-			* (env_list_size(mini->env_list) + 1));
-	if (!mini->env_arr)
-		return ;
-	temp = mini->env_list;
 	i = 0;
-	while (temp)
+	while (envp[i])
+		i++;
+	mini->env_arr = malloc (sizeof(char *) * (i + 1));
+	i = 0;
+	while (envp[i] != NULL)
 	{
-		temp_str = ft_strjoin(temp->key, "=");
-		if (temp->value)
-			mini->env_arr[i] = ft_strjoin(temp_str, temp->value);
-		else
-			mini->env_arr[i] = ft_strdup(temp_str);
-		free(temp_str);
-		temp = temp->next;
+		mini->env_arr[i] = ft_strdup(envp[i]);
 		i++;
 	}
 	mini->env_arr[i] = NULL;
-} */
+}

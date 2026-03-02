@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bsiguenc <bsiguenc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:18:49 by blas              #+#    #+#             */
-/*   Updated: 2026/02/27 13:44:13 by bsiguenc         ###   ########.fr       */
+/*   Updated: 2026/03/02 02:07:41 by blas             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ int	main(int argc, char **argv, char **envp)
 	}
 	free_all(&mini);
 	free_env_list(&mini.env_list);
+	ft_free_split(mini.env_arr);
 	rl_clear_history();
 	return (0);
 }
