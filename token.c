@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:20:45 by blas              #+#    #+#             */
-/*   Updated: 2026/03/02 02:47:00 by blas             ###   ########.fr       */
+/*   Updated: 2026/03/03 13:37:49 by andtruji         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,7 @@ void	tokenation(t_token **list, char *input, int *i)
 			else
 				tknt.new = new_token(WORD, tknt.word);
 			if (!tknt.new)
-				return (free_tk(*list, &tknt.word)) ;
+				return (free_tk(*list, &tknt.word));
 			add_token(list, tknt.new);
 		}
 		free(tknt.word);

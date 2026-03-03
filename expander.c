@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:16:55 by blas              #+#    #+#             */
-/*   Updated: 2026/03/02 02:55:57 by blas             ###   ########.fr       */
+/*   Updated: 2026/03/03 14:34:46 by andtruji         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ void	expander(t_mini *mini)
 		}
 		else if (current->type == WORD_SPECIAL)
 		{
-			expand_asterisk_token(mini, &current);
+			expand_asterisk_token(mini, current);
 			if (!current)
 				break ;
 		}

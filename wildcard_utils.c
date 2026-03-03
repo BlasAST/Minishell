@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wildcard_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/02 02:45:38 by blas              #+#    #+#             */
-/*   Updated: 2026/03/02 03:07:10 by blas             ###   ########.fr       */
+/*   Updated: 2026/03/03 14:35:26 by andtruji         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,23 +32,25 @@ int	is_wildcard_special(char *word)
 	return (0);
 }
 
-void	expand_asterisk_token(t_mini mini, t_token *current)
+void	expand_asterisk_token(t_mini *mini, t_token *current)
 {
 	DIR				*dir;
 	struct dirent	*d_entry;
 
-	dir = readdir(".");
+	dir = opendir(".");
 	if (!dir)
 		return ;
+	(void) mini;
+	(void) current;
 	d_entry = readdir(dir);
-	while (d_entry != NULL)
-	{
-		if (d_entry->d_name[0] != '.')
-		{
+	// while (d_entry != NULL)
+	// {
+	// 	if (d_entry->d_name[0] != '.')
+	// 	{
 			
-		}
-		d_entry = readdir(dir);
-	}
+	// 	}
+	// 	d_entry = readdir(dir);
+	// }
 	closedir(dir);
 }
 
