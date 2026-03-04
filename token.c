@@ -6,7 +6,7 @@
 /*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:20:45 by blas              #+#    #+#             */
-/*   Updated: 2026/03/03 13:37:49 by andtruji         ###   ########.fr       */
+/*   Updated: 2026/03/04 11:06:52 by andtruji         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ void	tokenation(t_token **list, char *input, int *i)
 		tknt.tmp = ft_strndup(&input[*i], ispecial(&input[*i]));
 		tknt.new = new_token(get_type(&input[*i]), tknt.tmp);
 		if (!tknt.new)
-			return (free_tk(*list, &tknt.tmp)) ;
+			return (free_tk(*list, &tknt.tmp));
 		add_token(list, tknt.new);
 		*i += ispecial(&input[*i]);
 		free(tknt.tmp);

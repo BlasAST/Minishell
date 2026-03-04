@@ -6,7 +6,7 @@
 /*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:19:13 by blas              #+#    #+#             */
-/*   Updated: 2026/03/03 14:34:15 by andtruji         ###   ########.fr       */
+/*   Updated: 2026/03/04 15:03:17 by andtruji         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@ typedef enum e_token_type
 	PIPE,
 	AND,
 	OR,
+	LPAREN,
+	RPAREN,
 	END_OF_INPUT,
 	WORD_SPECIAL
 }	t_token_type;
@@ -73,6 +75,7 @@ typedef struct s_cmd
 	int				fd_in;
 	int				fd_out;
 	pid_t			pid;
+	int				subshell;
 	t_token_type	redir_type;
 	t_token_type	cond_type;
 	struct s_cmd	*next;
@@ -198,6 +201,7 @@ void			expand_token(t_mini *mini, t_token *token);
 void			expander(t_mini *mini);
 char			*expand_heredoc(char *line, t_mini *mini);
 char			*expand_variable(char *input, int *i, t_mini *mini);
+char			*ft_strjoin_free(char *s1, char *s2);
 
 t_cmd			*parser_tokens(t_token *tokens);
 
@@ -226,7 +230,7 @@ int				check_sintax(t_token *token_list);
 void			rerror(char *str, int error_status);
 int				sintax_error(char *msg);
 int				handle_sintax_error(t_mini *mini);
-int				handle_heredoc_error(t_mini *mini, char *input);
+int				handle_heredoc_error(t_mini *mini);
 
 int				update_env(t_mini *mini, char *key, char *value);
 void			update_shlvl(t_mini *mini);

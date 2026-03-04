@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:20:39 by blas              #+#    #+#             */
-/*   Updated: 2026/02/25 01:20:40 by blas             ###   ########.fr       */
+/*   Updated: 2026/03/04 12:47:48 by andtruji         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,10 @@ t_token_type	get_type(char *s)
 		return (REDIR_OUT);
 	if (!ft_strncmp(s, "|", 1))
 		return (PIPE);
+	if (!ft_strncmp(s, "(", 1))
+		return (LPAREN);
+	if (!ft_strncmp(s, ")", 1))
+		return (RPAREN);
 	return (WORD);
 }
 
@@ -77,10 +81,11 @@ int	ispecial(char *c)
 	if (!ft_strncmp(c, ">>", 2) || !ft_strncmp(c, "<<", 2)
 		|| !ft_strncmp(c, "&&", 2) || !ft_strncmp(c, "||", 2))
 		return (2);
-	if (*c == '|' || *c == '<' || *c == '>')
+	if (*c == '|' || *c == '<' || *c == '>' || *c == '(' || *c == ')')
 		return (1);
 	return (0);
 }
+
 void	free_tk(t_token *list, char **tmp)
 {
 	free_token_list(&list);

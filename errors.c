@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   errors.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:08:54 by blas              #+#    #+#             */
-/*   Updated: 2026/02/25 01:08:55 by blas             ###   ########.fr       */
+/*   Updated: 2026/03/04 11:54:06 by andtruji         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,9 @@ int	handle_sintax_error(t_mini *mini)
 	return (0);
 }
 
-int	handle_heredoc_error(t_mini *mini, char *input)
+int	handle_heredoc_error(t_mini *mini)
 {
 	mini->exit_code = 130;
 	free_all(mini);
-	free(input);
 	return (0);
 }

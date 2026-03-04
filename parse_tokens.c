@@ -6,7 +6,7 @@
 /*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:20:10 by blas              #+#    #+#             */
-/*   Updated: 2026/02/25 11:52:59 by andtruji         ###   ########.fr       */
+/*   Updated: 2026/03/04 14:51:41 by andtruji         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ void	parser_tokens2(t_parse_token *pt)
 	pt->i = 0;
 	while (pt->tok && pt->tok->type < PIPE)
 	{
-		if (tok_args(pt) && pt->tok->type >= REDIR_IN && pt->tok->type <= HEREDOC)
+		if (tok_args(pt) && pt->tok->type >= 1 && pt->tok->type <= 4)
 		{
 			pt->cmd->redir_type = pt->tok->type;
 			if (pt->tok->next && pt->tok->next->type == WORD)
@@ -88,6 +88,15 @@ void	parser_tokens2(t_parse_token *pt)
 	pt->cmd->args[pt->i] = NULL;
 }
 
+void	parser_tokens1(t_parse_token *pt)
+{
+	while (pt->tok && pt->tok->type == LPAREN)
+	{
+		if (pt->tok->type == RPAREN)
+			break ;
+	}
+}
+
 t_cmd	*parser_tokens(t_token *tokens)
 {
 	t_parse_token	pt;
@@ -97,6 +106,7 @@ t_cmd	*parser_tokens(t_token *tokens)
 	pt.tok = tokens;
 	while (pt.tok && pt.tok->type != END_OF_INPUT)
 	{
+		parser_tokens1(&pt);
 		parser_tokens2(&pt);
 		if (!pt.cmd)
 			return (NULL);
