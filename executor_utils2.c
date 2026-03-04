@@ -6,11 +6,20 @@
 /*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:09:08 by blas              #+#    #+#             */
-/*   Updated: 2026/03/04 12:13:05 by andtruji         ###   ########.fr       */
+/*   Updated: 2026/03/04 19:56:36 by andtruji         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	set_values(t_executor *e, t_cmd *cmd)
+{
+	e->pipex.prev_fd = -1;
+	e->pipex.pipe_fd[0] = -1;
+	e->pipex.pipe_fd[1] = -1;
+	e->cmd = cmd;
+	e->prev = NULL;
+}
 
 void	sat_next(t_executor *e)
 {

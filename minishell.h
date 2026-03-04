@@ -6,7 +6,7 @@
 /*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:19:13 by blas              #+#    #+#             */
-/*   Updated: 2026/03/04 15:03:17 by andtruji         ###   ########.fr       */
+/*   Updated: 2026/03/04 19:57:30 by andtruji         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,11 @@ typedef enum e_token_type
 	REDIR_OUT,
 	REDIR_APPEND,
 	HEREDOC,
+	LPAREN,
+	RPAREN,
 	PIPE,
 	AND,
 	OR,
-	LPAREN,
-	RPAREN,
 	END_OF_INPUT,
 	WORD_SPECIAL
 }	t_token_type;
@@ -75,7 +75,8 @@ typedef struct s_cmd
 	int				fd_in;
 	int				fd_out;
 	pid_t			pid;
-	int				subshell;
+	int				ishell;
+	t_cmd			*subshell;
 	t_token_type	redir_type;
 	t_token_type	cond_type;
 	struct s_cmd	*next;
@@ -180,7 +181,6 @@ void			init_mini(t_mini *mini, char **envp);
 
 // Funciones entorno
 t_env			*new_env_node(char *str);
-// int				*get_value_env(t_env *env, char *str, char **send);
 int				get_value_env(t_env *env, char *str, char **send);
 int				find_path(t_env *env, char *str);
 void			get_envp(t_mini *mini, char **envp);
@@ -207,11 +207,12 @@ t_cmd			*parser_tokens(t_token *tokens);
 
 int				count_args(t_token *tok);
 t_cmd			*new_cmd(void);
+t_token			*fd_subshell(t_token *tok);
 
 int				handle_heredoc(t_mini *mini);
 int				heredoc(char *limiter, t_mini *mini);
 // Funciones executor
-void			executor(t_mini *mini);
+void			executor(t_cmd *cmd_list, t_mini *mini);
 
 char			*get_path(char *cmd, char **envp);
 void			mng_redirections(t_cmd *cmd, t_mini *mini);
@@ -219,6 +220,7 @@ char			*join_path(char *s1, char *s2, char *s3);
 void			close_updt_pipe(t_cmd *cmd, t_pipex *pipex);
 void			path_found(t_cmd *cmd, t_mini *mini);
 void			sat_next(t_executor *e);
+void			set_values(t_executor *e, t_cmd *cmd);
 
 int				is_env_builtin(char *cmd);
 int				is_out_builtin(char *cmd);

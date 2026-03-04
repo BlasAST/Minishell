@@ -6,13 +6,40 @@
 /*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/01 16:29:12 by andtruji          #+#    #+#             */
-/*   Updated: 2026/03/04 15:32:56 by andtruji         ###   ########.fr       */
+/*   Updated: 2026/03/04 19:45:34 by andtruji         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+t_token	*fd_subshell(t_token *tok)
+{
+	int		lvl;
+	t_token	*start;
+	t_token	*sub;
+	t_token	*tmp;
 
+	lvl = 1;
+	tok = tok->next;
+	start = tok;
+	while (tok && lvl > 0)
+	{
+		if (tok->type == LPAREN)
+			lvl++;
+		else if (tok->type == RPAREN)
+			lvl--;
+		if (lvl > 0)
+			tok = tok->next;
+	}
+	sub = start;
+	tmp = tok;
+	if (tmp && tmp->next)
+		tok = tmp->next;
+	else
+		tok = NULL;
+	tmp->next = NULL;
+	return (sub);
+}
 
 int	count_args(t_token *tok)
 {

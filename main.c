@@ -6,7 +6,7 @@
 /*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:18:49 by blas              #+#    #+#             */
-/*   Updated: 2026/03/04 12:30:13 by andtruji         ###   ########.fr       */
+/*   Updated: 2026/03/04 19:57:16 by andtruji         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	main2(t_mini *mini, char *input)
 	}
 	if (!handle_heredoc(mini))
 		return (handle_heredoc_error(mini));
-	executor(mini);
+	executor(mini->cmd_list, mini);
 	free_all(mini);
 	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:20:10 by blas              #+#    #+#             */
-/*   Updated: 2026/03/04 14:51:41 by andtruji         ###   ########.fr       */
+/*   Updated: 2026/03/04 19:47:16 by andtruji         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,22 @@ int	tok_args(t_parse_token *pt)
 	return (0);
 }
 
-void	parser_tokens2(t_parse_token *pt)
+int	subshell(t_parse_token *pt)
+{
+	t_token	*sub;
+
+	if (pt->tok->type == LPAREN)
+	{
+		sub = ft_subshell(&pt);
+		pt->cmd->ishell = 1;
+		pt->cmd->subshell = parser_tokens(sub);
+		free_token_list(&sub);
+		return (1);
+	}
+	return (0);
+}
+
+void	parser_tokens1(t_parse_token *pt)
 {
 	pt->cmd = new_cmd();
 	pt->arg_count = count_args(pt->tok);
@@ -74,6 +89,8 @@ void	parser_tokens2(t_parse_token *pt)
 	pt->i = 0;
 	while (pt->tok && pt->tok->type < PIPE)
 	{
+		if (subshell(&pt))
+			continue ;
 		if (tok_args(pt) && pt->tok->type >= 1 && pt->tok->type <= 4)
 		{
 			pt->cmd->redir_type = pt->tok->type;
@@ -88,15 +105,6 @@ void	parser_tokens2(t_parse_token *pt)
 	pt->cmd->args[pt->i] = NULL;
 }
 
-void	parser_tokens1(t_parse_token *pt)
-{
-	while (pt->tok && pt->tok->type == LPAREN)
-	{
-		if (pt->tok->type == RPAREN)
-			break ;
-	}
-}
-
 t_cmd	*parser_tokens(t_token *tokens)
 {
 	t_parse_token	pt;
@@ -107,7 +115,6 @@ t_cmd	*parser_tokens(t_token *tokens)
 	while (pt.tok && pt.tok->type != END_OF_INPUT)
 	{
 		parser_tokens1(&pt);
-		parser_tokens2(&pt);
 		if (!pt.cmd)
 			return (NULL);
 		if (!pt.cmd_list)

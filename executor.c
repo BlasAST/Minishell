@@ -6,7 +6,7 @@
 /*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:15:12 by blas              #+#    #+#             */
-/*   Updated: 2026/03/04 13:42:27 by andtruji         ###   ########.fr       */
+/*   Updated: 2026/03/04 19:58:47 by andtruji         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,40 +69,42 @@ void	executor2(t_mini *mini, t_cmd *cmd, t_pipex *pipex)
 		close_updt_pipe(cmd, pipex);
 }
 
-static void	wait_for_children(t_mini *mini, t_executor *exc)
+void	wait_for_children(t_mini *mini, t_executor *e)
 {
-	while ((exc->wpid = wait(&exc->status)) > 0)
+	e->wpid = wait(&e->status);
+	while (e->wpid > 0)
 	{
-		if (exc->wpid == exc->last_pid)
+		if (e->wpid == e->last_pid)
 		{
-			if (WIFEXITED(exc->status))
-				mini->exit_code = WEXITSTATUS(exc->status);
-			else if (WIFSIGNALED(exc->status))
-				mini->exit_code = 128 + WTERMSIG(exc->status);
+			if (WIFEXITED(e->status))
+				mini->exit_code = WEXITSTATUS(e->status);
+			else if (WIFSIGNALED(e->status))
+				mini->exit_code = 128 + WTERMSIG(e->status);
 		}
+		e->wpid = wait(&e->status);
 	}
 }
 
-void	execute_block(t_mini *mini, t_executor *exc)
+void	execute_block(t_mini *mini, t_executor *e)
 {
-	executor2(mini, exc->cmd, &exc->pipex);
-	exc->last_pid = exc->cmd->pid;
-	wait_for_children(mini, exc);
-	exc->prev = exc->cmd;
-	exc->cmd = exc->cmd->next;
+	executor2(mini, e->cmd, &e->pipex);
+	e->last_pid = e->cmd->pid;
+	wait_for_children(mini, e);
+	e->prev = e->cmd;
+	e->cmd = e->cmd->next;
 }
 
-void	executor(t_mini *mini)
+void	executor(t_cmd *cmd, t_mini *mini)
 {
 	t_executor	e;
 
-	e.pipex.prev_fd = -1;
-	e.pipex.pipe_fd[0] = -1;
-	e.pipex.pipe_fd[1] = -1;
-	e.cmd = mini->cmd_list;
-	e.prev = NULL;
+	set_values(&e, cmd);
 	while (e.cmd)
 	{
+		if (e.cmd->ishell)
+		{
+			executor(e.cmd->subshell, mini);
+		}
 		if (e.prev && ((e.prev->cond_type == AND && mini->exit_code != 0)
 				|| (e.prev->cond_type == OR && mini->exit_code == 0)))
 		{
