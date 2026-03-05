@@ -97,7 +97,7 @@ void	tokenation(t_token **list, char *input, int *i)
 		free(tknt.tmp);
 	}
 	else
-		is_word(&tknt, input, i);
+		is_word(&tknt, input, i, list);
 }
 
 t_token	*tokenize_input(char *input)

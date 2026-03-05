@@ -76,7 +76,7 @@ typedef struct s_cmd
 	int				fd_out;
 	pid_t			pid;
 	int				ishell;
-	t_cmd			*subshell;
+	struct s_cmd	*subshell;
 	t_token_type	redir_type;
 	t_token_type	cond_type;
 	struct s_cmd	*next;
@@ -170,7 +170,8 @@ extern int		g_signal_status;
 
 t_token			*tokenize_input(char *input);
 
-void			is_word(t_tokenation *tknt, char *input, int *i);
+char			*parse_word(char *input, int *i);
+void			is_word(t_tokenation *tknt, char *input, int *i, t_token **list);
 void			add_token(t_token **list, t_token *new);
 t_token			*new_token(t_token_type type, char *value);
 t_token_type	get_type(char *s);
@@ -209,7 +210,7 @@ t_cmd			*parser_tokens(t_token *tokens);
 void			create_cmd(t_parse_token *pt);
 int				count_args(t_token *tok);
 t_cmd			*new_cmd(void);
-t_token			*fd_subshell(t_token *tok);
+t_token			*ft_subshell(t_token *tok);
 void			is_operator(t_parse_token *pt);
 
 int				handle_heredoc(t_mini *mini);

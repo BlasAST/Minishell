@@ -66,7 +66,7 @@ int	subshell(t_parse_token *pt)
 
 	if (pt->tok->type == LPAREN)
 	{
-		sub = ft_subshell(pt);
+		sub = ft_subshell(pt->tok);
 		pt->cmd->ishell = 1;
 		pt->cmd->subshell = parser_tokens(sub);
 		free_token_list(&sub);

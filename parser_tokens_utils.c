@@ -30,7 +30,7 @@ void	is_operator(t_parse_token *pt)
 		pt->tok = pt->tok->next;
 }
 
-t_token	*fd_subshell(t_token *tok)
+t_token	*ft_subshell(t_token *tok)
 {
 	int		lvl;
 	t_token	*start;

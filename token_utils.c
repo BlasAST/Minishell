@@ -12,20 +12,20 @@
 
 #include "minishell.h"
 
-void	is_word(t_tokenation *tknt, char *input, int *i)
+void	is_word(t_tokenation *tknt, char *input, int *i, t_token **list)
 {
-	tknt.word = parse_word(input, i);
-	if (tknt.word && *tknt.word)
+	tknt->word = parse_word(input, i);
+	if (tknt->word && *tknt->word)
 	{
-		if (is_wildcard_special(tknt.word))
-			tknt.new = new_token(WORD_SPECIAL, tknt.word);
+		if (is_wildcard_special(tknt->word))
+			tknt->new = new_token(WORD_SPECIAL, tknt->word);
 		else
-			tknt.new = new_token(WORD, tknt.word);
-		if (!tknt.new)
-			return (free_tk(*list, &tknt.word));
-		add_token(list, tknt.new);
+			tknt->new = new_token(WORD, tknt->word);
+		if (!tknt->new)
+			return (free_tk(*list, &tknt->word));
+		add_token(list, tknt->new);
 	}
-	free(tknt.word);
+	free(tknt->word);
 }
 
 t_token	*new_token(t_token_type type, char *value)
