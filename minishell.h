@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:19:13 by blas              #+#    #+#             */
-/*   Updated: 2026/03/05 09:45:00 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/04 14:11:26 by blas             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -255,5 +255,8 @@ int				ft_pwd(t_cmd *cmd, t_mini *mini);
 // Functions wildcard
 int				is_wildcard_special(char *word);
 void			expand_asterisk_token(t_mini *mini, t_token *current);
+int				match_pattern(char *pattern, char *str);
+char			**get_wildcard_matches(char *pattern, int count);
+int				count_matches(char *pattern);
 
 #endif

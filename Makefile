@@ -22,7 +22,8 @@ SRCS = main.c \
 	sintax.c \
 	errors.c \
 	heredoc.c \
-	wildcard_utils.c
+	wildcard_utils.c \
+	wildcard_utils_2.c
 
 SRCS_BUILDINS = builds_ins/ft_echo.c \
 				builds_ins/ft_cd.c \

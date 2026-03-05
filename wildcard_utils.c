@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wildcard_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
+/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/02 02:45:38 by blas              #+#    #+#             */
-/*   Updated: 2026/03/03 14:35:26 by andtruji         ###   ########.fr       */
+/*   Updated: 2026/03/04 14:20:59 by blas             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,23 +34,41 @@ int	is_wildcard_special(char *word)
 
 void	expand_asterisk_token(t_mini *mini, t_token *current)
 {
-	DIR				*dir;
-	struct dirent	*d_entry;
+	int		count;
+	char	**matches;
+	int		i;
+	t_token	*temp_next;
+	t_token	*new_node;
 
-	dir = opendir(".");
-	if (!dir)
+	(void)mini;
+	count = count_matches(current->value);
+	if (count == 0)
+	{
+		current->type = WORD;
 		return ;
-	(void) mini;
-	(void) current;
-	d_entry = readdir(dir);
-	// while (d_entry != NULL)
-	// {
-	// 	if (d_entry->d_name[0] != '.')
-	// 	{
-			
-	// 	}
-	// 	d_entry = readdir(dir);
-	// }
-	closedir(dir);
+	}
+
+	matches = get_wildcard_matches(current->value, count);
+	if (!matches)
+		return ;
+	free(current->value);
+	current->value = ft_strdup(matches[0]);
+	current->type = WORD;
+	temp_next = current->next;
+	i = 1;
+	while (i < count)
+	{
+		new_node = malloc(sizeof(t_token));
+		new_node->value = ft_strdup(matches[i]);
+		new_node->type = WORD;
+		current->next = new_node;
+		current = new_node;
+		i++;
+	}
+	current->next = temp_next;
+	if (temp_next)
+		temp_next->prev = current;
+	ft_free_split(matches);
 }
+
 
