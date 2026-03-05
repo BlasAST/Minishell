@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   errors.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:08:54 by blas              #+#    #+#             */
-/*   Updated: 2026/03/04 11:54:06 by andtruji         ###   ########.fr       */
+/*   Updated: 2026/03/05 09:23:18 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,4 +38,11 @@ int	handle_heredoc_error(t_mini *mini)
 	mini->exit_code = 130;
 	free_all(mini);
 	return (0);
+}
+
+void	free_tk(t_token *list, char **tmp)
+{
+	free_token_list(&list);
+	if (*tmp)
+		free(*tmp);
 }

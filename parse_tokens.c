@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_tokens.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:20:10 by blas              #+#    #+#             */
-/*   Updated: 2026/03/04 19:47:16 by andtruji         ###   ########.fr       */
+/*   Updated: 2026/03/05 09:30:22 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ int	subshell(t_parse_token *pt)
 
 	if (pt->tok->type == LPAREN)
 	{
-		sub = ft_subshell(&pt);
+		sub = ft_subshell(pt);
 		pt->cmd->ishell = 1;
 		pt->cmd->subshell = parser_tokens(sub);
 		free_token_list(&sub);
@@ -77,9 +77,7 @@ int	subshell(t_parse_token *pt)
 
 void	parser_tokens1(t_parse_token *pt)
 {
-	pt->cmd = new_cmd();
-	pt->arg_count = count_args(pt->tok);
-	pt->cmd->args = malloc(sizeof(char *) * (pt->arg_count + 1));
+	create_cmd(pt);
 	if (!pt->cmd->args)
 	{
 		free(pt->cmd);
@@ -89,7 +87,7 @@ void	parser_tokens1(t_parse_token *pt)
 	pt->i = 0;
 	while (pt->tok && pt->tok->type < PIPE)
 	{
-		if (subshell(&pt))
+		if (subshell(pt))
 			continue ;
 		if (tok_args(pt) && pt->tok->type >= 1 && pt->tok->type <= 4)
 		{
@@ -125,13 +123,7 @@ t_cmd	*parser_tokens(t_token *tokens)
 			pt.cmd->prev = pt.prev;
 		}
 		pt.prev = pt.cmd;
-		if (pt.tok && (pt.tok->type == AND || pt.tok->type == OR))
-		{
-			pt.cmd->cond_type = pt.tok->type;
-			pt.tok = pt.tok->next;
-		}
-		else if (pt.tok && pt.tok->type == PIPE)
-			pt.tok = pt.tok->next;
+		is_operator(&pt);
 	}
 	return (pt.cmd_list);
 }

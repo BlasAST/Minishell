@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:15:12 by blas              #+#    #+#             */
-/*   Updated: 2026/03/04 19:58:47 by andtruji         ###   ########.fr       */
+/*   Updated: 2026/03/05 09:32:33 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ void	executor2(t_mini *mini, t_cmd *cmd, t_pipex *pipex)
 	}
 	if (cmd->pid == 0)
 	{
+		is_subshell(cmd, mini);
 		mng_redirections(cmd, mini);
 		child_process(cmd, mini, pipex);
 		if (!cmd->cmd_path)
@@ -101,21 +102,17 @@ void	executor(t_cmd *cmd, t_mini *mini)
 	set_values(&e, cmd);
 	while (e.cmd)
 	{
-		if (e.cmd->ishell)
-		{
-			executor(e.cmd->subshell, mini);
-		}
 		if (e.prev && ((e.prev->cond_type == AND && mini->exit_code != 0)
 				|| (e.prev->cond_type == OR && mini->exit_code == 0)))
 		{
-			sat_next(&e);
+			set_next(&e);
 			continue ;
 		}
 		if (e.cmd->args && e.cmd->args[0]
 			&& is_env_builtin(e.cmd->args[0]))
 		{
 			mini->exit_code = run_builtin(e.cmd, mini);
-			sat_next(&e);
+			set_next(&e);
 			continue ;
 		}
 		execute_block(mini, &e);

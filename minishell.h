@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:19:13 by blas              #+#    #+#             */
-/*   Updated: 2026/03/04 19:57:30 by andtruji         ###   ########.fr       */
+/*   Updated: 2026/03/05 09:45:00 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,6 +170,7 @@ extern int		g_signal_status;
 
 t_token			*tokenize_input(char *input);
 
+void			is_word(t_tokenation *tknt, char *input, int *i);
 void			add_token(t_token **list, t_token *new);
 t_token			*new_token(t_token_type type, char *value);
 t_token_type	get_type(char *s);
@@ -205,21 +206,25 @@ char			*ft_strjoin_free(char *s1, char *s2);
 
 t_cmd			*parser_tokens(t_token *tokens);
 
+void			create_cmd(t_parse_token *pt);
 int				count_args(t_token *tok);
 t_cmd			*new_cmd(void);
 t_token			*fd_subshell(t_token *tok);
+void			is_operator(t_parse_token *pt);
 
 int				handle_heredoc(t_mini *mini);
 int				heredoc(char *limiter, t_mini *mini);
 // Funciones executor
 void			executor(t_cmd *cmd_list, t_mini *mini);
 
+
+void			is_subshell(t_cmd *cmd, t_mini *mini);
 char			*get_path(char *cmd, char **envp);
 void			mng_redirections(t_cmd *cmd, t_mini *mini);
 char			*join_path(char *s1, char *s2, char *s3);
 void			close_updt_pipe(t_cmd *cmd, t_pipex *pipex);
 void			path_found(t_cmd *cmd, t_mini *mini);
-void			sat_next(t_executor *e);
+void			set_next(t_executor *e);
 void			set_values(t_executor *e, t_cmd *cmd);
 
 int				is_env_builtin(char *cmd);

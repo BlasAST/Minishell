@@ -3,21 +3,38 @@
 /*                                                        :::      ::::::::   */
 /*   parser_tokens_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/01 16:29:12 by andtruji          #+#    #+#             */
-/*   Updated: 2026/03/04 19:45:34 by andtruji         ###   ########.fr       */
+/*   Updated: 2026/03/05 09:30:40 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+void	create_cmd(t_parse_token *pt)
+{
+	pt->cmd = new_cmd();
+	pt->arg_count = count_args(pt->tok);
+	pt->cmd->args = malloc(sizeof(char *) * (pt->arg_count + 1));
+}
+
+void	is_operator(t_parse_token *pt)
+{
+	if (pt->tok && (pt->tok->type == AND || pt->tok->type == OR))
+	{
+		pt->cmd->cond_type = pt->tok->type;
+		pt->tok = pt->tok->next;
+	}
+	else if (pt->tok && pt->tok->type == PIPE)
+		pt->tok = pt->tok->next;
+}
+
 t_token	*fd_subshell(t_token *tok)
 {
 	int		lvl;
 	t_token	*start;
-	t_token	*sub;
-	t_token	*tmp;
+	t_token	*end;
 
 	lvl = 1;
 	tok = tok->next;
@@ -31,25 +48,36 @@ t_token	*fd_subshell(t_token *tok)
 		if (lvl > 0)
 			tok = tok->next;
 	}
-	sub = start;
-	tmp = tok;
-	if (tmp && tmp->next)
-		tok = tmp->next;
-	else
-		tok = NULL;
-	tmp->next = NULL;
-	return (sub);
+	end = tok;
+	if (end)
+		end->next = NULL;
+	return (start);
 }
 
 int	count_args(t_token *tok)
 {
 	int	count;
+	int	lvl;
 
 	count = 0;
 	while (tok && tok->type < PIPE)
 	{
 		if (tok->type == WORD)
 			count++;
+		else if (tok->type == LPAREN)
+		{
+			lvl = 1;
+			tok = tok->next;
+			while (tok && lvl > 0)
+			{
+				if (tok->type == LPAREN)
+					lvl++;
+				else if (tok->type == RPAREN)
+					lvl--;
+				tok = tok->next;
+			}
+			continue ;
+		}
 		tok = tok->next;
 	}
 	return (count);

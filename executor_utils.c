@@ -3,14 +3,47 @@
 /*                                                        :::      ::::::::   */
 /*   executor_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bsiguenc <bsiguenc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:09:02 by blas              #+#    #+#             */
-/*   Updated: 2026/02/27 13:01:26 by bsiguenc         ###   ########.fr       */
+/*   Updated: 2026/03/05 09:45:10 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	is_subshell(t_cmd *cmd, t_mini *mini)
+{
+	if (cmd->ishell)
+	{
+		executor(cmd->subshell, mini);
+		exit(mini->exit_code);
+	}
+}
+
+// int	is_subshell(t_cmd *cmd, t_mini *mini, t_executor *e)
+// {
+// 	pid_t	pid;
+// 	int		status;
+
+// 	if (cmd->ishell)
+// 	{
+// 		pid = fork();
+// 		if (pid == 0)
+// 		{
+// 			executor(cmd->subshell, mini);
+// 			exit(mini->exit_code);
+// 		}
+// 		waitpid(pid, &status, 0);
+// 		if (WIFEXISTED(status))
+// 			mini->exit_code = WEXITSTATUS(status);
+// 		else if (WIFSIGNALED(status))
+// 			mini->exit_code = 128 + WTERMSIG(status);
+// 		set_next(&e);
+// 		return (1);
+// 	}
+// 	return (0);
+// }
 
 char	*get_path(char *cmd, char **envp)
 {
@@ -62,25 +95,6 @@ void	mng_redirections(t_cmd *cmd, t_mini *mini)
 			child_exit(mini, 1);
 		}
 		redir = redir->next;
-	}
-}
-
-void	close_updt_pipe(t_cmd *cmd, t_pipex *pipex)
-{
-	if (pipex->prev_fd != -1)
-		close(pipex->prev_fd);
-	if (cmd->next && cmd->cond_type != AND && cmd->cond_type != OR)
-	{
-		close(pipex->pipe_fd[1]);
-		pipex->prev_fd = pipex->pipe_fd[0];
-	}
-	else
-	{
-		if (pipex->pipe_fd[0] != -1)
-			close(pipex->pipe_fd[0]);
-		if (pipex->pipe_fd[1] != -1)
-			close(pipex->pipe_fd[1]);
-		pipex->prev_fd = -1;
 	}
 }
 
