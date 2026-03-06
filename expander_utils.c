@@ -6,7 +6,7 @@
 /*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/20 18:47:25 by blas              #+#    #+#             */
-/*   Updated: 2026/02/25 01:16:50 by blas             ###   ########.fr       */
+/*   Updated: 2026/03/06 01:45:39 by blas             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,43 @@ char	*expand_variable(char *input, int *i, t_mini *mini)
 	return (val);
 }
 
+static char	*append_literal(char *res, char *value, int *i)
+{
+	char	*tmp;
+
+	tmp = ft_substr(value, *i, 1);
+	res = ft_strjoin_free(res, tmp);
+	(*i)++;
+	return (res);
+}
+
 void	expand_token(t_mini *mini, t_token *token)
+{
+	int		i;
+	int		q[2];
+	char	*res;
+
+	i = 0;
+	q[0] = 0;
+	q[1] = 0;
+	res = ft_strdup("");
+	while (token->value[i])
+	{
+		if (token->value[i] == '\"' && !q[0])
+			q[1] = !q[1];
+		else if (token->value[i] == '\'' && !q[1])
+			q[0] = !q[0];
+		if (token->value[i] == '$' && !q[0]
+			&& is_expansible(&(token->value[i + 1])))
+			res = ft_strjoin_free(res, expand_variable(token->value, &i, mini));
+		else
+			res = append_literal(res, token->value, &i);
+	}
+	free(token->value);
+	token->value = res;
+}
+
+/* void	expand_token(t_mini *mini, t_token *token)
 {
 	int		i;
 	int		in_sq;
@@ -121,3 +157,4 @@ void	expand_token(t_mini *mini, t_token *token)
 	free(token->value);
 	token->value = res;
 }
+ */

@@ -111,6 +111,18 @@ void	parser_tokens1(t_parse_token *pt)
 	pt->cmd->args[pt->i] = NULL;
 }
 
+static void	linked(t_parse_token *pt)
+{
+	if (!pt->cmd_list)
+		pt->cmd_list = pt->cmd;
+	else
+	{
+		pt->prev->next = pt->cmd;
+		pt->cmd->prev = pt->prev;
+	}
+	pt->prev = pt->cmd;
+}
+
 t_cmd	*parser_tokens(t_token *tokens)
 {
 	t_parse_token	pt;
@@ -121,6 +133,29 @@ t_cmd	*parser_tokens(t_token *tokens)
 	while (pt.tok && pt.tok->type != END_OF_INPUT)
 	{
 		parser_tokens1(&pt);
+		if (!pt.cmd)
+			return (NULL);
+		linked(&pt);
+		if (pt.tok && (pt.tok->type == AND || pt.tok->type == OR))
+		{
+			pt.cmd->cond_type = pt.tok->type;
+			pt.tok = pt.tok->next;
+		}
+		else if (pt.tok && pt.tok->type == PIPE)
+			pt.tok = pt.tok->next;
+	}
+	return (pt.cmd_list);
+}
+/* t_cmd	*parser_tokens(t_token *tokens)
+{
+	t_parse_token	pt;
+
+	pt.cmd_list = NULL;
+	pt.prev = NULL;
+	pt.tok = tokens;
+	while (pt.tok && pt.tok->type != END_OF_INPUT)
+	{
+		parser_tokens2(&pt);
 		if (!pt.cmd)
 			return (NULL);
 		if (!pt.cmd_list)
@@ -134,4 +169,4 @@ t_cmd	*parser_tokens(t_token *tokens)
 		is_operator(&pt);
 	}
 	return (pt.cmd_list);
-}
+} */

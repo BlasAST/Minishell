@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   sintax.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
+/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:20:32 by blas              #+#    #+#             */
 /*   Updated: 2026/03/04 14:35:05 by andtruji         ###   ########.fr       */
