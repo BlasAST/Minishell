@@ -6,7 +6,7 @@
 /*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:20:39 by blas              #+#    #+#             */
-/*   Updated: 2026/02/25 01:20:40 by blas             ###   ########.fr       */
+/*   Updated: 2026/03/06 01:21:25 by blas             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,7 @@ int	ispecial(char *c)
 		return (1);
 	return (0);
 }
+
 void	free_tk(t_token *list, char **tmp)
 {
 	free_token_list(&list);

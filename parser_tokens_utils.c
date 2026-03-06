@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_tokens_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
+/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/01 16:29:12 by andtruji          #+#    #+#             */
-/*   Updated: 2026/03/01 16:29:12 by andtruji         ###   ########.fr       */
+/*   Updated: 2026/03/06 01:26:54 by blas             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	count_args(t_token *tok)
 			count++;
 		tok = tok->next;
 	}
-	return (count);	
+	return (count);
 }
 
 t_cmd	*new_cmd(void)

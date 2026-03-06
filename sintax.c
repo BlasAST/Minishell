@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   sintax.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
+/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:20:32 by blas              #+#    #+#             */
-/*   Updated: 2026/02/27 11:07:17 by andtruji         ###   ########.fr       */
+/*   Updated: 2026/03/06 01:26:24 by blas             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,10 @@ int	check_sintax(t_token *tok)
 				&& tok->prev->type <= OR))
 			return (sintax_error("|"));
 		if (tok->type == AND || tok->type == OR)
-			if ((!tok->prev || (tok->prev->type >= PIPE && tok->prev->type <= OR)
-				|| (tok->prev->type >= REDIR_IN && tok->prev->type <= HEREDOC)))
+			if ((!tok->prev || (tok->prev->type >= PIPE
+						&& tok->prev->type <= OR)
+					|| (tok->prev->type >= REDIR_IN
+						&& tok->prev->type <= HEREDOC)))
 				return (sintax_error2(tok));
 		if (tok->type >= REDIR_IN && tok->type <= HEREDOC)
 		{

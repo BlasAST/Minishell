@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bsiguenc <bsiguenc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:15:12 by blas              #+#    #+#             */
-/*   Updated: 2026/02/27 12:56:21 by bsiguenc         ###   ########.fr       */
+/*   Updated: 2026/03/06 01:20:08 by blas             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,8 @@ void	executor2(t_mini *mini, t_cmd *cmd, t_pipex *pipex)
 
 static void	wait_for_children(t_mini *mini, t_executor *exc)
 {
-	while ((exc->wpid = wait(&exc->status)) > 0)
+	exc->wpid = wait(&exc->status);
+	while (exc->wpid > 0)
 	{
 		if (exc->wpid == exc->last_pid)
 		{
@@ -80,18 +81,17 @@ static void	wait_for_children(t_mini *mini, t_executor *exc)
 			else if (WIFSIGNALED(exc->status))
 				mini->exit_code = 128 + WTERMSIG(exc->status);
 		}
+		exc->wpid = wait(&exc->status);
 	}
 }
 
 void	execute_block(t_mini *mini, t_executor *exc)
 {
-	
 	executor2(mini, exc->cmd, &exc->pipex);
 	exc->last_pid = exc->cmd->pid;
 	wait_for_children(mini, exc);
 	exc->prev = exc->cmd;
 	exc->cmd = exc->cmd->next;
-	
 }
 
 void	executor(t_mini *mini)
@@ -106,7 +106,7 @@ void	executor(t_mini *mini)
 	while (e.cmd)
 	{
 		if (e.prev && ((e.prev->cond_type == AND && mini->exit_code != 0)
-			|| (e.prev->cond_type == OR && mini->exit_code == 0)))
+				|| (e.prev->cond_type == OR && mini->exit_code == 0)))
 		{
 			sat_next(&e);
 			continue ;

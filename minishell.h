@@ -6,7 +6,7 @@
 /*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:19:13 by blas              #+#    #+#             */
-/*   Updated: 2026/03/04 14:11:26 by blas             ###   ########.fr       */
+/*   Updated: 2026/03/06 01:47:52 by blas             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,7 +160,6 @@ typedef struct s_executor
 	pid_t	last_pid;
 }	t_executor;
 
-
 // global variable to intercept the signal
 extern int		g_signal_status;
 
@@ -171,7 +170,6 @@ t_token			*new_token(t_token_type type, char *value);
 t_token_type	get_type(char *s);
 int				ispecial(char *c);
 void			free_tk(t_token *list, char **tmp);
-
 // Funciones de inicialización
 void			init_mini(t_mini *mini, char **envp);
 
@@ -246,5 +244,8 @@ void			expand_asterisk_token(t_mini *mini, t_token *current);
 int				match_pattern(char *pattern, char *str);
 char			**get_wildcard_matches(char *pattern, int count);
 int				count_matches(char *pattern);
+
+//Correcciones:
+char			*ft_strjoin_free(char *s1, char *s2);
 
 #endif

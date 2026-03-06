@@ -6,7 +6,7 @@
 /*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/02 02:45:38 by blas              #+#    #+#             */
-/*   Updated: 2026/03/04 14:20:59 by blas             ###   ########.fr       */
+/*   Updated: 2026/03/06 01:27:16 by blas             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ void	expand_asterisk_token(t_mini *mini, t_token *current)
 		current->type = WORD;
 		return ;
 	}
-
 	matches = get_wildcard_matches(current->value, count);
 	if (!matches)
 		return ;
@@ -70,5 +69,3 @@ void	expand_asterisk_token(t_mini *mini, t_token *current)
 		temp_next->prev = current;
 	ft_free_split(matches);
 }
-
-

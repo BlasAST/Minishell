@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
+/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:16:55 by blas              #+#    #+#             */
-/*   Updated: 2026/03/03 14:34:46 by andtruji         ###   ########.fr       */
+/*   Updated: 2026/03/06 02:04:27 by blas             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,49 @@ char	*ft_strjoin_free(char *s1, char *s2)
 	return (new);
 }
 
+static char	*expand_heredoc_j(char *word, t_mini *mini, char *res)
+{
+	char	*temp;
+	int		j;
+
+	j = 0;
+	while (word[j])
+	{
+		if (word[j] == '$')
+			res = ft_strjoin_free(res, expand_variable(word, &j, mini));
+		else
+		{
+			temp = ft_substr(word, j, 1);
+			res = ft_strjoin_free(res, temp);
+			j++;
+		}
+	}
+	return (res);
+}
+
 char	*expand_heredoc(char *line, t_mini *mini)
+{
+	char	**temp_split;
+	char	*res;
+	int		i;
+
+	if (!line)
+		return (NULL);
+	res = ft_strdup("");
+	temp_split = ft_split(line, ' ');
+	i = 0;
+	while (temp_split[i])
+	{
+		res = expand_heredoc_j(temp_split[i], mini, res);
+		if (temp_split[i + 1])
+			res = ft_strjoin_free(res, ft_strdup(" "));
+		i++;
+	}
+	ft_free_split(temp_split);
+	return (res);
+}
+
+/* char	*expand_heredoc(char *line, t_mini *mini)
 {
 	char	**temp_split;
 	char	*new_str;
@@ -61,7 +103,7 @@ char	*expand_heredoc(char *line, t_mini *mini)
 	}
 	ft_free_split(temp_split);
 	return (res);
-}
+} */
 
 void	expander(t_mini *mini)
 {
