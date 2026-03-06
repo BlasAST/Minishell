@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   errors.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:08:54 by blas              #+#    #+#             */
-/*   Updated: 2026/02/25 01:08:55 by blas             ###   ########.fr       */
+/*   Updated: 2026/03/05 09:23:18 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,15 +28,21 @@ int	sintax_error(char *msg)
 
 int	handle_sintax_error(t_mini *mini)
 {
-	mini->exit_code = 258;
+	mini->exit_code = 2;
 	free_all(mini);
 	return (0);
 }
 
-int	handle_heredoc_error(t_mini *mini, char *input)
+int	handle_heredoc_error(t_mini *mini)
 {
 	mini->exit_code = 130;
 	free_all(mini);
-	free(input);
 	return (0);
+}
+
+void	free_tk(t_token *list, char **tmp)
+{
+	free_token_list(&list);
+	if (*tmp)
+		free(*tmp);
 }

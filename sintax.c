@@ -6,7 +6,7 @@
 /*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:20:32 by blas              #+#    #+#             */
-/*   Updated: 2026/03/06 01:26:24 by blas             ###   ########.fr       */
+/*   Updated: 2026/03/04 14:35:05 by andtruji         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,33 +25,45 @@ int	sintax_error2(t_token *tok)
 	return (0);
 }
 
-int	check_sintax(t_token *tok)
+int	check_sintax2(t_token *tok)
 {
-	if (!tok)
-		return (0);
-	if (tok->type == PIPE || tok->type == AND || tok->type == OR)
-		return (sintax_error2(tok));
-	while (tok && tok->next)
-	{
-		if (tok->type == PIPE && (tok->prev->type >= REDIR_IN
-				&& tok->prev->type <= OR))
-			return (sintax_error("|"));
-		if (tok->type == AND || tok->type == OR)
-			if ((!tok->prev || (tok->prev->type >= PIPE
-						&& tok->prev->type <= OR)
-					|| (tok->prev->type >= REDIR_IN
-						&& tok->prev->type <= HEREDOC)))
-				return (sintax_error2(tok));
-		if (tok->type >= REDIR_IN && tok->type <= HEREDOC)
+	if (tok->type >= REDIR_IN && tok->type <= HEREDOC)
 		{
 			if (tok->prev && tok->prev->type >= 1 && tok->prev->type <= 4)
 				return (sintax_error2(tok));
 			else if (!tok->next || tok->next->type != WORD)
 				return (sintax_error("newline"));
 		}
+	if (tok->type == LPAREN)
+		if (tok->prev && tok->prev->type >= 1 && tok->prev->type <= 4)
+			return (sintax_error("("));
+	if (tok->type == RPAREN)
+		if (tok->prev && ((tok->prev->type >= 1 && tok->prev->type <= 4)
+			|| (tok->prev->type >= PIPE && tok->prev->type <= OR)))
+			return (sintax_error(")"));
+	return (0);
+}
+
+int	check_sintax(t_token *tok)
+{
+	if (!tok)
+		return (0);
+	if (tok->type == PIPE || tok->type == AND || tok->type == OR || tok->type == RPAREN)
+		return (sintax_error2(tok));
+	while (tok && tok->next)
+	{
+		if (tok->type == 7 && ((tok->prev->type >= 1 && tok->prev->type <= 5)
+			|| (tok->prev->type >= PIPE && tok->prev->type <= OR)))
+			return (sintax_error("|"));
+		if (tok->type == AND || tok->type == OR)
+			if ((tok->prev->type >= 1 && tok->prev->type <= 5)
+			|| (tok->prev->type >= PIPE && tok->prev->type <= OR))
+				return (sintax_error2(tok));
+		if (check_sintax2(tok))
+			return (2);
 		tok = tok->next;
 	}
-	if (tok->type == PIPE || tok->type == AND || tok->type == OR)
+	if (tok->type == PIPE || tok->type == AND || tok->type == OR || tok->type == LPAREN)
 		return (sintax_error2(tok));
-	return (1);
+	return (0);
 }

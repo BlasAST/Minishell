@@ -73,6 +73,8 @@ void	free_cmd_list(t_cmd *list)
 				free(list->args[i++]);
 			free(list->args);
 		}
+		if (list->subshell)
+			free_cmd_list(list->subshell);
 		if (list->cmd_path)
 			free(list->cmd_path);
 		if (list->redir_list)
@@ -80,7 +82,6 @@ void	free_cmd_list(t_cmd *list)
 		free(list);
 		list = tmp;
 	}
-	list = NULL;
 }
 
 void	free_all(t_mini *mini)

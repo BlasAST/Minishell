@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_tokens.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:20:10 by blas              #+#    #+#             */
-/*   Updated: 2026/03/06 01:33:11 by blas             ###   ########.fr       */
+/*   Updated: 2026/03/05 09:30:22 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,11 +60,32 @@ int	tok_args(t_parse_token *pt)
 	return (0);
 }
 
-void	parser_tokens2(t_parse_token *pt)
+int	subshell(t_parse_token *pt)
 {
-	pt->cmd = new_cmd();
-	pt->arg_count = count_args(pt->tok);
-	pt->cmd->args = malloc(sizeof(char *) * (pt->arg_count + 1));
+	t_token	*sub;
+	int lvl;
+
+	i = 1;
+	if (pt->tok->type != LPAREN)
+		return (0);
+	sub = ft_subshell(pt->tok);
+	pt->cmd->ishell = 1;
+	pt->cmd->subshell = parser_tokens(sub);
+	pt->tok = pt->tok->next;
+	while (pt->tok && lvl)
+	{
+		if (pt->tok->type == LPAREN)
+			lvl++;
+		else if (pt->tok->type == RPAREN)
+			lvl--;
+		pt->tok = pt->tok->next;
+	}
+	return (1);
+}
+
+void	parser_tokens1(t_parse_token *pt)
+{
+	create_cmd(pt);
 	if (!pt->cmd->args)
 	{
 		free(pt->cmd);
@@ -74,8 +95,9 @@ void	parser_tokens2(t_parse_token *pt)
 	pt->i = 0;
 	while (pt->tok && pt->tok->type < PIPE)
 	{
-		if (tok_args(pt) && pt->tok->type >= REDIR_IN
-			&& pt->tok->type <= HEREDOC)
+		if (subshell(pt))
+			continue ;
+		if (tok_args(pt) && pt->tok->type >= 1 && pt->tok->type <= 4)
 		{
 			pt->cmd->redir_type = pt->tok->type;
 			if (pt->tok->next && pt->tok->next->type == WORD)
@@ -110,7 +132,7 @@ t_cmd	*parser_tokens(t_token *tokens)
 	pt.tok = tokens;
 	while (pt.tok && pt.tok->type != END_OF_INPUT)
 	{
-		parser_tokens2(&pt);
+		parser_tokens1(&pt);
 		if (!pt.cmd)
 			return (NULL);
 		linked(&pt);
@@ -144,13 +166,7 @@ t_cmd	*parser_tokens(t_token *tokens)
 			pt.cmd->prev = pt.prev;
 		}
 		pt.prev = pt.cmd;
-		if (pt.tok && (pt.tok->type == AND || pt.tok->type == OR))
-		{
-			pt.cmd->cond_type = pt.tok->type;
-			pt.tok = pt.tok->next;
-		}
-		else if (pt.tok && pt.tok->type == PIPE)
-			pt.tok = pt.tok->next;
+		is_operator(&pt);
 	}
 	return (pt.cmd_list);
 } */

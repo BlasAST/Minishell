@@ -51,29 +51,31 @@ $(LIBFT):
 
 $(DIR_OBJS)/%.o: %.c
 	@mkdir -p objs
-	$(CC) $(CFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 # Regla para compilar los .c de la raíz
 %.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 # Regla para compilar los .c dentro de build_ins/
 build_ins/%.o: build_ins/%.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 $(NAME): $(OBJS) $(OBJS_BUILDINS)
-	$(CC) $(CFLAGS) $(OBJS) $(OBJS_BUILDINS) $(LIBFT) $(READLINE_FLAGS) -o $(NAME)
+	@$(CC) $(CFLAGS) $(OBJS) $(OBJS_BUILDINS) $(LIBFT) $(READLINE_FLAGS) -o $(NAME)
 	@echo "Minishell compiled"
 
 clean:
-	rm -rf $(DIR_OBJS)
-	rm -f $(OBJS)
-	rm -f $(OBJS_BUILDINS)
+	@rm -rf $(DIR_OBJS)
+	@rm -f $(OBJS)
+	@rm -f $(OBJS_BUILDINS)
 	@make -C $(DIR_LIBFT) clean
+	@echo "Minishell objects cleaned"
 
 fclean: clean
-	rm -f $(NAME)
+	@rm -f $(NAME)
 	@make -C $(DIR_LIBFT) fclean
+	@echo "Minishell cleaned"
 
 re: fclean all
 

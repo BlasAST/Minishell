@@ -3,24 +3,76 @@
 /*                                                        :::      ::::::::   */
 /*   parser_tokens_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/01 16:29:12 by andtruji          #+#    #+#             */
-/*   Updated: 2026/03/06 01:26:54 by blas             ###   ########.fr       */
+/*   Updated: 2026/03/05 09:30:40 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+void	create_cmd(t_parse_token *pt)
+{
+	pt->cmd = new_cmd();
+	pt->arg_count = count_args(pt->tok);
+	pt->cmd->args = malloc(sizeof(char *) * (pt->arg_count + 1));
+}
+
+void	is_operator(t_parse_token *pt)
+{
+	if (pt->tok && (pt->tok->type == AND || pt->tok->type == OR))
+	{
+		pt->cmd->cond_type = pt->tok->type;
+		pt->tok = pt->tok->next;
+	}
+	else if (pt->tok && pt->tok->type == PIPE)
+		pt->tok = pt->tok->next;
+}
+
+t_token	*ft_subshell(t_token *tok)
+{
+	int		lvl;
+	t_token	*start;
+
+	lvl = 1;
+	tok = tok->next;
+	start = tok;
+	while (tok && lvl > 0)
+	{
+		if (tok->type == LPAREN)
+			lvl++;
+		else if (tok->type == RPAREN)
+			lvl--;
+		tok = tok->next;
+	}
+	return (start);
+}
+
 int	count_args(t_token *tok)
 {
 	int	count;
+	int	lvl;
 
 	count = 0;
 	while (tok && tok->type < PIPE)
 	{
 		if (tok->type == WORD)
 			count++;
+		else if (tok->type == LPAREN)
+		{
+			lvl = 1;
+			tok = tok->next;
+			while (tok && lvl > 0)
+			{
+				if (tok->type == LPAREN)
+					lvl++;
+				else if (tok->type == RPAREN)
+					lvl--;
+				tok = tok->next;
+			}
+			continue ;
+		}
 		tok = tok->next;
 	}
 	return (count);
@@ -43,5 +95,7 @@ t_cmd	*new_cmd(void)
 	cmd->redir_type = END_OF_INPUT;
 	cmd->next = NULL;
 	cmd->prev = NULL;
+	cmd->ishell = 0;
+	cmd->subshell = NULL;
 	return (cmd);
 }

@@ -51,14 +51,13 @@ void	executor2(t_mini *mini, t_cmd *cmd, t_pipex *pipex)
 	{
 		perror("fork");
 		if (cmd->next && cmd->cond_type != AND && cmd->cond_type != OR)
-		{
-			close(pipex->pipe_fd[0]);
-			close(pipex->pipe_fd[1]);
-		}
+			close_pipes(pipex);
 		return ;
 	}
 	if (cmd->pid == 0)
 	{
+		if (is_subshell(cmd, mini))
+			return ;
 		mng_redirections(cmd, mini);
 		child_process(cmd, mini, pipex);
 		if (!cmd->cmd_path)
@@ -69,53 +68,42 @@ void	executor2(t_mini *mini, t_cmd *cmd, t_pipex *pipex)
 		close_updt_pipe(cmd, pipex);
 }
 
-static void	wait_for_children(t_mini *mini, t_executor *exc)
+void	wait_for_children(t_mini *mini, t_executor *e)
 {
-	exc->wpid = wait(&exc->status);
-	while (exc->wpid > 0)
-	{
-		if (exc->wpid == exc->last_pid)
-		{
-			if (WIFEXITED(exc->status))
-				mini->exit_code = WEXITSTATUS(exc->status);
-			else if (WIFSIGNALED(exc->status))
-				mini->exit_code = 128 + WTERMSIG(exc->status);
-		}
-		exc->wpid = wait(&exc->status);
-	}
+	waitpid(e->last_pid, &e->status, 0);
+	if (WIFEXITED(e->status))
+		mini->exit_code = WEXITSTATUS(e->status);
+	else if (WIFSIGNALED(e->status))
+		mini->exit_code = 128 + WTERMSIG(e->status);
 }
 
-void	execute_block(t_mini *mini, t_executor *exc)
+void	execute_block(t_mini *mini, t_executor *e)
 {
-	executor2(mini, exc->cmd, &exc->pipex);
-	exc->last_pid = exc->cmd->pid;
-	wait_for_children(mini, exc);
-	exc->prev = exc->cmd;
-	exc->cmd = exc->cmd->next;
+	executor2(mini, e->cmd, &e->pipex);
+	e->last_pid = e->cmd->pid;
+	wait_for_children(mini, e);
+	e->prev = e->cmd;
+	e->cmd = e->cmd->next;
 }
 
-void	executor(t_mini *mini)
+void	executor(t_cmd *cmd, t_mini *mini)
 {
 	t_executor	e;
 
-	e.pipex.prev_fd = -1;
-	e.pipex.pipe_fd[0] = -1;
-	e.pipex.pipe_fd[1] = -1;
-	e.cmd = mini->cmd_list;
-	e.prev = NULL;
+	set_values(&e, cmd);
 	while (e.cmd)
 	{
 		if (e.prev && ((e.prev->cond_type == AND && mini->exit_code != 0)
 				|| (e.prev->cond_type == OR && mini->exit_code == 0)))
 		{
-			sat_next(&e);
+			set_next(&e);
 			continue ;
 		}
 		if (e.cmd->args && e.cmd->args[0]
 			&& is_env_builtin(e.cmd->args[0]))
 		{
 			mini->exit_code = run_builtin(e.cmd, mini);
-			sat_next(&e);
+			set_next(&e);
 			continue ;
 		}
 		execute_block(mini, &e);

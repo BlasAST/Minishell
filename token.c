@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:20:45 by blas              #+#    #+#             */
-/*   Updated: 2026/03/06 01:23:44 by blas             ###   ########.fr       */
+/*   Updated: 2026/03/05 09:25:22 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,10 +73,7 @@ char	*parse_word(char *input, int *i)
 		else
 			parse_word3(input, i, &pw);
 		if (pw.buf == NULL)
-		{
-			free(pw.buf);
 			return (NULL);
-		}
 	}
 	return (pw.buf);
 }
@@ -97,20 +94,7 @@ void	tokenation(t_token **list, char *input, int *i)
 		free(tknt.tmp);
 	}
 	else
-	{
-		tknt.word = parse_word(input, i);
-		if (tknt.word && *tknt.word)
-		{
-			if (is_wildcard_special(tknt.word))
-				tknt.new = new_token(WORD_SPECIAL, tknt.word);
-			else
-				tknt.new = new_token(WORD, tknt.word);
-			if (!tknt.new)
-				return (free_tk(*list, &tknt.word));
-			add_token(list, tknt.new);
-		}
-		free(tknt.word);
-	}
+		is_word(&tknt, input, i, list);
 }
 
 t_token	*tokenize_input(char *input)

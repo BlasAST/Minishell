@@ -36,6 +36,8 @@ typedef enum e_token_type
 	REDIR_OUT,
 	REDIR_APPEND,
 	HEREDOC,
+	LPAREN,
+	RPAREN,
 	PIPE,
 	AND,
 	OR,
@@ -73,6 +75,8 @@ typedef struct s_cmd
 	int				fd_in;
 	int				fd_out;
 	pid_t			pid;
+	int				ishell;
+	struct s_cmd	*subshell;
 	t_token_type	redir_type;
 	t_token_type	cond_type;
 	struct s_cmd	*next;
@@ -165,6 +169,8 @@ extern int		g_signal_status;
 
 t_token			*tokenize_input(char *input);
 
+char			*parse_word(char *input, int *i);
+void			is_word(t_tokenation *tknt, char *input, int *i, t_token **list);
 void			add_token(t_token **list, t_token *new);
 t_token			*new_token(t_token_type type, char *value);
 t_token_type	get_type(char *s);
@@ -175,7 +181,6 @@ void			init_mini(t_mini *mini, char **envp);
 
 // Funciones entorno
 t_env			*new_env_node(char *str);
-// int				*get_value_env(t_env *env, char *str, char **send);
 int				get_value_env(t_env *env, char *str, char **send);
 int				find_path(t_env *env, char *str);
 void			get_envp(t_mini *mini, char **envp);
@@ -196,23 +201,30 @@ void			expand_token(t_mini *mini, t_token *token);
 void			expander(t_mini *mini);
 char			*expand_heredoc(char *line, t_mini *mini);
 char			*expand_variable(char *input, int *i, t_mini *mini);
+char			*ft_strjoin_free(char *s1, char *s2);
 
 t_cmd			*parser_tokens(t_token *tokens);
 
+void			create_cmd(t_parse_token *pt);
 int				count_args(t_token *tok);
 t_cmd			*new_cmd(void);
+t_token			*ft_subshell(t_token *tok);
+void			is_operator(t_parse_token *pt);
 
 int				handle_heredoc(t_mini *mini);
 int				heredoc(char *limiter, t_mini *mini);
 // Funciones executor
-void			executor(t_mini *mini);
+void			executor(t_cmd *cmd_list, t_mini *mini);
 
+int				is_subshell(t_cmd *cmd, t_mini *mini);
 char			*get_path(char *cmd, char **envp);
 void			mng_redirections(t_cmd *cmd, t_mini *mini);
 char			*join_path(char *s1, char *s2, char *s3);
 void			close_updt_pipe(t_cmd *cmd, t_pipex *pipex);
 void			path_found(t_cmd *cmd, t_mini *mini);
-void			sat_next(t_executor *e);
+void			set_next(t_executor *e);
+void			set_values(t_executor *e, t_cmd *cmd);
+void			close_pipes(t_pipex *pipex);
 
 int				is_env_builtin(char *cmd);
 int				is_out_builtin(char *cmd);
@@ -224,7 +236,7 @@ int				check_sintax(t_token *token_list);
 void			rerror(char *str, int error_status);
 int				sintax_error(char *msg);
 int				handle_sintax_error(t_mini *mini);
-int				handle_heredoc_error(t_mini *mini, char *input);
+int				handle_heredoc_error(t_mini *mini);
 
 int				update_env(t_mini *mini, char *key, char *value);
 void			update_shlvl(t_mini *mini);

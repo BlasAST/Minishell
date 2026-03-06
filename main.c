@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:18:49 by blas              #+#    #+#             */
-/*   Updated: 2026/03/02 02:07:41 by blas             ###   ########.fr       */
+/*   Updated: 2026/03/04 19:57:16 by andtruji         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,8 @@ int	main2(t_mini *mini, char *input)
 {
 	add_history(input);
 	mini->token_list = tokenize_input(input);
-	if (!check_sintax(mini->token_list))
-	{
-		free_all(mini);
+	if (check_sintax(mini->token_list))
 		return (handle_sintax_error(mini));
-	}
 	expander(mini);
 	mini->cmd_list = parser_tokens(mini->token_list);
 	if (mini->cmd_list == NULL)
@@ -31,11 +28,8 @@ int	main2(t_mini *mini, char *input)
 		return (0);
 	}
 	if (!handle_heredoc(mini))
-	{
-		free_all(mini);
-		return (handle_heredoc_error(mini, input));
-	}
-	executor(mini);
+		return (handle_heredoc_error(mini));
+	executor(mini->cmd_list, mini);
 	free_all(mini);
 	return (1);
 }

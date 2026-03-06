@@ -3,14 +3,30 @@
 /*                                                        :::      ::::::::   */
 /*   token_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:20:39 by blas              #+#    #+#             */
-/*   Updated: 2026/03/06 01:21:25 by blas             ###   ########.fr       */
+/*   Updated: 2026/03/05 09:24:57 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	is_word(t_tokenation *tknt, char *input, int *i, t_token **list)
+{
+	tknt->word = parse_word(input, i);
+	if (tknt->word && *tknt->word)
+	{
+		if (is_wildcard_special(tknt->word))
+			tknt->new = new_token(WORD_SPECIAL, tknt->word);
+		else
+			tknt->new = new_token(WORD, tknt->word);
+		if (!tknt->new)
+			return (free_tk(*list, &tknt->word));
+		add_token(list, tknt->new);
+	}
+	free(tknt->word);
+}
 
 t_token	*new_token(t_token_type type, char *value)
 {
@@ -69,6 +85,10 @@ t_token_type	get_type(char *s)
 		return (REDIR_OUT);
 	if (!ft_strncmp(s, "|", 1))
 		return (PIPE);
+	if (!ft_strncmp(s, "(", 1))
+		return (LPAREN);
+	if (!ft_strncmp(s, ")", 1))
+		return (RPAREN);
 	return (WORD);
 }
 
@@ -77,14 +97,7 @@ int	ispecial(char *c)
 	if (!ft_strncmp(c, ">>", 2) || !ft_strncmp(c, "<<", 2)
 		|| !ft_strncmp(c, "&&", 2) || !ft_strncmp(c, "||", 2))
 		return (2);
-	if (*c == '|' || *c == '<' || *c == '>')
+	if (*c == '|' || *c == '<' || *c == '>' || *c == '(' || *c == ')')
 		return (1);
 	return (0);
-}
-
-void	free_tk(t_token *list, char **tmp)
-{
-	free_token_list(&list);
-	if (*tmp)
-		free(*tmp);
 }
