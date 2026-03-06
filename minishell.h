@@ -218,8 +218,7 @@ int				heredoc(char *limiter, t_mini *mini);
 // Funciones executor
 void			executor(t_cmd *cmd_list, t_mini *mini);
 
-
-void			is_subshell(t_cmd *cmd, t_mini *mini);
+int				is_subshell(t_cmd *cmd, t_mini *mini);
 char			*get_path(char *cmd, char **envp);
 void			mng_redirections(t_cmd *cmd, t_mini *mini);
 char			*join_path(char *s1, char *s2, char *s3);
@@ -227,6 +226,7 @@ void			close_updt_pipe(t_cmd *cmd, t_pipex *pipex);
 void			path_found(t_cmd *cmd, t_mini *mini);
 void			set_next(t_executor *e);
 void			set_values(t_executor *e, t_cmd *cmd);
+void			close_pipes(t_pipex *pipex);
 
 int				is_env_builtin(char *cmd);
 int				is_out_builtin(char *cmd);

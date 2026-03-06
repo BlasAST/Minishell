@@ -34,7 +34,6 @@ t_token	*ft_subshell(t_token *tok)
 {
 	int		lvl;
 	t_token	*start;
-	t_token	*end;
 
 	lvl = 1;
 	tok = tok->next;
@@ -45,12 +44,8 @@ t_token	*ft_subshell(t_token *tok)
 			lvl++;
 		else if (tok->type == RPAREN)
 			lvl--;
-		if (lvl > 0)
-			tok = tok->next;
+		tok = tok->next;
 	}
-	end = tok;
-	if (end)
-		end->next = NULL;
 	return (start);
 }
 
@@ -100,5 +95,7 @@ t_cmd	*new_cmd(void)
 	cmd->redir_type = END_OF_INPUT;
 	cmd->next = NULL;
 	cmd->prev = NULL;
+	cmd->ishell = 0;
+	cmd->subshell = NULL;
 	return (cmd);
 }

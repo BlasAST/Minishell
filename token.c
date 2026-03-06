@@ -73,10 +73,7 @@ char	*parse_word(char *input, int *i)
 		else
 			parse_word3(input, i, &pw);
 		if (pw.buf == NULL)
-		{
-			free(pw.buf);
 			return (NULL);
-		}
 	}
 	return (pw.buf);
 }

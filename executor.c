@@ -51,15 +51,13 @@ void	executor2(t_mini *mini, t_cmd *cmd, t_pipex *pipex)
 	{
 		perror("fork");
 		if (cmd->next && cmd->cond_type != AND && cmd->cond_type != OR)
-		{
-			close(pipex->pipe_fd[0]);
-			close(pipex->pipe_fd[1]);
-		}
+			close_pipes(pipex);
 		return ;
 	}
 	if (cmd->pid == 0)
 	{
-		is_subshell(cmd, mini);
+		if (is_subshell(cmd, mini))
+			return ;
 		mng_redirections(cmd, mini);
 		child_process(cmd, mini, pipex);
 		if (!cmd->cmd_path)
@@ -72,18 +70,11 @@ void	executor2(t_mini *mini, t_cmd *cmd, t_pipex *pipex)
 
 void	wait_for_children(t_mini *mini, t_executor *e)
 {
-	e->wpid = wait(&e->status);
-	while (e->wpid > 0)
-	{
-		if (e->wpid == e->last_pid)
-		{
-			if (WIFEXITED(e->status))
-				mini->exit_code = WEXITSTATUS(e->status);
-			else if (WIFSIGNALED(e->status))
-				mini->exit_code = 128 + WTERMSIG(e->status);
-		}
-		e->wpid = wait(&e->status);
-	}
+	waitpid(e->last_pid, &e->status, 0);
+	if (WIFEXITED(e->status))
+		mini->exit_code = WEXITSTATUS(e->status);
+	else if (WIFSIGNALED(e->status))
+		mini->exit_code = 128 + WTERMSIG(e->status);
 }
 
 void	execute_block(t_mini *mini, t_executor *e)

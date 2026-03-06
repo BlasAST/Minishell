@@ -63,16 +63,24 @@ int	tok_args(t_parse_token *pt)
 int	subshell(t_parse_token *pt)
 {
 	t_token	*sub;
+	int lvl;
 
-	if (pt->tok->type == LPAREN)
+	i = 1;
+	if (pt->tok->type != LPAREN)
+		return (0);
+	sub = ft_subshell(pt->tok);
+	pt->cmd->ishell = 1;
+	pt->cmd->subshell = parser_tokens(sub);
+	pt->tok = pt->tok->next;
+	while (pt->tok && lvl)
 	{
-		sub = ft_subshell(pt->tok);
-		pt->cmd->ishell = 1;
-		pt->cmd->subshell = parser_tokens(sub);
-		free_token_list(&sub);
-		return (1);
+		if (pt->tok->type == LPAREN)
+			lvl++;
+		else if (pt->tok->type == RPAREN)
+			lvl--;
+		pt->tok = pt->tok->next;
 	}
-	return (0);
+	return (1);
 }
 
 void	parser_tokens1(t_parse_token *pt)

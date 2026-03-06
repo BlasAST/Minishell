@@ -18,7 +18,7 @@ int	main2(t_mini *mini, char *input)
 {
 	add_history(input);
 	mini->token_list = tokenize_input(input);
-	if (!check_sintax(mini->token_list))
+	if (check_sintax(mini->token_list))
 		return (handle_sintax_error(mini));
 	expander(mini);
 	mini->cmd_list = parser_tokens(mini->token_list);

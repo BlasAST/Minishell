@@ -12,38 +12,16 @@
 
 #include "minishell.h"
 
-void	is_subshell(t_cmd *cmd, t_mini *mini)
+int	is_subshell(t_cmd *cmd, t_mini *mini)
 {
 	if (cmd->ishell)
 	{
 		executor(cmd->subshell, mini);
-		exit(mini->exit_code);
+		child_exit(mini, mini->exit_code);
+		return (1);
 	}
+	return (0);
 }
-
-// int	is_subshell(t_cmd *cmd, t_mini *mini, t_executor *e)
-// {
-// 	pid_t	pid;
-// 	int		status;
-
-// 	if (cmd->ishell)
-// 	{
-// 		pid = fork();
-// 		if (pid == 0)
-// 		{
-// 			executor(cmd->subshell, mini);
-// 			exit(mini->exit_code);
-// 		}
-// 		waitpid(pid, &status, 0);
-// 		if (WIFEXISTED(status))
-// 			mini->exit_code = WEXITSTATUS(status);
-// 		else if (WIFSIGNALED(status))
-// 			mini->exit_code = 128 + WTERMSIG(status);
-// 		set_next(&e);
-// 		return (1);
-// 	}
-// 	return (0);
-// }
 
 char	*get_path(char *cmd, char **envp)
 {
@@ -72,6 +50,23 @@ char	*get_path(char *cmd, char **envp)
 		gp.i++;
 	}
 	return (NULL);
+}
+
+char	*join_path(char *dir, char *sep, char *cmd)
+{
+	char	*joined;
+	size_t	len;
+
+	if (!dir || !sep || !cmd)
+		return (NULL);
+	len = ft_strlen(dir) + ft_strlen(sep) + ft_strlen(cmd) + 1;
+	joined = malloc(len);
+	if (!joined)
+		return (NULL);
+	ft_strcpy(joined, dir);
+	ft_strcat(joined, sep);
+	ft_strcat(joined, cmd);
+	return (joined);
 }
 
 void	mng_redirections(t_cmd *cmd, t_mini *mini)

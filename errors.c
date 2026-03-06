@@ -28,7 +28,7 @@ int	sintax_error(char *msg)
 
 int	handle_sintax_error(t_mini *mini)
 {
-	mini->exit_code = 258;
+	mini->exit_code = 2;
 	free_all(mini);
 	return (0);
 }
