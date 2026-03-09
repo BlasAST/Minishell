@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bsiguenc <bsiguenc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:07:53 by blas              #+#    #+#             */
-/*   Updated: 2026/02/27 13:06:17 by bsiguenc         ###   ########.fr       */
+/*   Updated: 2026/03/09 16:46:02 by blas             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,30 @@ int	update_env(t_mini *mini, char *key, char *value)
 	return (1);
 }
 
+static char	*get_env_path(t_mini *mini, char *key, char *err_msg, int print)
+{
+	char	*env_val;
+
+	env_val = NULL;
+	get_value_env(mini->env_list, key, &env_val);
+	if (!env_val)
+		ft_putstr_fd(err_msg, 2);
+	else if (print)
+		printf("%s\n", env_val);
+	return (env_val);
+}
+
 static char	*get_route_cd(t_cmd *cmd, t_mini *mini)
+{
+	if (!cmd->args[1])
+		return (get_env_path(mini, "HOME", "minishell: cd: HOME not set\n", 0));
+	if (ft_strcmp(cmd->args[1], "-") == 0)
+		return (get_env_path(mini, "OLDPWD",
+				"minishell: cd: OLDPWD not set\n", 1));
+	return (ft_strdup(cmd->args[1]));
+}
+
+/* static char	*get_route_cd(t_cmd *cmd, t_mini *mini)
 {
 	char	*path;
 	char	*env_val;
@@ -65,7 +88,7 @@ static char	*get_route_cd(t_cmd *cmd, t_mini *mini)
 	else
 		path = ft_strdup(cmd->args[1]);
 	return (path);
-}
+} */
 
 int	ft_cd(t_cmd *cmd, t_mini *mini)
 {

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_tokens.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:20:10 by blas              #+#    #+#             */
-/*   Updated: 2026/03/05 09:30:22 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/09 13:15:27 by blas             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,9 +63,9 @@ int	tok_args(t_parse_token *pt)
 int	subshell(t_parse_token *pt)
 {
 	t_token	*sub;
-	int lvl;
+	int		lvl;
 
-	i = 1;
+	// i = 1;
 	if (pt->tok->type != LPAREN)
 		return (0);
 	sub = ft_subshell(pt->tok);

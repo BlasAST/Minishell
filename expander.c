@@ -6,7 +6,7 @@
 /*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:16:55 by blas              #+#    #+#             */
-/*   Updated: 2026/03/06 02:04:27 by blas             ###   ########.fr       */
+/*   Updated: 2026/03/09 13:26:02 by blas             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,69 +66,34 @@ char	*expand_heredoc(char *line, t_mini *mini)
 	return (res);
 }
 
-/* char	*expand_heredoc(char *line, t_mini *mini)
+void	expand_word(t_token *current, t_mini *mini)
 {
-	char	**temp_split;
-	char	*new_str;
-	char	*temp;
-	char	*res;
-	int		i;
-	int		j;
+	char	*temp_str;
 
-	if (!line)
-		return (NULL);
-	res = ft_strdup("");
-	temp_split = ft_split(line, ' ');
-	i = 0;
-	while (temp_split[i])
+	if (ft_strchr(current->value, '$'))
 	{
-		j = 0;
-		while (temp_split[i][j])
-		{
-			if (temp_split[i][j] == '$')
-			{
-				new_str = expand_variable(temp_split[i], &j, mini);
-				res = ft_strjoin_free(res, new_str);
-			}
-			else
-			{
-				temp = ft_substr(temp_split[i], j, 1);
-				res = ft_strjoin_free(res, temp);
-				j++;
-			}
-		}
-		if (temp_split[i + 1])
-			res = ft_strjoin_free(res, ft_strdup(" "));
-		i++;
+		if (!current->prev || current->prev->type != HEREDOC)
+			expand_token(mini, current);
 	}
-	ft_free_split(temp_split);
-	return (res);
-} */
+	if ((ft_strchr(current->value, '\'')
+			|| ft_strchr(current->value, '\"'))
+		&& (!current->prev || current->prev->type != HEREDOC))
+	{
+		temp_str = remove_quotes(current->value);
+		free(current->value);
+		current->value = temp_str;
+	}
+}
 
 void	expander(t_mini *mini)
 {
 	t_token	*current;
-	char	*temp_str;
 
 	current = mini->token_list;
 	while (current)
 	{
 		if (current->type == WORD)
-		{
-			if (ft_strchr(current->value, '$'))
-			{
-				if (!current->prev || current->prev->type != HEREDOC)
-					expand_token(mini, current);
-			}
-			if ((ft_strchr(current->value, '\'')
-					|| ft_strchr(current->value, '\"'))
-				&& (!current->prev || current->prev->type != HEREDOC))
-			{
-				temp_str = remove_quotes(current->value);
-				free(current->value);
-				current->value = temp_str;
-			}
-		}
+			expand_word(current, mini);
 		else if (current->type == WORD_SPECIAL)
 		{
 			expand_asterisk_token(mini, current);

@@ -6,7 +6,7 @@
 /*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/20 18:47:25 by blas              #+#    #+#             */
-/*   Updated: 2026/03/06 01:45:39 by blas             ###   ########.fr       */
+/*   Updated: 2026/03/09 13:13:56 by blas             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,21 +42,6 @@ char	*remove_quotes(char *str)
 	}
 	new[j] = '\0';
 	return (new);
-}
-
-char	*get_env_val(t_env *env, char *key)
-{
-	t_env	*temp;
-
-	temp = env;
-	while (temp)
-	{
-		if (ft_strlen(key) == ft_strlen(temp->key)
-			&& ft_strncmp(temp->key, key, ft_strlen(key)) == 0)
-			return (ft_strdup(temp->value));
-		temp = temp->next;
-	}
-	return (ft_strdup(""));
 }
 
 char	*expand_variable(char *input, int *i, t_mini *mini)

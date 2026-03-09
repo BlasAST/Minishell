@@ -6,7 +6,7 @@
 /*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:19:13 by blas              #+#    #+#             */
-/*   Updated: 2026/03/06 01:47:52 by blas             ###   ########.fr       */
+/*   Updated: 2026/03/09 13:27:10 by blas             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,12 +165,13 @@ typedef struct s_executor
 }	t_executor;
 
 // global variable to intercept the signal
-extern int		g_signal_status;
+extern int	g_signal_status;
 
 t_token			*tokenize_input(char *input);
 
 char			*parse_word(char *input, int *i);
-void			is_word(t_tokenation *tknt, char *input, int *i, t_token **list);
+void			is_word(t_tokenation *tknt, char *input, int *i,
+					t_token **list);
 void			add_token(t_token **list, t_token *new);
 t_token			*new_token(t_token_type type, char *value);
 t_token_type	get_type(char *s);
@@ -184,6 +185,7 @@ t_env			*new_env_node(char *str);
 int				get_value_env(t_env *env, char *str, char **send);
 int				find_path(t_env *env, char *str);
 void			get_envp(t_mini *mini, char **envp);
+char			*get_env_val(t_env *env, char *key);
 
 //Funciones de señal
 void			handle_sigint(int sig);
