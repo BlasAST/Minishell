@@ -6,7 +6,7 @@
 /*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:19:13 by blas              #+#    #+#             */
-/*   Updated: 2026/03/09 13:27:10 by blas             ###   ########.fr       */
+/*   Updated: 2026/03/10 01:31:20 by blas             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -251,6 +251,7 @@ int				ft_exit(t_cmd *cmd, t_mini *mini);
 int				ft_export(t_cmd *cmd, t_mini *mini);
 int				ft_unset(t_cmd *cmd, t_mini *mini);
 int				ft_pwd(t_cmd *cmd, t_mini *mini);
+int				is_valid_id(char *str);
 
 // Functions wildcard
 int				is_wildcard_special(char *word);

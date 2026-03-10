@@ -6,31 +6,13 @@
 /*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:08:11 by blas              #+#    #+#             */
-/*   Updated: 2026/02/25 01:11:10 by blas             ###   ########.fr       */
+/*   Updated: 2026/03/10 01:30:47 by blas             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-// FUNCIONA CORRECTAMENTE
-
-static int	is_valid_id(char *str)
-{
-	int	i;
-
-	i = 0;
-	if (!str || (!ft_isalpha(str[i]) && str[i] != '_'))
-		return (0);
-	while (str[i] && str[i] != '=')
-	{
-		if (!ft_isalnum(str[i]) && str[i] != '_')
-			return (0);
-		i++;
-	}
-	return (1);
-}
-
-static void	sort_and_print_env(t_env *env)
+/* static void	sort_and_print_env(t_env *env)
 {
 	t_env	*i;
 	t_env	*j;
@@ -64,9 +46,90 @@ static void	sort_and_print_env(t_env *env)
 		printf("\n");
 		i = i->next;
 	}
+} */
+
+t_env	*get_next(t_env *i)
+{
+	t_env	*j;
+	char	*tmp;
+
+	j = i->next;
+	while (j)
+	{
+		if (ft_strcmp(i->key, j->key) > 0)
+		{
+			tmp = i->key;
+			i->key = j->key;
+			j->key = tmp;
+			tmp = i->value;
+			i->value = j->value;
+			j->value = tmp;
+		}
+		j = j->next;
+	}
+	return (i->next);
+}
+
+static void	sort_and_print_env(t_env *env)
+{
+	t_env	*i;
+
+	i = env;
+	while (i)
+	{
+		i = get_next(i);
+	}
+	i = env;
+	while (i)
+	{
+		printf("declare -x %s", i->key);
+		if (i->value)
+			printf("=\"%s\"", i->value);
+		printf("\n");
+		i = i->next;
+	}
+}
+
+static void	new_nodes(char *key, char *value, t_mini *mini)
+{
+	t_env	*new_node;
+
+	new_node = malloc(sizeof(t_env));
+	if (!new_node)
+		return ;
+	new_node->key = key;
+	new_node->value = value;
+	new_node->next = mini->env_list;
+	mini->env_list = new_node;
 }
 
 static void	add_to_env(t_mini *mini, char *arg)
+{
+	char	*key;
+	char	*value;
+	char	*equal_pos;
+
+	equal_pos = ft_strchr(arg, '=');
+	if (equal_pos)
+	{
+		key = ft_substr(arg, 0, equal_pos - arg);
+		value = ft_strdup(equal_pos + 1);
+	}
+	else
+	{
+		key = ft_strdup(arg);
+		value = NULL;
+	}
+	if (update_env(mini, key, value) == 0)
+	{
+		free(key);
+		free(value);
+		return ;
+	}
+	new_nodes(key, value, mini);
+}
+
+/* static void	add_to_env(t_mini *mini, char *arg)
 {
 	char	*key;
 	char	*value;
@@ -97,7 +160,7 @@ static void	add_to_env(t_mini *mini, char *arg)
 	new_node->value = value;
 	new_node->next = mini->env_list;
 	mini->env_list = new_node;
-}
+} */
 
 int	ft_export(t_cmd *cmd, t_mini *mini)
 {

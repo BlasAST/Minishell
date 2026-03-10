@@ -6,7 +6,7 @@
 /*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:08:36 by blas              #+#    #+#             */
-/*   Updated: 2026/02/25 01:08:36 by blas             ###   ########.fr       */
+/*   Updated: 2026/03/10 01:31:02 by blas             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,4 +46,20 @@ int	run_builtin(t_cmd *cmd, t_mini *mini)
 		i++;
 	}
 	return (0);
+}
+
+int	is_valid_id(char *str)
+{
+	int	i;
+
+	i = 0;
+	if (!str || (!ft_isalpha(str[i]) && str[i] != '_'))
+		return (0);
+	while (str[i] && str[i] != '=')
+	{
+		if (!ft_isalnum(str[i]) && str[i] != '_')
+			return (0);
+		i++;
+	}
+	return (1);
 }

@@ -6,13 +6,12 @@
 /*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:08:05 by blas              #+#    #+#             */
-/*   Updated: 2026/02/25 01:10:37 by blas             ###   ########.fr       */
+/*   Updated: 2026/03/10 01:29:33 by blas             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-// FUNCIONA CORRECTAMENTE
 int	ft_env(t_cmd *cmd, t_mini *mini)
 {
 	t_env	*temp;
