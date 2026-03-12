@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:19:13 by blas              #+#    #+#             */
-/*   Updated: 2026/03/10 01:31:20 by blas             ###   ########.fr       */
+/*   Updated: 2026/03/12 19:38:31 by andtruji         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,6 +177,7 @@ t_token			*new_token(t_token_type type, char *value);
 t_token_type	get_type(char *s);
 int				ispecial(char *c);
 void			free_tk(t_token *list, char **tmp);
+
 // Funciones de inicialización
 void			init_mini(t_mini *mini, char **envp);
 
@@ -207,14 +208,16 @@ char			*ft_strjoin_free(char *s1, char *s2);
 
 t_cmd			*parser_tokens(t_token *tokens);
 
+int				subshell(t_parse_token *pt);
+
 void			create_cmd(t_parse_token *pt);
 int				count_args(t_token *tok);
 t_cmd			*new_cmd(void);
-t_token			*ft_subshell(t_token *tok);
 void			is_operator(t_parse_token *pt);
 
 int				handle_heredoc(t_mini *mini);
 int				heredoc(char *limiter, t_mini *mini);
+
 // Funciones executor
 void			executor(t_cmd *cmd_list, t_mini *mini);
 

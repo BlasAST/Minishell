@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_tokens_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/01 16:29:12 by andtruji          #+#    #+#             */
-/*   Updated: 2026/03/05 09:30:40 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/12 18:30:12 by andtruji         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,25 +28,6 @@ void	is_operator(t_parse_token *pt)
 	}
 	else if (pt->tok && pt->tok->type == PIPE)
 		pt->tok = pt->tok->next;
-}
-
-t_token	*ft_subshell(t_token *tok)
-{
-	int		lvl;
-	t_token	*start;
-
-	lvl = 1;
-	tok = tok->next;
-	start = tok;
-	while (tok && lvl > 0)
-	{
-		if (tok->type == LPAREN)
-			lvl++;
-		else if (tok->type == RPAREN)
-			lvl--;
-		tok = tok->next;
-	}
-	return (start);
 }
 
 int	count_args(t_token *tok)
