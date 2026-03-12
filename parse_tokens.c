@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_tokens.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:20:10 by blas              #+#    #+#             */
-/*   Updated: 2026/03/09 13:15:27 by blas             ###   ########.fr       */
+/*   Updated: 2026/03/12 18:24:00 by andtruji         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,29 +58,6 @@ int	tok_args(t_parse_token *pt)
 	else
 		return (1);
 	return (0);
-}
-
-int	subshell(t_parse_token *pt)
-{
-	t_token	*sub;
-	int		lvl;
-
-	// i = 1;
-	if (pt->tok->type != LPAREN)
-		return (0);
-	sub = ft_subshell(pt->tok);
-	pt->cmd->ishell = 1;
-	pt->cmd->subshell = parser_tokens(sub);
-	pt->tok = pt->tok->next;
-	while (pt->tok && lvl)
-	{
-		if (pt->tok->type == LPAREN)
-			lvl++;
-		else if (pt->tok->type == RPAREN)
-			lvl--;
-		pt->tok = pt->tok->next;
-	}
-	return (1);
 }
 
 void	parser_tokens1(t_parse_token *pt)
@@ -146,27 +123,3 @@ t_cmd	*parser_tokens(t_token *tokens)
 	}
 	return (pt.cmd_list);
 }
-/* t_cmd	*parser_tokens(t_token *tokens)
-{
-	t_parse_token	pt;
-
-	pt.cmd_list = NULL;
-	pt.prev = NULL;
-	pt.tok = tokens;
-	while (pt.tok && pt.tok->type != END_OF_INPUT)
-	{
-		parser_tokens2(&pt);
-		if (!pt.cmd)
-			return (NULL);
-		if (!pt.cmd_list)
-			pt.cmd_list = pt.cmd;
-		else
-		{
-			pt.prev->next = pt.cmd;
-			pt.cmd->prev = pt.prev;
-		}
-		pt.prev = pt.cmd;
-		is_operator(&pt);
-	}
-	return (pt.cmd_list);
-} */
