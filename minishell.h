@@ -164,6 +164,14 @@ typedef struct s_executor
 	pid_t	last_pid;
 }	t_executor;
 
+typedef struct s_subshell
+{
+	t_token	*head;
+	t_token	*tail;
+	t_token	*new;
+	int		lvl;
+}	t_subshell;
+
 // global variable to intercept the signal
 extern int	g_signal_status;
 

@@ -12,46 +12,70 @@
 
 #include "minishell.h"
 
-t_token	*ft_subshell(t_token *tok, t_token **next)
+t_token	*clone_token(t_token *tok)
 {
-	int		lvl;
-	t_token	*start;
-	t_token	*end;
+	t_token	*new;
 
-	lvl = 1;
-	start = tok->next;
-	end = start;
-	while (end && lvl > 0)
-	{
-		if (end->type == LPAREN)
-			lvl++;
-		else if (end->type == RPAREN)
-			lvl--;
-		if (lvl > 0)
-			end = end->next;
-	}
-	if (!end)
+	new = malloc(sizeof(t_token));
+	if (!new)
 		return (NULL);
-	*next = end->next;
-	end->next = NULL;
-	return (start);
+	new->type = tok->type;
+	if (tok->value)
+		new->value = ft_strdup(tok->value);
+	else
+		new->value = NULL;
+	new->next = NULL;
+	return (new);
+}
+
+t_token	*copy_subshell_tokens(t_token *tok)
+{
+	t_subshell	sub;
+
+	sub.head = NULL;
+	sub.tail = NULL;
+	sub.new = NULL;
+	sub.lvl = 1;
+	tok = tok->next;
+	while (tok && sub.lvl > 0)
+	{
+		if (tok->type == LPAREN)
+			sub.lvl++;
+		else if (tok->type == RPAREN)
+			sub.lvl--;
+		if (sub.lvl == 0)
+			break ;
+		sub.new = clone_token(tok);
+		if (!sub.head)
+			sub.head = sub.new;
+		else
+			sub.tail->next = sub.new;
+		sub.tail = sub.new;
+		tok = tok->next;
+	}
+	return (sub.head);
 }
 
 int	subshell(t_parse_token *pt)
 {
-	t_token	*sub;
-	t_token	*next;
 	int		lvl;
+	t_token	*sub;
 
 	lvl = 1;
-	next = NULL;
 	if (pt->tok->type != LPAREN)
 		return (0);
-	sub = ft_subshell(pt->tok, &next);
-	if (!sub)
-		return (0);
+	sub = copy_subshell_tokens(pt->tok);
 	pt->cmd->ishell = 1;
 	pt->cmd->subshell = parser_tokens(sub);
-	pt->tok = next;
+	pt->tok = pt->tok->next;
+	while (pt->tok && lvl > 0)
+	{
+		if (pt->tok->type == LPAREN)
+			lvl++;
+		else if (pt->tok->type == RPAREN)
+			lvl--;
+		pt->tok = pt->tok->next;
+	}
+	free_token_list(&sub);
 	return (1);
 }
