@@ -6,22 +6,11 @@
 /*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:09:02 by blas              #+#    #+#             */
-/*   Updated: 2026/03/13 13:36:35 by andtruji         ###   ########.fr       */
+/*   Updated: 2026/03/13 16:18:04 by andtruji         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-int	is_subshell(t_cmd *cmd, t_mini *mini)
-{
-	if (cmd->ishell)
-	{
-		executor(cmd->subshell, mini);
-		child_exit(mini, mini->exit_code);
-		return (1);
-	}
-	return (0);
-}
 
 char	*get_path(char *cmd, char **envp)
 {
@@ -69,40 +58,37 @@ char	*join_path(char *dir, char *sep, char *cmd)
 	return (joined);
 }
 
-void	mng_redirections(t_cmd *cmd, t_mini *mini)
+static void	open_redir(t_cmd *cmd, t_redir *redir)
+{
+	if (redir->redir_type == REDIR_IN)
+		cmd->fd_in = open(redir->target, O_RDONLY);
+	else if (redir->redir_type == REDIR_OUT)
+		cmd->fd_out = open(redir->target,
+				O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	else if (redir->redir_type == REDIR_APPEND)
+		cmd->fd_out = open(redir->target,
+				O_WRONLY | O_CREAT | O_APPEND, 0644);
+}
+
+int	mng_redirections(t_cmd *cmd, t_pipex *pipex)
 {
 	t_redir	*redir;
 
 	redir = cmd->redir_list;
 	while (redir)
 	{
-		if (redir->redir_type == REDIR_IN)
-		{
-			if (cmd->fd_in != STDIN_FILENO)
-				close(cmd->fd_in);
-			cmd->fd_in = open(redir->target, O_RDONLY);
-		}
-		else if (redir->redir_type == REDIR_OUT)
-		{
-			if (cmd->fd_out != STDOUT_FILENO)
-				close(cmd->fd_out);
-			cmd->fd_out = open(redir->target,
-					O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		}
-		else if (redir->redir_type == REDIR_APPEND)
-		{
-			if (cmd->fd_out != STDOUT_FILENO)
-				close(cmd->fd_out);
-			cmd->fd_out = open(redir->target,
-					O_WRONLY | O_CREAT | O_APPEND, 0644);
-		}
+		if (redir->redir_type == REDIR_IN && cmd->fd_in != STDIN_FILENO)
+			close(cmd->fd_in);
+		if ((redir->redir_type == REDIR_OUT
+				|| redir->redir_type == REDIR_APPEND)
+			&& cmd->fd_out != STDOUT_FILENO)
+			close(cmd->fd_out);
+		open_redir(cmd, redir);
 		if (cmd->fd_in == -1 || cmd->fd_out == -1)
-		{
-			perror("Redirection error");
-			child_exit(mini, 1);
-		}
+			return (redir_error(pipex));
 		redir = redir->next;
 	}
+	return (0);
 }
 
 void	path_found(t_cmd *cmd, t_mini *mini)
@@ -132,4 +118,3 @@ void	path_found(t_cmd *cmd, t_mini *mini)
 	perror(cmd->args[0]);
 	child_exit(mini, 126);
 }
-
