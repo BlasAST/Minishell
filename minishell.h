@@ -6,7 +6,7 @@
 /*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:19:13 by blas              #+#    #+#             */
-/*   Updated: 2026/03/13 16:03:07 by andtruji         ###   ########.fr       */
+/*   Updated: 2026/03/13 17:11:46 by andtruji         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -231,6 +231,7 @@ int				heredoc(char *limiter, t_mini *mini);
 // Funciones executor
 void			executor(t_cmd *cmd_list, t_mini *mini);
 
+void			err_msg(char *s1, char *s2, char *s3);
 void			wait_for_children(t_mini *mini, t_executor *e);
 int				is_subshell(t_cmd *cmd, t_mini *mini);
 char			*get_path(char *cmd, char **envp);
@@ -242,6 +243,7 @@ void			set_next(t_executor *e);
 void			set_values(t_executor *e, t_cmd *cmd);
 void			close_pipes(t_pipex *pipex);
 int				redir_error(t_pipex *pipex);
+void			close_cmd_fds(t_cmd *cmd);
 
 int				is_env_builtin(char *cmd);
 int				is_out_builtin(char *cmd);

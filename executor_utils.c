@@ -6,7 +6,7 @@
 /*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:09:02 by blas              #+#    #+#             */
-/*   Updated: 2026/03/13 16:18:04 by andtruji         ###   ########.fr       */
+/*   Updated: 2026/03/13 17:13:50 by andtruji         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,25 +93,24 @@ int	mng_redirections(t_cmd *cmd, t_pipex *pipex)
 
 void	path_found(t_cmd *cmd, t_mini *mini)
 {
+	if (cmd->args[0][0] == '\0')
+	{
+		err_msg("minishell: command not found: ", cmd->args[0], "\n");
+		child_exit(mini, 127);
+	}
 	if (!cmd->cmd_path)
 	{
-		write(2, "minishell: command not found: ", 30);
-		write(2, cmd->args[0], ft_strlen(cmd->args[0]));
-		write(2, "\n", 1);
+		err_msg("minishell: command not found: ", cmd->args[0], "\n");
 		child_exit(mini, 127);
 	}
 	if (access(cmd->cmd_path, F_OK) != 0)
 	{
-		write(2, "minishell: ", 11);
-		write(2, cmd->cmd_path, ft_strlen(cmd->cmd_path));
-		write(2, ": No such file or directory\n", 28);
+		err_msg("minishell: ", cmd->cmd_path, ": No such file or directory\n");
 		child_exit(mini, 127);
 	}
-	else if (access(cmd->cmd_path, X_OK) != 0)
+	if (access(cmd->cmd_path, X_OK) != 0)
 	{
-		write(2, "minishell: ", 11);
-		write(2, cmd->cmd_path, ft_strlen(cmd->cmd_path));
-		write(2, ": Permission denied\n", 20);
+		err_msg("minishell: ", cmd->cmd_path, ": Permission denied\n");
 		child_exit(mini, 126);
 	}
 	execve(cmd->cmd_path, cmd->args, mini->env_arr);
