@@ -3,16 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_unset.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: bsiguenc <bsiguenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:08:23 by blas              #+#    #+#             */
-/*   Updated: 2026/02/25 01:11:33 by blas             ###   ########.fr       */
+/*   Updated: 2026/03/13 13:00:10 by bsiguenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-// FUNCIONA CORRECTAMENTE
 
 static int	is_valid_unset_id(char *str)
 {
@@ -28,6 +26,46 @@ static int	is_valid_unset_id(char *str)
 		i++;
 	}
 	return (1);
+}
+
+static int	env_size(t_env *env)
+{
+	int	i;
+
+	i = 0;
+	while (env)
+	{
+		i++;
+		env = env->next;
+	}
+	return (i);
+}
+
+char	**env_list_to_arr(t_env *env)
+{
+	char	**arr;
+	char	*tmp;
+	int		i;
+
+	arr = malloc(sizeof(char *) * (env_size(env) + 1));
+	if (!arr)
+		return (NULL);
+	i = 0;
+	while (env)
+	{
+		if (env->value)
+		{
+			tmp = ft_strjoin(env->key, "=");
+			arr[i] = ft_strjoin(tmp, env->value);
+			free(tmp);
+		}
+		else
+			arr[i] = ft_strdup(env->key);
+		i++;
+		env = env->next;
+	}
+	arr[i] = NULL;
+	return (arr);
 }
 
 static void	remove_env_node(t_mini *mini, char *key)
@@ -60,7 +98,6 @@ int	ft_unset(t_cmd *cmd, t_mini *mini)
 	int	i;
 	int	exit_st;
 
-	write (1, "Función minishell\n", 19);
 	exit_st = 0;
 	if (!cmd->args[1])
 		return (0);
@@ -78,5 +115,7 @@ int	ft_unset(t_cmd *cmd, t_mini *mini)
 			remove_env_node(mini, cmd->args[i]);
 		i++;
 	}
+	ft_free_split(mini->env_arr);
+	mini->env_arr = env_list_to_arr(mini->env_list);
 	return (exit_st);
 }
