@@ -16,6 +16,7 @@ SRCS = main.c \
 	executor.c \
 	executor_utils.c \
 	executor_utils2.c \
+	executor_utils3.c \
 	expander_utils.c \
 	expander.c \
 	build_ins.c \
