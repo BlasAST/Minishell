@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:15:12 by blas              #+#    #+#             */
-/*   Updated: 2026/03/06 01:20:08 by blas             ###   ########.fr       */
+/*   Updated: 2026/03/13 14:02:23 by andtruji         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,21 @@ void	child_process(t_cmd *cmd, t_mini *mini, t_pipex *pipex)
 	{
 		dup2(cmd->fd_out, STDOUT_FILENO);
 		close(cmd->fd_out);
+		if (cmd->next)
+		{
+			close(pipex->pipe_fd[0]);
+			close(pipex->pipe_fd[1]);
+		}
 	}
-	else if (cmd->next && cmd->cond_type != AND && cmd->cond_type != OR)
+	else if (cmd->next && pipex->pipe_fd[1] != -1)
 	{
 		close(pipex->pipe_fd[0]);
 		dup2(pipex->pipe_fd[1], STDOUT_FILENO);
+		close(pipex->pipe_fd[1]);
+	}
+	else if (cmd->next)
+	{
+		close(pipex->pipe_fd[0]);
 		close(pipex->pipe_fd[1]);
 	}
 	if (!cmd->args || !cmd->args[0])
@@ -43,9 +53,17 @@ void	child_process(t_cmd *cmd, t_mini *mini, t_pipex *pipex)
 
 void	executor2(t_mini *mini, t_cmd *cmd, t_pipex *pipex)
 {
-	if (cmd->next && cmd->cond_type != AND && cmd->cond_type != OR)
+	if (cmd->next && cmd->fd_out == STDOUT_FILENO
+		&& cmd->cond_type != AND && cmd->cond_type != OR)
+	{
 		if (pipe(pipex->pipe_fd) == -1)
 			perror("pipe");
+	}
+	else
+	{
+		pipex->pipe_fd[0] = -1;
+		pipex->pipe_fd[1] = -1;
+	}
 	cmd->pid = fork();
 	if (cmd->pid == -1)
 	{

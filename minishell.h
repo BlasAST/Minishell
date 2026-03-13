@@ -6,7 +6,7 @@
 /*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:19:13 by blas              #+#    #+#             */
-/*   Updated: 2026/03/12 19:38:31 by andtruji         ###   ########.fr       */
+/*   Updated: 2026/03/13 12:45:01 by andtruji         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,6 +190,8 @@ void			free_tk(t_token *list, char **tmp);
 void			init_mini(t_mini *mini, char **envp);
 
 // Funciones entorno
+char			**env_list_to_arr(t_env *env);
+
 t_env			*new_env_node(char *str);
 int				get_value_env(t_env *env, char *str, char **send);
 int				find_path(t_env *env, char *str);

@@ -3,57 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ft_unset.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:08:23 by blas              #+#    #+#             */
-/*   Updated: 2026/02/25 01:11:33 by blas             ###   ########.fr       */
+/*   Updated: 2026/03/13 14:08:25 by andtruji         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
 // FUNCIONA CORRECTAMENTE
-
-static int	is_valid_unset_id(char *str)
-{
-	int	i;
-
-	i = 0;
-	if (!str || (!ft_isalpha(str[i]) && str[i] != '_'))
-		return (0);
-	while (str[i])
-	{
-		if (!ft_isalnum(str[i]) && str[i] != '_')
-			return (0);
-		i++;
-	}
-	return (1);
-}
-
-static void	remove_env_node(t_mini *mini, char *key)
-{
-	t_env	*current;
-	t_env	*prev;
-
-	current = mini->env_list;
-	prev = NULL;
-	while (current)
-	{
-		if (ft_strcmp(current->key, key) == 0)
-		{
-			if (prev == NULL)
-				mini->env_list = current->next;
-			else
-				prev->next = current->next;
-			free(current->key);
-			free(current->value);
-			free(current);
-			return ;
-		}
-		prev = current;
-		current = current->next;
-	}
-}
 
 int	ft_unset(t_cmd *cmd, t_mini *mini)
 {
