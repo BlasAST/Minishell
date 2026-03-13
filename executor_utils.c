@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:09:02 by blas              #+#    #+#             */
-/*   Updated: 2026/03/05 09:45:10 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/13 13:36:35 by andtruji         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,13 +77,25 @@ void	mng_redirections(t_cmd *cmd, t_mini *mini)
 	while (redir)
 	{
 		if (redir->redir_type == REDIR_IN)
+		{
+			if (cmd->fd_in != STDIN_FILENO)
+				close(cmd->fd_in);
 			cmd->fd_in = open(redir->target, O_RDONLY);
+		}
 		else if (redir->redir_type == REDIR_OUT)
-			cmd->fd_out = open(redir->target, O_WRONLY
-					| O_CREAT | O_TRUNC, 0644);
+		{
+			if (cmd->fd_out != STDOUT_FILENO)
+				close(cmd->fd_out);
+			cmd->fd_out = open(redir->target,
+					O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		}
 		else if (redir->redir_type == REDIR_APPEND)
-			cmd->fd_out = open(redir->target, O_WRONLY
-					| O_CREAT | O_APPEND, 0644);
+		{
+			if (cmd->fd_out != STDOUT_FILENO)
+				close(cmd->fd_out);
+			cmd->fd_out = open(redir->target,
+					O_WRONLY | O_CREAT | O_APPEND, 0644);
+		}
 		if (cmd->fd_in == -1 || cmd->fd_out == -1)
 		{
 			perror("Redirection error");
@@ -102,7 +114,22 @@ void	path_found(t_cmd *cmd, t_mini *mini)
 		write(2, "\n", 1);
 		child_exit(mini, 127);
 	}
+	if (access(cmd->cmd_path, F_OK) != 0)
+	{
+		write(2, "minishell: ", 11);
+		write(2, cmd->cmd_path, ft_strlen(cmd->cmd_path));
+		write(2, ": No such file or directory\n", 28);
+		child_exit(mini, 127);
+	}
+	else if (access(cmd->cmd_path, X_OK) != 0)
+	{
+		write(2, "minishell: ", 11);
+		write(2, cmd->cmd_path, ft_strlen(cmd->cmd_path));
+		write(2, ": Permission denied\n", 20);
+		child_exit(mini, 126);
+	}
 	execve(cmd->cmd_path, cmd->args, mini->env_arr);
 	perror(cmd->args[0]);
 	child_exit(mini, 126);
 }
+
