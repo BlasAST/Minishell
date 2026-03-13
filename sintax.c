@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   sintax.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: bsiguenc <bsiguenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:20:32 by blas              #+#    #+#             */
-/*   Updated: 2026/03/09 13:28:41 by blas             ###   ########.fr       */
+/*   Updated: 2026/03/13 11:21:27 by bsiguenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,14 +57,14 @@ int	check_sintax2(t_token *tok, int *lvl)
 			return (sintax_error(")"));
 	if (tok->next && tok->next->type == 10
 		&& (tok->type == PIPE || tok->type == AND
-		|| tok->type == OR || tok->type == LPAREN))
+			|| tok->type == OR || tok->type == LPAREN))
 		return (sintax_error2(tok));
 	return (check_sintax3(tok, lvl));
 }
 
 int	check_sintax(t_token *tok)
 {
-	int lvl;
+	int	lvl;
 
 	lvl = 0;
 	if (!tok)

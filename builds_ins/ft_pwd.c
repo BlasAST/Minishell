@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_pwd.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: bsiguenc <bsiguenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:08:15 by blas              #+#    #+#             */
-/*   Updated: 2026/02/25 01:11:17 by blas             ###   ########.fr       */
+/*   Updated: 2026/03/13 12:23:29 by bsiguenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ int	ft_pwd(t_cmd *cmd, t_mini *mini)
 
 	(void)cmd;
 	(void)mini;
-	write (1, "Función minishell\n", 19);
 	if (getcwd(cwd, 4096) != NULL)
 	{
 		ft_putstr_fd(cwd, 1);

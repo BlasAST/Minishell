@@ -6,7 +6,7 @@
 /*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:15:12 by blas              #+#    #+#             */
-/*   Updated: 2026/03/13 14:02:23 by andtruji         ###   ########.fr       */
+/*   Updated: 2026/03/13 14:16:50 by andtruji         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,8 @@ void	child_process(t_cmd *cmd, t_mini *mini, t_pipex *pipex)
 	}
 	if (!cmd->args || !cmd->args[0])
 		child_exit(mini, 0);
-	if (cmd->args && is_out_builtin(cmd->args[0]))
+	if (cmd->args && (is_out_builtin(cmd->args[0])
+			|| is_env_builtin(cmd->args[0])))
 		child_exit(mini, run_builtin(cmd, mini));
 }
 
@@ -120,9 +121,14 @@ void	executor(t_cmd *cmd, t_mini *mini)
 		if (e.cmd->args && e.cmd->args[0]
 			&& is_env_builtin(e.cmd->args[0]))
 		{
-			mini->exit_code = run_builtin(e.cmd, mini);
-			set_next(&e);
-			continue ;
+			if ((!e.cmd->next || (e.cmd->cond_type == AND
+						|| e.cmd->cond_type == OR))
+				&& e.pipex.prev_fd == -1)
+			{
+				mini->exit_code = run_builtin(e.cmd, mini);
+				set_next(&e);
+				continue ;
+			}
 		}
 		execute_block(mini, &e);
 	}

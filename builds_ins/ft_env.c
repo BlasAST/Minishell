@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_env.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: bsiguenc <bsiguenc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:08:05 by blas              #+#    #+#             */
-/*   Updated: 2026/03/10 01:29:33 by blas             ###   ########.fr       */
+/*   Updated: 2026/03/13 12:23:13 by bsiguenc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ int	ft_env(t_cmd *cmd, t_mini *mini)
 {
 	t_env	*temp;
 
-	write (1, "Función minishell\n", 19);
 	(void)cmd;
 	if (!mini || !mini->env_list)
 		return (0);
