@@ -6,7 +6,7 @@
 /*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:09:08 by blas              #+#    #+#             */
-/*   Updated: 2026/03/13 13:58:22 by andtruji         ###   ########.fr       */
+/*   Updated: 2026/03/19 18:41:01 by andtruji         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,8 @@ void	set_values(t_executor *e, t_cmd *cmd)
 	e->pipex.pipe_fd[1] = -1;
 	e->cmd = cmd;
 	e->prev = NULL;
+	e->last_pid = 0;
+	e->status = 0;
 }
 
 void	set_next(t_executor *e)
