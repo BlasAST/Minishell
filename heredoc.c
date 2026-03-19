@@ -6,7 +6,7 @@
 /*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:18:35 by blas              #+#    #+#             */
-/*   Updated: 2026/03/13 16:54:26 by andtruji         ###   ########.fr       */
+/*   Updated: 2026/03/19 18:50:37 by andtruji         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,7 @@ int	heredoc(char *limiter, t_mini *mini)
 	hd.expanded = NULL;
 	if (pipe(hd.heredoc) < 0)
 		return (perror("pipe"), -1);
+	signal(SIGINT, heredoc_sigint);
 	while (1)
 	{
 		hd.line = readline("heredoc> ");
@@ -103,5 +104,8 @@ int	heredoc(char *limiter, t_mini *mini)
 		write(hd.heredoc[1], "\n", 1);
 		free(hd.line);
 	}
+	signal(SIGINT, handle_sigint);
+	if (g_signal_status == 130)
+		return (free(hd.clean_lim), close(hd.heredoc[1]), close(hd.heredoc[0]), -1);
 	return (free(hd.clean_lim), close(hd.heredoc[1]), hd.heredoc[0]);
 }

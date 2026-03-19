@@ -6,7 +6,7 @@
 /*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/13 16:18:50 by andtruji          #+#    #+#             */
-/*   Updated: 2026/03/13 17:11:36 by andtruji         ###   ########.fr       */
+/*   Updated: 2026/03/19 18:43:47 by andtruji         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,25 @@ void	err_msg(char *s1, char *s2, char *s3)
 
 void	wait_for_children(t_mini *mini, t_executor *e)
 {
-	waitpid(e->last_pid, &e->status, 0);
-	if (WIFEXITED(e->status))
-		mini->exit_code = WEXITSTATUS(e->status);
-	else if (WIFSIGNALED(e->status))
-		mini->exit_code = 128 + WTERMSIG(e->status);
+	int		status;
+	pid_t	pid;
+
+	while ((pid = wait(&status)) > 0)
+	{
+		if (pid == e->last_pid)
+		{
+			if (WIFEXITED(status))
+				mini->exit_code = WEXITSTATUS(status);
+			else if (WIFSIGNALED(status))
+			{
+				mini->exit_code = 128 + WTERMSIG(status);
+				if (WTERMSIG(status) == SIGINT)
+					write(1, "\n", 1);
+				else if (WTERMSIG(status) == SIGQUIT)
+					write(1, "Quit: (core dumped)\n", 19);
+			}
+		}
+	}
 }
 
 int	redir_error(t_pipex *pipex)

@@ -6,7 +6,7 @@
 /*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:19:13 by blas              #+#    #+#             */
-/*   Updated: 2026/03/13 17:11:46 by andtruji         ###   ########.fr       */
+/*   Updated: 2026/03/19 18:48:03 by andtruji         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,7 +173,7 @@ typedef struct s_subshell
 }	t_subshell;
 
 // global variable to intercept the signal
-extern int	g_signal_status;
+extern int		g_signal_status;
 
 t_token			*tokenize_input(char *input);
 
@@ -200,6 +200,8 @@ char			*get_env_val(t_env *env, char *key);
 
 //Funciones de señal
 void			handle_sigint(int sig);
+void			child_signals();
+void			heredoc_sigint(int sig);
 
 // Funciones limpieza
 void			free_env_list(t_env **env_list);
