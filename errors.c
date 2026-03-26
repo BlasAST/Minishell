@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   errors.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:08:54 by blas              #+#    #+#             */
-/*   Updated: 2026/03/05 09:23:18 by marvin           ###   ########.fr       */
+/*   Updated: 2026/03/26 08:56:42 by andtruji         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,8 @@ int	handle_sintax_error(t_mini *mini)
 int	handle_heredoc_error(t_mini *mini)
 {
 	mini->exit_code = 130;
-	free_all(mini);
+	g_signal_status = 0;
+	dup2(open("/dev/tty", O_RDONLY), STDIN_FILENO);
 	return (0);
 }
 

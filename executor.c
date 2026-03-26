@@ -98,8 +98,6 @@ void	executor(t_cmd *cmd, t_mini *mini)
 	t_executor	e;
 
 	set_values(&e, cmd);
-	signal(SIGINT, SIG_IGN);
-	signal(SIGQUIT, SIG_IGN);
 	while (e.cmd)
 	{
 		if (e.prev && ((e.prev->cond_type == AND && mini->exit_code != 0)
@@ -112,8 +110,7 @@ void	executor(t_cmd *cmd, t_mini *mini)
 			&& is_env_builtin(e.cmd->args[0]))
 		{
 			if ((!e.cmd->next || (e.cmd->cond_type == AND
-						|| e.cmd->cond_type == OR))
-				&& e.pipex.prev_fd == -1)
+				|| e.cmd->cond_type == OR)) && e.pipex.prev_fd == -1)
 			{
 				mini->exit_code = run_builtin(e.cmd, mini);
 				set_next(&e);
@@ -123,6 +120,4 @@ void	executor(t_cmd *cmd, t_mini *mini)
 		execute_block(mini, &e);
 	}
 	wait_for_children(mini, &e);
-	signal(SIGINT, handle_sigint);
-	signal(SIGQUIT, SIG_DFL);
 }
