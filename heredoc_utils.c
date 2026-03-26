@@ -1,29 +1,45 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   signal.c                                           :+:      :+:    :+:   */
+/*   heredoc_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/25 01:20:28 by blas              #+#    #+#             */
-/*   Updated: 2026/03/19 18:47:46 by andtruji         ###   ########.fr       */
+/*   Created: 2026/03/26 09:15:08 by andtruji          #+#    #+#             */
+/*   Updated: 2026/03/26 09:15:08 by andtruji         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	handle_sigint(int sig)
+char	*remove_quotes_1(char *str)
 {
-	(void)sig;
-	write(1, "\n", 1);
-	rl_on_new_line();
-	rl_replace_line("", 0);
-	rl_redisplay();
-	g_signal_status = 130;
+	char	*res;
+	int		i;
+	int		j;
+
+	i = 0;
+	j = 0;
+	res = malloc(ft_strlen(str) + 1);
+	if (!res)
+		return (NULL);
+	while (str[i])
+	{
+		if (str[i] != '\'' && str[i] != '\"')
+			res[j++] = str[i];
+		i++;
+	}
+	res[j] = '\0';
+	return (res);
 }
 
-void	child_signals(void)
+int	is_quoted(char *limiter)
 {
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);
+	while (*limiter)
+	{
+		if (*limiter == '\'' || *limiter == '\"')
+			return (1);
+		limiter++;
+	}
+	return (0);
 }

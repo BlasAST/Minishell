@@ -40,6 +40,8 @@ void	wait_for_children(t_mini *mini, t_executor *e)
 			}
 		}
 	}
+	signal(SIGINT, handle_sigint);
+	signal(SIGQUIT, SIG_DFL);
 }
 
 int	redir_error(t_pipex *pipex)

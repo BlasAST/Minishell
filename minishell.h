@@ -151,6 +151,8 @@ typedef struct s_heredoc
 	char	*clean_lim;
 	char	*expanded;
 	int		quote;
+	pid_t	pid;
+	int		status;
 }	t_heredoc;
 
 typedef struct s_executor
@@ -201,7 +203,6 @@ char			*get_env_val(t_env *env, char *key);
 //Funciones de señal
 void			handle_sigint(int sig);
 void			child_signals();
-void			heredoc_sigint(int sig);
 
 // Funciones limpieza
 void			free_env_list(t_env **env_list);
@@ -227,6 +228,9 @@ int				count_args(t_token *tok);
 t_cmd			*new_cmd(void);
 void			is_operator(t_parse_token *pt);
 
+// Funciones Heredoc
+int				is_quoted(char *limiter);
+char			*remove_quotes_1(char *str);
 int				handle_heredoc(t_mini *mini);
 int				heredoc(char *limiter, t_mini *mini);
 

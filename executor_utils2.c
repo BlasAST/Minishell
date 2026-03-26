@@ -50,6 +50,8 @@ void	set_values(t_executor *e, t_cmd *cmd)
 	e->prev = NULL;
 	e->last_pid = 0;
 	e->status = 0;
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
 }
 
 void	set_next(t_executor *e)
