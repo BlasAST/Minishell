@@ -6,7 +6,7 @@
 /*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:18:49 by blas              #+#    #+#             */
-/*   Updated: 2026/03/04 19:57:16 by andtruji         ###   ########.fr       */
+/*   Updated: 2026/03/26 08:27:55 by andtruji         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ int	main(int argc, char **argv, char **envp)
 	init_mini(&mini, envp);
 	while (1)
 	{
+		g_signal_status = 0;
 		input = readline("minishell$ ");
 		if (!input)
 		{

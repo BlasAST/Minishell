@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blas <blas@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:18:35 by blas              #+#    #+#             */
-/*   Updated: 2026/02/25 01:18:36 by blas             ###   ########.fr       */
+/*   Updated: 2026/03/19 18:50:37 by andtruji         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,38 +36,6 @@ int	handle_heredoc(t_mini *mini)
 	return (1);
 }
 
-static char	*remove_quotes_1(char *str)
-{
-	char	*res;
-	int		i;
-	int		j;
-
-	i = 0;
-	j = 0;
-	res = malloc(ft_strlen(str) + 1);
-	if (!res)
-		return (NULL);
-	while (str[i])
-	{
-		if (str[i] != '\'' && str[i] != '\"')
-			res[j++] = str[i];
-		i++;
-	}
-	res[j] = '\0';
-	return (res);
-}
-
-int	is_quoted(char *limiter)
-{
-	while (*limiter)
-	{
-		if (*limiter == '\'' || *limiter == '\"')
-			return (1);
-		limiter++;
-	}
-	return (0);
-}
-
 void	expanding(t_heredoc *hd, t_mini *mini)
 {
 	hd->expanded = expand_heredoc(hd->line, mini);
@@ -78,30 +46,59 @@ void	expanding(t_heredoc *hd, t_mini *mini)
 	}
 }
 
+void	heredoc_loop(t_heredoc *hd, t_mini *mini)
+{
+	close(hd->heredoc[0]);
+	while (1)
+	{
+		hd->line = readline("heredoc> ");
+		if (!hd->line)
+		{
+			write(2, "\nminishell: warning: here-document delimited by end-of-file (wanted `", 70);
+			write(2, hd->clean_lim, ft_strlen(hd->clean_lim));
+			write(2, "')\n", 3);
+			break ;
+		}
+		if (ft_strcmp(hd->line, hd->clean_lim) == 0)
+		{
+			free(hd->line);
+			break ;
+		}
+		if (!hd->quote)
+			expanding(hd, mini);
+		else
+			write(hd->heredoc[1], hd->line, ft_strlen(hd->line));
+		write(hd->heredoc[1], "\n", 1);
+		free(hd->line);
+	}
+	close(hd->heredoc[1]);
+}
+
 int	heredoc(char *limiter, t_mini *mini)
 {
 	t_heredoc	hd;
 
 	hd.quote = is_quoted(limiter);
 	hd.clean_lim = remove_quotes_1(limiter);
-	hd.expanded = NULL;
 	if (pipe(hd.heredoc) < 0)
-		return (perror("pipe"), -1);
-	while (1)
+		return (perror("pipe"), free(hd.clean_lim), -1);
+	hd.pid = fork();
+	if (hd.pid == 0)
 	{
-		hd.line = readline("heredoc> ");
-		if (!hd.line || ft_strcmp(hd.line, hd.clean_lim) == 0)
-		{
-			free(hd.line);
-			break ;
-		}
-		add_history(hd.line);
-		if (!hd.quote)
-			expanding(&hd, mini);
-		else
-			write(hd.heredoc[1], hd.line, ft_strlen(hd.line));
-		write(hd.heredoc[1], "\n", 1);
-		free(hd.line);
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_DFL);
+		heredoc_loop(&hd, mini);
+		free(hd.clean_lim);
+		exit(0);
+	}
+	signal(SIGINT, SIG_IGN);
+	waitpid(hd.pid, &hd.status, 0);
+	signal(SIGINT, handle_sigint);
+	if (WIFSIGNALED(hd.status) && WTERMSIG(hd.status) == SIGINT)
+	{
+		g_signal_status = 130;
+		write(1, "\n", 1);
+		return (free(hd.clean_lim), close(hd.heredoc[1]), close(hd.heredoc[0]), -1);
 	}
 	return (free(hd.clean_lim), close(hd.heredoc[1]), hd.heredoc[0]);
 }

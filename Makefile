@@ -23,6 +23,7 @@ SRCS = main.c \
 	sintax.c \
 	errors.c \
 	heredoc.c \
+	heredoc_utils.c \
 	wildcard_utils.c \
 	wildcard_utils_2.c \
 	subshell.c

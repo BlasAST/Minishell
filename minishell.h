@@ -6,7 +6,7 @@
 /*   By: andtruji <andtruji@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 01:19:13 by blas              #+#    #+#             */
-/*   Updated: 2026/03/13 16:03:07 by andtruji         ###   ########.fr       */
+/*   Updated: 2026/03/19 18:48:03 by andtruji         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,6 +151,8 @@ typedef struct s_heredoc
 	char	*clean_lim;
 	char	*expanded;
 	int		quote;
+	pid_t	pid;
+	int		status;
 }	t_heredoc;
 
 typedef struct s_executor
@@ -173,7 +175,7 @@ typedef struct s_subshell
 }	t_subshell;
 
 // global variable to intercept the signal
-extern int	g_signal_status;
+extern int		g_signal_status;
 
 t_token			*tokenize_input(char *input);
 
@@ -200,6 +202,7 @@ char			*get_env_val(t_env *env, char *key);
 
 //Funciones de señal
 void			handle_sigint(int sig);
+void			child_signals();
 
 // Funciones limpieza
 void			free_env_list(t_env **env_list);
@@ -225,12 +228,16 @@ int				count_args(t_token *tok);
 t_cmd			*new_cmd(void);
 void			is_operator(t_parse_token *pt);
 
+// Funciones Heredoc
+int				is_quoted(char *limiter);
+char			*remove_quotes_1(char *str);
 int				handle_heredoc(t_mini *mini);
 int				heredoc(char *limiter, t_mini *mini);
 
 // Funciones executor
 void			executor(t_cmd *cmd_list, t_mini *mini);
 
+void			err_msg(char *s1, char *s2, char *s3);
 void			wait_for_children(t_mini *mini, t_executor *e);
 int				is_subshell(t_cmd *cmd, t_mini *mini);
 char			*get_path(char *cmd, char **envp);
@@ -242,6 +249,7 @@ void			set_next(t_executor *e);
 void			set_values(t_executor *e, t_cmd *cmd);
 void			close_pipes(t_pipex *pipex);
 int				redir_error(t_pipex *pipex);
+void			close_cmd_fds(t_cmd *cmd);
 
 int				is_env_builtin(char *cmd);
 int				is_out_builtin(char *cmd);
